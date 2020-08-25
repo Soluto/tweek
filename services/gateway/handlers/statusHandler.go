@@ -4,46 +4,56 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"runtime"
 	"sync"
 
-	"github.com/nats-io/go-nats"
+	"github.com/sirupsen/logrus"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	nats "github.com/nats-io/nats.go"
+
+	"tweek-gateway/appConfig"
 )
 
 var repoRevision string
 
+func toMap(sm *sync.Map) map[string]interface{} {
+	m := map[string]interface{}{}
+	sm.Range(func(k interface{}, v interface{}) bool {
+		m[k.(string)] = v
+		return true
+	})
+	return m
+}
+
 // NewStatusHandler - handler function that returns versions for all services
 func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
-	services := map[string]string{
-		"api":        config.API,
-		"authoring":  config.Authoring,
-		"publishing": config.Publishing,
-	}
 	return func(w http.ResponseWriter, r *http.Request) {
+		services := map[string]string{
+			"api":        config.API,
+			"authoring":  config.Authoring,
+			"publishing": config.Publishing,
+		}
 		var wg sync.WaitGroup
 		wg.Add(len(services))
 
 		result := map[string]interface{}{}
-		serviceStatuses := map[string]interface{}{}
+		var serviceStatuses sync.Map
 		isHealthy := true
 
 		for serviceName, serviceHost := range services {
-			go func(name, host string, statuses map[string]interface{}, wgroup *sync.WaitGroup) {
+			go func(name, host string) {
 				serviceStatus, serviceIsHealthy := checkServiceStatus(name, host)
-				statuses[name] = serviceStatus
+				serviceStatuses.Store(name, serviceStatus)
 				if !serviceIsHealthy {
 					isHealthy = false
 				}
-				wgroup.Done()
-			}(serviceName, serviceHost, serviceStatuses, &wg)
+				wg.Done()
+			}(serviceName, serviceHost)
 		}
 		wg.Wait()
 
-		result["services"] = serviceStatuses
+		result["services"] = toMap(&serviceStatuses)
 		result["repository revision"] = repoRevision
 
 		if !isHealthy {
@@ -69,14 +79,14 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 func SetupRevisionUpdater(natsEndpoint string) {
 	nc, err := nats.Connect(natsEndpoint)
 	if err != nil {
-		log.Panicln("Failed to connect to nats on", natsEndpoint)
+		logrus.WithField("natsEndpoint", natsEndpoint).Panic("Failed to connect to nats")
 	}
 
 	sub, err := nc.Subscribe("version", func(msg *nats.Msg) {
 		repoRevision = string(msg.Data)
 	})
 	if err != nil {
-		log.Panicln("Failed to subscribe to subject 'version' on", natsEndpoint)
+		logrus.WithField("natsEndpoint", natsEndpoint).Panic("Failed to subscribe to subject 'version'")
 	}
 	runtime.SetFinalizer(&repoRevision, func(interface{}) {
 		if sub != nil && sub.IsValid() {
@@ -89,19 +99,19 @@ func checkServiceStatus(serviceName string, serviceHost string) (interface{}, bo
 	resp, err := http.Get(fmt.Sprintf("%s/health", serviceHost))
 
 	if err != nil || resp == nil {
-		log.Printf("Service health request for %s failed with error: %v\n", serviceName, err)
+		logrus.WithError(err).WithField("serviceName", serviceName).Error("Service health request failed")
 		return "Service health request failed", false
 	}
 	defer resp.Body.Close()
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf("Service health request for %s read failed with error: %v\n", serviceName, err)
+		logrus.WithError(err).WithField("serviceName", serviceName).Error("Service health request: read failed")
 		return "Service health request cannot be read", false
 	}
 	var status map[string]interface{}
 	err = json.Unmarshal(contents, &status)
 	if err != nil {
-		log.Printf("Service health request for %s JSON parse failed with error: %v\n", serviceName, err)
+		logrus.WithError(err).WithField("serviceName", serviceName).Error("Service health request: JSON parse failed")
 		return "Service health request responded with bad format", false
 	}
 	if resp.StatusCode > 400 {

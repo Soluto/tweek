@@ -29,9 +29,12 @@ const getEmptyValue = (valueType) => {
 };
 
 export const withJsonEditor = compose(
-  connect(null, {
-    showCustomAlert,
-  }),
+  connect(
+    null,
+    {
+      showCustomAlert,
+    },
+  ),
   mapProps(({ onChange, showCustomAlert, ...props }) => {
     const editJson = async (currentSource, valueType) => {
       const saveButton = {
@@ -39,7 +42,7 @@ export const withJsonEditor = compose(
         value: true,
         className: 'rodal-save-btn',
         'data-alert-button': 'save',
-        validate: data => isStringValidJson(data, valueType),
+        validate: (data) => isStringValidJson(data, valueType),
       };
 
       const editModal = {
@@ -47,8 +50,9 @@ export const withJsonEditor = compose(
         component: ({ onChange, componentData: data }) => (
           <AutoSizer disableWidth>
             {({ height }) => (
-              <div style={{ height: height - 65 }}>
+              <div style={{ height: height - 75 }}>
                 <MonacoEditor
+                  key={`m_${height}`}
                   language="json"
                   value={
                     data ||
@@ -57,7 +61,7 @@ export const withJsonEditor = compose(
                       : getEmptyValue(valueType))
                   }
                   options={{ ...monacoOptions, readOnly: false }}
-                  onChange={newSource => onChange(newSource)}
+                  onChange={(newSource) => onChange(newSource)}
                   editorDidMount={(editor) => {
                     setTimeout(() => {
                       if (editor.viewModel) {

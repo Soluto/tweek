@@ -1,0 +1,893 @@
+openapi: 3.0.0
+info:
+  title: Tweek
+  license:
+    name: MIT
+    url: 'https://github.com/Soluto/tweek/blob/master/LICENSE'
+  version: 0.1.0
+  description: |
+    
+    # Intro
+    
+    This is the openapi reference for Tweek api.
+    Tweek provides api for reading configuration values, writing/reading context, managing keys/schemas/tags/policies etc...
+
+    You can use openapi tools to generate different client to Tweek.
+
+    # Security
+    Tweek api support 2 models of authentication
+    - Client Credentials - using headers x-client-id and x-client-secret, map to subject (external-apps {client-id})
+    - JWT Token - Passed in Authorization header with Bearer scheme.  
+        There are several ways to get JWT token
+        - OIDC provider (Such as Google, IdentityServer, Auth0, etc...) -> map to subject based on subject extraction definition.
+        - Signed JWT token with Repo private-key - issuer should be Tweek -> map to admin subject
+        - JWT token create by basic auth using client Client Credentials -> map to subject (external-apps {client-id})
+    
+security:
+  - bearerAuth: []
+  - apiClientId: []
+    apiClientSecret : []
+paths:
+  /values:
+    get:
+      operationId: getValues
+      summary: Get tweek key value/s
+      description: |
+        Main api for querying Tweek.  
+        Can use for reading a single key or a folder.  
+        keyPath paramter can also be passed as part of the url (/api/v2/values/{keyPath})  
+        
+        require permissions "values:/{keyPath*}" (with limitation based on context policy and context params )
+      
+      tags:
+        - configuraiton
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                single-key: 
+                  value: "red"
+                scan: 
+                  value:
+                    color: button
+                    shape: circle
+                    is_cta: true
+
+        '400':
+          description: Invalid Request
+        '403':
+          description: Unauthorized
+        '404':
+          description: Key not found
+
+      parameters:
+        - name: contextParams
+          in: query
+          schema:
+            type: object
+            # If the parameter values are of specific type, e.g. string:
+            additionalProperties:
+              type: string
+        - name: keyPath
+          in: query
+          description: | 
+            key name, can be an exact key (my_folder/my_key) or folder by adding "_" (my_folder).
+          required: true
+          schema:
+            type: string
+        - name: $include
+          in: query
+          description: Project only specifc keys (relevant only in folder (_) queries)
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: $flatten
+          in: query
+          description: Return flat key/value JSON (no nesting, relevant only in folder (_) queries)
+          schema:
+            type: boolean
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            curl http://tweek/api/v2/values/button/color?user=user1
+            curl http://tweek/api/v2/values/button/_?user=user1
+        - lang: 'js'
+          source: |
+            import {createTweekClient} from 'tweek-client'
+            const client = createTweekClient({
+              context: {
+                user: "user1"
+              },
+              baseServiceUrl: "https://tweek",
+            });
+            
+            // get single key value
+            const color = await client.getValues("button/color")
+
+            // get multiple results (scan)
+            const {color, shape} = await client.getValues("button/_")
+
+ 
+  '/context/{identityType}/{identityId}':
+    get:
+      operationId: getContext
+      summary: Get identity context
+      description: |
+        require permissions:
+          - "context/{identityType}/*" (with limitation based on context policy and context identifier )
+      tags:
+        - context
+      parameters:
+        - name: identityType
+          in: path
+          description: the type of the identity - for example user
+          required: true
+          schema:
+            type: string
+        - name: identityId
+          in: path
+          description: the identifier of the identity - for example jaime
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                resonse: 
+                  value:
+                    age: 33
+                    country: US
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            curl -H X-Client-Id={client-id} \
+                 -H X-Client-Secret={client-secret} \
+                 https://tweek/api/v2/context/user/user1
+        - lang: 'js'
+          source: |
+            import {createTweekManagementClient} from 'tweek-client'
+            const client = createTweekManagementClient({
+              clientId: "client-id",
+              clientSecret: "client-secret",
+              baseServiceUrl: "https://tweek",
+            });
+            
+            const user = await client.getContext("user", "user1")
+      
+    post:
+      operationId: appendContext
+      summary: Save/Append identity context
+      tags:
+        - context
+      parameters:
+        - name: identityType
+          in: path
+          description: the type of the identity - for example user
+          required: true
+          schema:
+            type: string
+        - name: identityId
+          in: path
+          description: the identifier of the identity - for example jaime
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            curl -H X-Client-Id={client-id} \
+                 -H X-Client-Secret={client-secret} \
+                 -X POST -d "{\"age\": 40}" \
+                 https://tweek/api/v2/context/user/user1
+        - lang: 'js'
+          source: |
+            import {createTweekManagementClient} from 'tweek-client'
+            const client = createTweekManagementClient({
+              clientId: "client-id",
+              clientSecret: "client-secret",
+              baseServiceUrl: "https://tweek",
+            });
+            
+            await client.appendContext("user", "user1",{
+              age: 40
+            })
+    delete:
+      operationId: deleteContext
+      summary: Delete identity context
+      description: |
+        require permissions:
+          - "context/{identityType}/*" (with limitation based on context policy and context identifier )
+      tags:
+        - context
+      parameters:
+        - name: identityType
+          in: path
+          description: the type of the identity - for example user
+          required: true
+          schema:
+            type: string
+        - name: identityId
+          in: path
+          description: the identifier of the identity - for example jaime
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            curl -H X-Client-Id={client-id} \
+                 -H X-Client-Secret={client-secret} \
+                 -X Delete
+                 https://tweek/api/v2/context/user/user1
+        - lang: 'js'
+          source: |
+            import {createTweekManagementClient} from 'tweek-client'
+            const client = createTweekManagementClient({
+              clientId: "client-id",
+              clientSecret: "client-secret",
+              baseServiceUrl: "https://tweek",
+            });
+            
+            const user = await client.deleteContext("user", "user1")
+
+  '/context/{identityType}/{identityId}/{prop}':
+    delete:
+      operationId: deleteContextProperty
+      summary: Delete identity context property
+      tags:
+        - context
+      parameters:
+        - name: identityType
+          in: path
+          description: the type of the identity - for example user
+          required: true
+          schema:
+            type: string
+        - name: identityId
+          in: path
+          description: the identifier of the identity - for example jaime
+          required: true
+          schema:
+            type: string
+        - name: prop
+          in: path
+          description: 'the property to delete, for example age'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /keys:
+    get:
+      operationId: getKeys
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+      summary: 'Get all keys definitions'
+      tags:
+        - keys
+      parameters:
+        - description: ''
+          in: query
+          name: keyPath
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: revision
+          required: false
+          schema:
+            type: string
+    put:
+      operationId: saveKey
+      summary: Save or replace key
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/html:
+              schema:
+                type: string
+      tags:
+        - keys
+      parameters:
+        - description: ''
+          in: query
+          name: keyPath
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyUpdateModel'
+        required: true
+    delete:
+      operationId: deleteKey
+      tags:
+        - keys
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/html:
+              schema:
+                type: string
+      summary: 'Delete an existing key'
+      parameters:
+        - description: ''
+          in: query
+          name: keyPath
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+  /bulk-keys-upload:
+    put:
+      operationId: bulkKeysUpload
+      responses:
+        '200':
+          description: Ok
+      summary: 'Bulk key upload'
+      description: Upload zip file of keys
+      tags:
+        - keys
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                bulk: 
+                  type: string
+                  format: binary
+        required: true
+  /tags:
+    get:
+      operationId: getAllTags
+      summary: Get tags list
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+      tags:
+        - tags
+    put:
+      operationId: saveAllTags
+      summary: Replace tags list
+      responses:
+        '204':
+          description: No content
+      tags:
+        - tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: The tags that need saving
+        required: true
+  /schemas:
+    get:
+      operationId: getSchema
+      summary: Get identities schema
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - schema
+  '/schemas/{identityType}':
+    delete:
+      operationId: deleteSchema
+      summary: Delete Schema
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/html:
+              schema:
+                type: string
+      tags:
+        - schema
+      parameters:
+        - description: The type of the identity
+          in: path
+          name: identityType
+          required: true
+          schema:
+            type: string
+    post:
+      operationId: createNewIdentity
+      summary: Create new identity
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/html:
+              schema:
+                type: string
+      tags:
+        - schema
+      parameters:
+        - description: ''
+          in: path
+          name: identityType
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+    patch:
+      operationId: patchIdentity
+      summary: Patch existing identity
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+      tags:
+        - schema
+      parameters:
+        - description: ''
+          in: path
+          name: identityType
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Patch'
+  /manifests:
+    get:
+      operationId: getAllKeyManifests
+      summary: Get All key manifests
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - manifest
+  /suggestions:
+    get:
+      operationId: getKeysSuggestions
+      summary: Get Key Suggestions
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - suggestions
+  /search:
+    get:
+      operationId: searchKeys
+      description: Search for keys
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - search
+  /dependents:
+    get:
+      operationId: getAllDependents
+      summary: Get all keys dependents for a key
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - dependent
+  /revision-history:
+    get:
+      operationId: getRevisionHistory
+      summary: Get revision history for existing key
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - revision-history
+      parameters:
+        - description: ''
+          in: query
+          name: keyPath
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: since
+          required: true
+          schema:
+            type: string
+  /policies:
+    get:
+      operationId: getPoliciesList
+      summary: Get policies list
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - policies
+    put:
+      operationId: putPoliciesList
+      summary: Replace policies list
+      responses:
+        '200':
+          description: OK
+      tags:
+        - policies
+    patch:
+      operationId: patchPoliciesList
+      summary: Update Policies file
+      responses:
+        '200':
+          description: OK
+      tags:
+        - policies
+      requestBody:
+        $ref: '#/components/requestBodies/Patch'
+  /apps:
+    post:
+      operationId: createApp
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppCreationResponseModel'
+      summary: 'Create new app'
+      description: |
+        Create new app (credentials) for using Tweek.
+        Return login details for the new app.
+
+        require permission - write repo/apps 
+      tags:
+        - apps
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppCreationRequestModel'
+        required: true
+    get:
+      operationId: getApps
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema: 
+                type: object
+      summary: 'List apps'
+      description: |
+        List all applications created in Tweek.  
+        Return a map of appId->name.  
+
+        require permission - read repo/apps 
+      tags:
+        - apps
+  /jwt-extraction-policy:
+    put:
+      operationId: updateJWTExtractionPolicy
+      responses:
+        '200':
+          description: Ok
+      summary: 'Update JWT extraction policy'
+      description: |
+        Update JWT subject extraction policy with a new rego payload.
+
+        require permission - write repo/policies 
+      tags:
+        - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data: 
+                  type: string
+        required: true
+    get:
+      operationId: getJWTExtractionPolicy
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  data: 
+                    type: string
+
+      summary: 'Get JWT subject extraction policy'
+      description: |
+        Get current rego file data for JWT subject extraction.
+
+        require permission - read repo/policies
+      tags:
+        - policies
+  /hooks:
+    get:
+      operationId: getHooksList
+      summary: Get Hooks list
+      parameters:
+        - name: keyPathFilter
+          in: query
+          description: Filters results to only return hooks for the given keyPath. Must be url encoded.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hook'
+          headers:
+            ETag:
+              description: The ETag of the current state of hooks data. Can optionally be returned with POST/PUT/DELETE requests.
+              type: string
+      tags:
+        - hooks
+    post:
+      operationId: createHook
+      summary: Create a new hook
+      tags:
+        - hooks
+      parameters:
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: false
+          type: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hook'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HookData'
+        description: The details of the hook to create
+        required: true
+  '/hooks/{id}':
+    put:
+      operationId: updateHook
+      summary: updates a hook
+      tags:
+        - hooks
+      parameters:
+        - name: id
+          in: path
+          description: The id of the hook to update
+          required: true
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: false
+          type: string
+      responses:
+        '204':
+          description: No content
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HookData'
+        description: The updated details of the hook
+        required: true
+    delete:
+      operationId: deleteHook
+      summary: deletes a hook
+      tags:
+        - hooks
+      parameters:
+        - name: id
+          in: path
+          description: The id of the hook to delete
+          required: true
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: false
+          type: string
+      responses:
+        '204':
+          description: No content
+  
+servers:
+  - url: /api/v2/
+components:
+  securitySchemes:
+    bearerAuth:           
+      type: http
+      scheme: bearer
+      bearerFormat: JWT   
+    apiClientId:
+      type: apiKey
+      in: header
+      name: X-CLIENT-ID
+    apiClientSecret:
+      type: apiKey
+      in: header
+      name: X-CLIENT-SECRET
+  requestBodies:
+    Patch:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Patch'
+      required: true
+  schemas:
+    PatchOperation:
+      type: object
+      properties:
+        op:
+          type: string
+        path:
+          type: string
+        value:
+          type: object
+    Patch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    HookData:
+      type: object
+      properties:
+        keyPath:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
+        format:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    Hook:
+      type: object
+      properties:
+        id:
+          type: string
+        keyPath:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
+    KeyUpdateModel:
+      description: ''
+      properties:
+        implementation:
+          type: object
+          description: ''
+        manifest:
+          type: object
+          description: ''
+      type: object
+      required:
+        - implementation
+        - manifest
+    AppCreationResponseModel:
+      description: ''
+      properties:
+        appId:
+          type: string
+          description: ''
+        appSecret:
+          type: string
+          description: ''
+      type: object
+      required:
+        - appId
+        - appSecret
+    AppCreationRequestModel:
+      description: ''
+      properties:
+        name:
+          type: string
+          description: ''
+        permissions:
+          type: array
+          items:
+            type: string
+          description: ''
+      type: object
+      required:
+        - name
+        - permissions

@@ -1,39 +1,34 @@
 /* global process console */
 import { handleActions } from 'redux-actions';
-import * as R from 'ramda';
-import { withJsonData } from '../../utils/http';
-import fetch from '../../utils/fetch';
+import { tweekManagementClient } from '../../utils/tweekClients';
 import { showError } from './notifications';
 
 const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
 const TAGS_SAVED = 'TAGS_SAVED';
 
-export async function downloadTags() {
-  try {
-    const tags = await fetch(`/tags`).then(res => res.json());
-    return { type: TAGS_DOWNLOADED, payload: tags };
-  } catch (error) {
-    return showError({ title: 'Failed to download tags', error });
-  }
+export function downloadTags() {
+  return async (dispatch) => {
+    try {
+      const tags = await tweekManagementClient.getAllTags();
+      return dispatch({ type: TAGS_DOWNLOADED, payload: tags });
+    } catch (error) {
+      return dispatch(showError({ title: 'Failed to download tags', error }));
+    }
+  };
 }
 
-export const saveNewTags = tagsToSave =>
-  async function (dispatch, getState) {
-    const currentTags = getState().tags.map(x => x.name);
-    const newTags = R.difference(tagsToSave, currentTags).filter(x => x != null);
-
-    if (newTags.length < 1) {
+export const saveNewTag = (tagToSave) =>
+  async function(dispatch, getState) {
+    const currentTags = getState().tags;
+    if (currentTags[tagToSave.id]) {
       console.log('no new tags to save found');
       return;
     }
 
     try {
-      await fetch(`/tags`, {
-        method: 'PUT',
-        ...withJsonData(newTags),
-      });
+      await tweekManagementClient.appendTags([tagToSave.text]);
 
-      dispatch({ type: TAGS_SAVED, payload: newTags });
+      dispatch({ type: TAGS_SAVED, payload: tagToSave });
     } catch (error) {
       dispatch(showError({ title: 'Failed to save new tags', error }));
     }
@@ -41,8 +36,9 @@ export const saveNewTags = tagsToSave =>
 
 export default handleActions(
   {
-    [TAGS_DOWNLOADED]: (state, { payload }) => payload,
-    [TAGS_SAVED]: (state, { payload }) => R.uniq([...state, ...payload.map(x => ({ name: x }))]),
+    [TAGS_DOWNLOADED]: (state, { payload }) =>
+      payload.reduce((acc, { name }) => ({ ...acc, [name.toLowerCase()]: name }), {}),
+    [TAGS_SAVED]: (state, { payload }) => ({ ...state, ...payload }),
   },
   [],
 );

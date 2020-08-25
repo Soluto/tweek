@@ -1,14 +1,17 @@
 package security
 
 import (
+	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"log"
+	"errors"
 	"sync"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"tweek-gateway/appConfig"
+
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
 )
 
 type TweekClaims struct {
@@ -48,7 +51,7 @@ const expirationPeriod = 24
 func InitJWT(keyEnv *appConfig.EnvInlineOrPath) JWTToken {
 	key, err := getPrivateKey(keyEnv)
 	if err != nil {
-		log.Panicln("Private key retrieving failed:", err)
+		logrus.WithError(err).Panic("Private key retrieving failed")
 	}
 
 	token := &JWTTokenData{
@@ -87,13 +90,16 @@ func setExpirationTimer(token *JWTTokenData, key interface{}) {
 	}
 }
 
-func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
+func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (*rsa.PrivateKey, error) {
 	pemFile, err := appConfig.HandleEnvInlineOrPath(keyEnv)
 	if err != nil {
 		return nil, err
 	}
 
 	block, _ := pem.Decode(pemFile)
+	if block == nil {
+		return nil, errors.New("no PEM found")
+	}
 	key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 	if err != nil {
 		key, err = x509.ParsePKCS1PrivateKey(block.Bytes)
@@ -101,5 +107,11 @@ func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
 			return nil, err
 		}
 	}
-	return key, nil
+
+	rsaKey, ok := key.(*rsa.PrivateKey)
+	if !ok {
+		return nil, errors.New("key block is not of type RSA")
+	}
+
+	return rsaKey, nil
 }

@@ -97,7 +97,7 @@
             .user-select(text);
           }
         }
-        .key-description-and-tags-wrapper {
+        .key-description-tags-hooks-wrapper {
           @description-and-tags-max-height: 120px;
           display: flex;
           flex-direction: row;
@@ -115,6 +115,23 @@
             border-left: 1px solid lightgray;
             padding-left: 20px;
             margin-left: 20px;
+            max-width: 400px;
+          }
+          .key-hooks-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            position: relative;
+            max-height: @description-and-tags-max-height;
+            padding-top: 0;
+            border-left: 1px solid lightgray;
+            padding-left: 20px;
+            margin-left: 20px;
+
+            > button {
+              margin-bottom: 5px;
+              width: 100px;
+            }
           }
         }
       }

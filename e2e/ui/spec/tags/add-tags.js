@@ -1,55 +1,35 @@
-/* global describe, before, after, it, browser */
+import uuid from 'uuid/v4';
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import { refresh } from '../../utils/location-utils';
+import EditKey from '../../pages/Keys/EditKey';
 
-import Key from '../../utils/Key';
-import Chance from 'chance';
-import { dataComp } from '../../utils/selector-utils';
-import { login } from '../../utils/auth-utils';
+const tagsTestKeyFullPath = 'behavior_tests/tags';
+const NUMBER_OF_TAGS_TO_ADD = 1;
 
-const chance = new Chance();
+fixture`Add Tags`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-const timeout = 5000;
+test('should save the tag as a suggestion on submitting it without saving the key', async (t) => {
+  const editKey = await EditKey.open(tagsTestKeyFullPath);
 
-const keyTags = dataComp('key-tags');
-const tagsInput = `${keyTags} .tag-input input`;
-const suggestion = `${keyTags} .tags-suggestion ul li`;
+  const tagsToAdd = [];
+  for (let tagsIndex = 0; tagsIndex < NUMBER_OF_TAGS_TO_ADD; tagsIndex++) {
+    const tag = uuid();
+    tagsToAdd.push(tag);
+    await editKey.tagsInput.add(tag);
+  }
 
-describe('add tags', () => {
-  const NUMBER_OF_TAGS_TO_ADD = 1;
+  await t.setNativeDialogHandler(() => true);
 
-  const tagsTestKeyFullPath = 'behavior_tests/tags';
+  await refresh();
 
-  before(() => {
-    login();
-    Key.open(tagsTestKeyFullPath);
-  });
+  await t.expect(editKey.tagsInput.input.visible).ok();
 
-  const addTag = tagName => {
-    browser.setValue(tagsInput, `${tagName}\n`);
-  };
-
-  const isTagExists = tag => {
+  for (const tag of tagsToAdd) {
     const partialTag = tag.slice(0, tag.length - 1);
-    browser.setValue(tagsInput, partialTag);
-
-    browser.waitForVisible(suggestion, timeout);
-    const tagsSuggestions = browser.elements(suggestion);
-    return tagsSuggestions.value.length === 1;
-  };
-
-  it('should save the tag as a suggestion on submitting it without saving the key', () => {
-    // Arrange
-    const tagsToAdd = [];
-    for (let tagsIndex = 0; tagsIndex < NUMBER_OF_TAGS_TO_ADD; tagsIndex++)
-      tagsToAdd.push(chance.guid());
-
-    // Act
-    tagsToAdd.forEach(x => addTag(x));
-    browser.refresh();
-    browser.alertAccept();
-
-    browser.waitForVisible(tagsInput, timeout);
-
-    // Assert
-    tagsToAdd.forEach(x => browser.waitUntil(() => isTagExists(x), timeout));
-  });
+    await t
+      .typeText(editKey.tagsInput.input, partialTag, { replace: true })
+      .expect(editKey.tagSuggestion.count)
+      .eql(1);
+  }
 });

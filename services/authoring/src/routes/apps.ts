@@ -2,9 +2,9 @@ import uuid = require('uuid');
 import { promisify } from 'util';
 import crypto = require('crypto');
 import R = require('ramda');
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
-import { POST, Path, Errors, Context, ServiceContext, QueryParam } from 'typescript-rest';
+import { POST, GET, Path, Errors, Context, ServiceContext, QueryParam } from 'typescript-rest';
 import { PERMISSIONS } from '../security/permissions/consts';
 import { generateHash } from '../apps/apps-utils';
 import { Authorize } from '../security/authorize';
@@ -42,16 +42,20 @@ const allowedPermissions = R.without(<any>PERMISSIONS.ADMIN, R.values(PERMISSION
 const hasValidPermissions = R.all(<any>R.contains((<any>R).__, allowedPermissions));
 
 export type AppCreationRequestModel = {
-  name: string,
-  permissions: Array<string>,
+  name: string;
+  permissions: Array<string>;
 };
 
 export type AppCreationResponseModel = {
-  appId: string,
-  appSecret: string,
+  appId: string;
+  appSecret: string;
 };
 
-@AutoWired
+export type AppsListResponseModel = {
+  [id: string]: string;
+};
+
+@OnlyInstantiableByContainer
 @Tags('apps')
 @Path('/apps')
 export class AppsController {
@@ -63,21 +67,35 @@ export class AppsController {
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @POST
-  async createApp( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, newAppModel: AppCreationRequestModel): Promise<AppCreationResponseModel> {
+  async createApp(
+    @QueryParam('author.name') name: string,
+    @QueryParam('author.email') email: string,
+    newAppModel: AppCreationRequestModel,
+  ): Promise<AppCreationResponseModel> {
     const appId = uuid.v4();
+    newAppModel.permissions = newAppModel.permissions || [];
     const newApp = createNewAppManifest(newAppModel.name, newAppModel.permissions);
     // validate permissions
     if (!hasValidPermissions(newAppModel.permissions)) {
-      throw new Errors.BadRequestError(`Invalid permissions: ${R.difference(newAppModel.permissions, allowedPermissions)}`);
+      throw new Errors.BadRequestError(
+        `Invalid permissions: ${R.difference(newAppModel.permissions, allowedPermissions)}`,
+      );
     }
     const { secret: appSecret, key } = await createSecretKey();
     newApp.secretKeys.push(key);
     const oid = await this.appsRepository.saveApp(appId, newApp, { name, email });
     addOid(this.context.response, oid);
 
-    return ({
+    return {
       appId,
       appSecret,
-    });
+    };
+  }
+
+  @Authorize({ permission: PERMISSIONS.ADMIN })
+  @GET
+  async getApps(): Promise<AppsListResponseModel> {
+    const apps = await this.appsRepository.getApps();
+    return <any>R.pluck('name')(<any>apps);
   }
 }

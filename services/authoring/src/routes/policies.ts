@@ -1,4 +1,4 @@
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Path, ServiceContext, Context, QueryParam, PUT, PATCH, GET } from 'typescript-rest';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
@@ -7,7 +7,7 @@ import { addOid } from '../utils/response-utils';
 import { JsonValue } from '../utils/jsonValue';
 import jsonpatch = require('fast-json-patch');
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Path('/policies')
 export class PolicyController {
   @Context
@@ -25,7 +25,11 @@ export class PolicyController {
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @PUT
-  async replacePolicy( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, content: JsonValue): Promise<string> {
+  async replacePolicy(
+    @QueryParam('author.name') name: string,
+    @QueryParam('author.email') email: string,
+    content: JsonValue,
+  ): Promise<string> {
     const oid = await this.policyRepository.replacePolicy(content, { name, email });
     addOid(this.context.response, oid);
 
@@ -34,7 +38,11 @@ export class PolicyController {
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @PATCH
-  async updatePolicy( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, content: jsonpatch.Operation[]): Promise<string> {
+  async updatePolicy(
+    @QueryParam('author.name') name: string,
+    @QueryParam('author.email') email: string,
+    content: jsonpatch.Operation[],
+  ): Promise<string> {
     const oid = await this.policyRepository.updatePolicy(content, { name, email });
     addOid(this.context.response, oid);
 

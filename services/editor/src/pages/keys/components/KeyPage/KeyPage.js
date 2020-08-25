@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, lifecycle } from 'recompose';
+import { withTweekValues } from 'react-tweek';
 import querystring from 'query-string';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
@@ -57,26 +58,30 @@ const mapStateToProps = (state, { match, location }) => {
 };
 
 const enhance = compose(
-  connect(mapStateToProps, { ...selectedKeyActions, ...alertActions }),
+  connect(
+    mapStateToProps,
+    { ...selectedKeyActions, ...alertActions },
+  ),
   routeLeaveHook(
     hasUnsavedChanges,
     'You have unsaved changes, are you sure you want to leave this page?',
     { className: 'key-page-wrapper' },
   ),
+  withTweekValues({ historySince: '@tweek/editor/history/since' }, { defaultValues: {} }),
   lifecycle({
     componentDidMount() {
-      const { configKey, selectedKey, openKey, revision } = this.props;
+      const { configKey, selectedKey, openKey, revision, historySince } = this.props;
       if (!configKey) return;
       if (selectedKey && selectedKey.key === configKey) return;
-      openKey(configKey, { revision });
+      openKey(configKey, { revision, historySince });
     },
-    componentWillReceiveProps({ configKey, revision }) {
+    componentWillReceiveProps({ configKey, revision, historySince }) {
       const { openKey } = this.props;
       if (
         configKey !== BLANK_KEY_NAME &&
         (configKey !== this.props.configKey || revision !== this.props.revision)
       ) {
-        openKey(configKey, { revision });
+        openKey(configKey, { revision, historySince });
       }
     },
     componentWillUnmount() {

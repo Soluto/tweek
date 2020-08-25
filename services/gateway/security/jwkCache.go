@@ -2,28 +2,40 @@ package security
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/lestrrat-go/jwx/jwk"
+	"github.com/sirupsen/logrus"
 )
 
-var jwkCache map[string]*jwk.Set
-
-func init() {
-	jwkCache = map[string]*jwk.Set{}
+type jwkRecord struct {
+	set *jwk.Set
+	err error
 }
 
-func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
-	keys := jwkCache[endpoint]
-	if keys == nil {
+var jwkCache map[string]*jwkRecord
+
+func init() {
+	jwkCache = map[string]*jwkRecord{}
+}
+
+func getJWKByEndpoint(endpoint, keyID string) (rawKey interface{}, err error) {
+	rec, ok := jwkCache[endpoint]
+	if !ok {
 		return nil, fmt.Errorf("No keys found for endpoint %s", endpoint)
 	}
-	k := keys.LookupKeyID(keyID)
+
+	if rec.err != nil {
+		return nil, rec.err
+	}
+
+	k := rec.set.LookupKeyID(keyID)
 	if len(k) == 0 {
-		loadEndpoint(endpoint)
-		keys = jwkCache[endpoint]
-		k = keys.LookupKeyID(keyID)
+		rec := loadEndpoint(endpoint)
+		if rec.err != nil {
+			return nil, rec.err
+		}
+		k = rec.set.LookupKeyID(keyID)
 		if len(k) == 0 {
 			return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
 		}
@@ -31,7 +43,8 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	if len(k) > 1 {
 		return nil, fmt.Errorf("Unexpected error, more than 1 key %s found at %s", keyID, endpoint)
 	}
-	return k[0].Materialize()
+	err = k[0].Raw(&rawKey)
+	return
 }
 
 // LoadAllEndpoints loads all the endpoints
@@ -54,10 +67,31 @@ func RefreshEndpoints(endpoints []string) {
 	}()
 }
 
-func loadEndpoint(endpoint string) {
-	keySet, err := jwk.FetchHTTP(endpoint)
-	if err != nil {
-		log.Printf("Unable to load endpoint %s", endpoint)
+func loadEndpoint(endpoint string) *jwkRecord {
+	return loadEndpointWithRetry(endpoint, 0)
+}
+
+func loadEndpointWithRetry(endpoint string, retryCount uint) *jwkRecord {
+	rec := &jwkRecord{}
+	rec.set, rec.err = jwk.FetchHTTP(endpoint)
+	jwkCache[endpoint] = rec
+
+	if rec.err != nil {
+		logrus.WithError(rec.err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
+
+		go func() {
+			<-time.After(time.Second * (1 << retryCount))
+			cached := jwkCache[endpoint]
+			if cached == rec {
+				nextCount := retryCount + 1
+				if nextCount > 6 {
+					// limit retry delay to 64 Seconds (~1 Minute)
+					nextCount = 6
+				}
+				loadEndpointWithRetry(endpoint, nextCount)
+			}
+		}()
 	}
-	jwkCache[endpoint] = keySet
+
+	return rec
 }

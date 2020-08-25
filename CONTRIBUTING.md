@@ -1,16 +1,18 @@
 # Project structure
 
 - services (all tweek microservices)
-   - api (rest api for getting configurations and updating context)
-   - authoring (rest api for reading and editing keys definitions/manifests)
-   - editor (admin ui for editing rules and managing Tweek)
-   - publishing ("CI" and publishing bundles)
+  - api (rest api for getting configurations and updating context)
+  - authoring (rest api for reading and editing keys definitions/manifests)
+  - editor (admin ui for editing rules and managing Tweek)
+  - publishing ("CI" and publishing bundles)
 - dependencies
-   - git-service (stand-alone git rules repository for bootstrap, dev & testing)
-   - minio (object storage) - rules storage
-   - redis/couchbase/mongo - context database
+  - git-service (stand-alone git rules repository for bootstrap, dev & testing)
+  - minio (object storage) - rules storage
+  - redis/couchbase/mongo - context database
+  - nats - pubsub
 - deployments
   - dev (docker compose files for devlopment)
+  - kubernetes - use together with Skaffold
 - core
   - Tweek calculation lib (.Net)
 - addons
@@ -23,7 +25,7 @@
 
 ## Requirements
 
-1. Docker compatible environment  (Windows 10/Mac/Linux)
+1. Docker compatible environment (Windows 10/Mac/Linux)
 
 ## Install runtime dependencies
 
@@ -40,127 +42,72 @@
    git clone https://github.com/Soluto/tweek.git
    cd tweek
    ```
-2. `docker-compose -f ./deployments/dev/docker-compose.yml build`
-3. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
 
-All tweek microservices should be run on ports 4001-4004:
-4001 - Git server (ssh)
-4003 - Api (http)
-4004 - Editor (http)
-4005 - Authoring (http)
-4009 - Publishing (ssh)
-4010 - Publishing (http)
-4099 - Gateway (http)
+2. Yarn start
+3. Go to http://localhost:8081/login and use basic auth with (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
 
-## Debugging Tweek api
+Access Tweek gateway using localhost:8081.
+Tweek gateway route all traffic to other resources based on: https://github.com/Soluto/tweek/blob/master/services/gateway/settings/settings.json
+The root path redirect to Tweek Editor UI
 
-### Install tools
+## Using Tilt
 
-VS CODE
+Tilt is a CLI tool that can be used to create optimal development environment for multi-container apps such as Tweek, it support automatic rebuliding of images and re-running of containers on files' changes.
+Additonally, it support more complex live reloading scenarios such as Tweek Editor (React app).
+Tweek uses Tilt on top of docker-compose for easier and (usually) faster developer experience (comapred to Tilt with k8s or Skaffold).
 
-1. Download VS Code: <https://code.visualstudio.com/>
-2. Install C# extension: <https://code.visualstudio.com/docs/languages/csharp>
+- Install Tilt (https://docs.tilt.dev/install.html)
+- tilt up
 
-VS 2017
+## Using Skaffold
 
-1. Install VS 2017
+If you use k8s (comes bundled with Docker for mac/pc, enable using UI), you can use Skaffold (https://github.com/GoogleContainerTools/skaffold).
+Skaffold provides watch, build for all Tweek services and hot code reloading for editor in a similiar way to Tilt.
+Since Skaffold/k8s run all services and dependencies together, it can take few minutes to stabilize. (k8s will attempt to restart failed services)
 
-### RUN
-
-1. If you haven't built the full environment before, pull management service:
-   ```bash
-   docker-compose -f ./deployments/dev/docker-compose.yml pull tweek-management tweek-git
-   ```
-2. If you haven't ran the full environment before, run management service:
-   ```bash
-   docker-compose -f ./deployments/dev/docker-compose.yml up -d tweek-management
-   ```
-3. Debug tweek in VS2017 or VSCODE tweek-api task
-
-### TESTS
-
-#### UNIT
-
-1. Run in Visual studio 2017
-
-or
-mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (only with shell)
-
-#### BLACKBOX/SMOKE
-
-1. Run service
-2. Run smoke tests in VS or run:
-   ```bash
-   dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build
-   ```
+After installing Skaffold, use `skaffold dev --port-forward=false`
 
 ## Debugging Tweek editor
 
+If you're not using Skaffold/Tilt, the best way to develop the editor is to run the editor locally against docker-compose:
+
 1. go to services\editor
-2. run npm i/yarn
-
-### environment
-
-- if you didn't change anything in the environment, you can just pull it from the server using this command:
-   ```bash
-   npm run docker-compose pull [SERVICES]
-   ```
-- if you made any changes in the environment, build it using this command:
-   ```bash
-   npm run docker-compose build [SERVICES]
-   ```
-- the possible services are: `tweek-git` `tweek-management` `tweek-api
-
-#### Examples
-
-- get latest management and api version from server:
-      ```bash
-      npm run pull-env tweek-management tweek-api
-      ```
-- build local management version:
-      ```bash
-      npm run build-env tweek-management
-      ```
-
-### Debug
-
-- if you haven't pulled or built the environment, run `npm run docker-compose pull tweek-git tweek-management tweek-api`
-- run `npm run start:full-env`
+2. run `yarn`
+3. run `yarn start:full-env`
 
 ### Unit Tests
 
-- run `npm test`
+- run `yarn test`
 
 ## E2E
 
 1. go to e2e folder
-2. run npm i/yarn
+2. run `yarn`
 
 ### run tests
 
 - if you didn't make any changes to editor, or already built it:
-   ```bash
-   npm run test:full-env
-   ```
+  ```bash
+  yarn test:full-env
+  ```
 - to rebuild editor and then run tests:
-   ```bash
-   npm run test:full-env:build
-   ```
+  ```bash
+  yarn test:full-env:build
+  ```
 - our e2e tests are using selenium. If you don't have it installed, and you don't want to install it, you can just run the tests in docker. To do so replace `full-env` with `docker`:
-   ```bash
-   npm run test:docker
-   npm run test:docker:build
-   ```
+  ```bash
+  yarn test:docker
+  ```
 
 ## Tear Down
 
 ```bash
-docker-compose -f ./deployments/dev/docker-compose.yml down --remove-orphans
+yarn teardown
 ```
 
 ## Contributing
 
-Create branch with the format {issueNumber}_{someName}
+Create branch with the format {issueNumber}\_{someName}
 Commit, push, create pull request
 
 ## Reporting security issues and bugs

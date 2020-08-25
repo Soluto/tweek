@@ -1,5 +1,5 @@
 /* global process */
-import fetch from '../utils/fetch';
+import { tweekClient, tweekManagementClient } from '../utils/tweekClients';
 
 export const types = {
   string: {
@@ -26,34 +26,33 @@ export const types = {
 };
 
 export async function refreshTypes() {
-  const data = await fetch(`/values/@tweek/custom_types/_`);
-  const loadedTypes = await data.json();
+  const loadedTypes = await tweekClient.getValues('@tweek/custom_types/_');
 
   for (const type of Object.keys(loadedTypes)) {
-    types[type] = Object.assign({}, { name: type }, loadedTypes[type]);
+    types[type] = Object.assign({ name: type }, loadedTypes[type]);
   }
 }
 
 export function convertValue(value, targetType) {
   const type = typeof targetType === 'string' ? types[targetType] : targetType;
   if (!type) {
-    throw new Error('Unknown type', targetType);
+    throw new Error(`Unknown type ${targetType}`);
   }
 
   switch (type.base || type.name) {
-  case 'boolean':
-    return safeConvertToBaseType(value, 'boolean');
-  case 'number':
-    return safeConvertToBaseType(value, 'number');
-  case 'array':
-    return convertCheckArray(value, type.ofType ? x => convertValue(x, type.ofType) : x => x);
-  case 'object':
-    if (typeof value === types.object.name) {
-      return value;
-    }
-    return safeConvertToBaseType(value, 'object');
-  default:
-    return value.toString();
+    case 'boolean':
+      return safeConvertToBaseType(value, 'boolean');
+    case 'number':
+      return safeConvertToBaseType(value, 'number');
+    case 'array':
+      return convertCheckArray(value, type.ofType ? (x) => convertValue(x, type.ofType) : (x) => x);
+    case 'object':
+      if (typeof value === types.object.name) {
+        return value;
+      }
+      return safeConvertToBaseType(value, 'object');
+    default:
+      return value.toString();
   }
 }
 
@@ -64,7 +63,7 @@ export function isAllowedValue(valueType, value) {
   return (
     valueType &&
     (!valueType.allowedValues ||
-      valueType.allowedValues.length == 0 ||
+      valueType.allowedValues.length === 0 ||
       valueType.allowedValues.includes(value))
   );
 }
@@ -76,7 +75,9 @@ export function safeConvertValue(value, targetType) {
     const typeName = targetType.ofType || targetType.base || targetType.name;
     return typeName !== types.string.name
       ? undefined
-      : typeName === types.array.name ? [`${value}`] : `${value}`;
+      : typeName === types.array.name
+      ? [`${value}`]
+      : `${value}`;
   }
 }
 
@@ -106,8 +107,7 @@ export function isStringValidJson(str, targetType) {
 export async function getValueTypeDefinition(key) {
   if (!key || key.length === 0) return types.string;
   try {
-    const response = await fetch(`/manifests/${key}`);
-    const manifest = await response.json();
+    const manifest = await tweekManagementClient.getKeyManifest(key);
 
     if (manifest.implementation.type === 'alias') {
       return getValueTypeDefinition(manifest.implementation.key);

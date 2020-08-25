@@ -1,0 +1,10 @@
+{
+  "key_path": "behavior_tests/delete_key/delete_alias",
+  "meta": {
+    "archived": false
+  },
+  "implementation": {
+    "type": "alias",
+    "key": "behavior_tests/delete_key/delete"
+  }
+}

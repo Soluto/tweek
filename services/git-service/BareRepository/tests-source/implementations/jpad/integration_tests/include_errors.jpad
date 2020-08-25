@@ -1,0 +1,18 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [
+        {
+            "Matcher": {
+                "user.BadProperty": []
+            },
+            "Value": "BadPropertyValue",
+            "Type": "SingleVariant"
+        },
+        {
+            "Matcher": {},
+            "Value": "DefaultValue",
+            "Type": "SingleVariant"
+        }
+    ]
+}

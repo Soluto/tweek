@@ -1,175 +1,220 @@
 {
-    "security": {
-        "policyStorage": {
-            "authorizationRules": "/authorization.rego"
-        }
-    },    
-    "v2Routes": [{
-        "routePathPrefix": "/values",
-        "routeRegexp": "^/api/v2/values/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/v1/keys/$1$2",
-        "methods": ["GET"],
-        "service": "api",
-        "userInfo": false,
-        "rewriteKeyPath": true
+  "security": {
+    "policyStorage": {
+      "authorizationRules": "/authorization.rego"
+    }
+  },
+  "v2Routes": [
+    {
+      "routePathPrefix": "/values",
+      "routeRegexp": "^/api/v2/values([^\\?]+)(.*)$",
+      "upstreamPath": "/api/v1/keys$1$2",
+      "methods": ["GET"],
+      "service": "api",
+      "userInfo": false,
+      "rewriteKeyPath": true
     },
     {
-        "routePathPrefix": "/context",
-        "routeRegexp": "^/api/v2/context/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/v1/context/$1$2",
-        "methods": ["GET", "POST", "DELETE"],
-        "service": "api",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/context",
+      "routeRegexp": "^/api/v2/context/([^\\?]+)(.*)$",
+      "upstreamPath": "/api/v1/context/$1$2",
+      "methods": ["GET", "POST", "DELETE"],
+      "service": "api",
+      "userInfo": false,
+      "rewriteKeyPath": false
     },
 
     {
-        "routePathPrefix": "/keys",
-        "routeRegexp": "^/api/v2/keys([^\\?]*)(.*)$",
-        "upstreamPath": "/api/keys$1$2",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": true
+      "routePathPrefix": "/keys",
+      "routeRegexp": "^/api/v2/keys([^\\?]*)(.*)$",
+      "upstreamPath": "/api/keys$1$2",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": true
     },
     {
-        "routePathPrefix": "/keys",
-        "routeRegexp": "^/api/v2/keys/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/keys/$1$2",
-        "methods": ["PUT", "DELETE"],
-        "service": "authoring",
-        "userInfo": true,
-        "rewriteKeyPath": true
+      "routePathPrefix": "/keys",
+      "routeRegexp": "^/api/v2/keys([^\\?]+)(.*)$",
+      "upstreamPath": "/api/keys$1$2",
+      "methods": ["PUT", "DELETE"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": true
     },
     {
-        "routePathPrefix": "/tags",
-        "routeRegexp": "^/api/v2/tags$",
-        "upstreamPath": "/api/tags",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/tags",
+      "routeRegexp": "^/api/v2/tags$",
+      "upstreamPath": "/api/tags",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/tags",
-        "routeRegexp": "^/api/v2/tags$",
-        "upstreamPath": "/api/tags",
-        "methods": ["PUT"],
-        "service": "authoring",
-        "userInfo": true,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/tags",
+      "routeRegexp": "^/api/v2/tags$",
+      "upstreamPath": "/api/tags",
+      "methods": ["PUT"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/schemas",
-        "routeRegexp": "^/api/v2/schemas$",
-        "upstreamPath": "/api/schemas",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/schemas",
+      "routeRegexp": "^/api/v2/schemas$",
+      "upstreamPath": "/api/schemas",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/schemas",
-        "routeRegexp": "^/api/v2/schemas([^\\?]+)(.*)$",
-        "upstreamPath": "/api/schemas$1$2",
-        "methods": ["POST", "PATCH", "DELETE"],
-        "service": "authoring",
-        "userInfo": true,
-        "rewriteKeyPath": false
-    },   
-    {
-        "routePathPrefix": "/manifests",
-        "routeRegexp": "^/api/v2/manifests(.*)$",
-        "upstreamPath": "/api/manifests$1",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/schemas",
+      "routeRegexp": "^/api/v2/schemas([^\\?]+)(.*)$",
+      "upstreamPath": "/api/schemas$1$2",
+      "methods": ["POST", "PATCH", "DELETE"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/suggestions",
-        "routeRegexp": "^/api/v2/suggestions(.*)$",
-        "upstreamPath": "/api/suggestions$1",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/manifests",
+      "routeRegexp": "^/api/v2/manifests(.*)$",
+      "upstreamPath": "/api/manifests$1",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/search",
-        "routeRegexp": "^/api/v2/search(.*)$",
-        "upstreamPath": "/api/search$1",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/suggestions",
+      "routeRegexp": "^/api/v2/suggestions(.*)$",
+      "upstreamPath": "/api/suggestions$1",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/search-index",
-        "routeRegexp": "^/api/v2/search-index$",
-        "upstreamPath": "/api/search",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/search",
+      "routeRegexp": "^/api/v2/search(.*)$",
+      "upstreamPath": "/api/search$1",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/dependents",
-        "routeRegexp": "^/api/v2/dependents/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/dependents/$1$2",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": true
+      "routePathPrefix": "/search-index",
+      "routeRegexp": "^/api/v2/search-index$",
+      "upstreamPath": "/api/search-index",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/revision",
-        "routeRegexp": "^/api/v2/revision-history/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/revision-history/$1$2",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/dependents",
+      "routeRegexp": "^/api/v2/dependents([^\\?]+)(.*)$",
+      "upstreamPath": "/api/dependents$1$2",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": true
     },
     {
-        "routePathPrefix": "/revision-history",
-        "routeRegexp": "^/api/v2/revision-history/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/revision-history/$1$2",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/revision-history",
+      "routeRegexp": "^/api/v2/revision-history([^\\?]+)(.*)$",
+      "upstreamPath": "/api/revision-history$1$2",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/policies",
-        "routeRegexp": "^/api/v2/policies$",
-        "upstreamPath": "/api/policies",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": true,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/policies",
+      "routeRegexp": "^/api/v2/policies(\\?.*)?$",
+      "upstreamPath": "/api/policies$1",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/policies",
-        "routeRegexp": "^/api/v2/policies(.*)$",
-        "upstreamPath": "/api/policies$1",
-        "methods": ["PUT", "PATCH"],
-        "service": "authoring",
-        "userInfo": true,
-        "rewriteKeyPath": false
+      "routePathPrefix": "/policies",
+      "routeRegexp": "^/api/v2/policies(.*)$",
+      "upstreamPath": "/api/policies$1",
+      "methods": ["PUT", "PATCH"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": false
     },
     {
-        "routePathPrefix": "/apps",
-        "routeRegexp": "^/api/v2/apps(.*)$",
-        "upstreamPath": "/api/apps$1",
-        "methods": ["POST"],
-        "service": "authoring",
-        "userInfo": true,
-        "rewriteKeyPath": false
-    }],
-    "server": {
-        "ports": [
-            80
-        ]
+      "routePathPrefix": "/apps",
+      "routeRegexp": "^/api/v2/apps(\\?.*)?$",
+      "upstreamPath": "/api/apps$1",
+      "methods": ["POST"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": false
+    },
+    {
+      "routePathPrefix": "/apps",
+      "routeRegexp": "^/api/v2/apps(\\?.*)?$",
+      "upstreamPath": "/api/apps$1",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
+    },
+    {
+      "routePathPrefix": "/jwt-extraction-policy",
+      "routeRegexp": "^/api/v2/jwt-extraction-policy(\\?.*)?$",
+      "upstreamPath": "/api/subject-extraction-rules$1",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": false
+    },
+    {
+      "routePathPrefix": "/jwt-extraction-policy",
+      "routeRegexp": "^/api/v2/jwt-extraction-policy(\\?.*)?$",
+      "upstreamPath": "/api/subject-extraction-rules$1",
+      "methods": ["PUT"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": false
+    },
+    {
+      "routePathPrefix": "/bulk-keys-upload",
+      "routeRegexp": "^/api/v2/bulk-keys-upload(\\?.*)?$",
+      "upstreamPath": "/api/bulk-keys-upload$1",
+      "methods": ["PUT"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": false
+    },
+    {
+      "routePathPrefix": "/hooks",
+      "routeRegexp": "^/api/v2/hooks([^\\?]*)(.*)$",
+      "upstreamPath": "/api/hooks$1$2",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": true
+    },
+    {
+      "routePathPrefix": "/hooks",
+      "routeRegexp": "^/api/v2/hooks([^\\?]*)(.*)$",
+      "upstreamPath": "/api/hooks$1$2",
+      "methods": ["POST", "PUT", "DELETE"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": true
     }
+  ],
+  "server": {
+    "ports": [80]
+  }
 }

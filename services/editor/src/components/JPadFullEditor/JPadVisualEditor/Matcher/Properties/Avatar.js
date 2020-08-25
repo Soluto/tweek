@@ -10,12 +10,12 @@ function getAvatarText(identity) {
     identities.splice(index, 1);
   }
 
-  const lowerNames = identities.map(x => x.toLowerCase());
+  const lowerNames = identities.map((x) => x.toLowerCase());
 
   let i = 1;
   while (i < identity.length) {
     const result = identity.substring(0, i).toLowerCase();
-    if (!lowerNames.some(n => n.startsWith(result))) return result;
+    if (!lowerNames.some((n) => n.startsWith(result))) return result;
     i++;
   }
   return identity;

@@ -32,7 +32,7 @@ namespace Tweek.ApiService.Controllers
         /// </summary>
         /// <param name="identityType">the type of the identity - for example user</param>
         /// <param name="identityId">the identifier of the identity - for example jaime</param>
-        /// <param name="data">json object with properties to add to the identity - for example {"age":30}, data could also include fixed keys configuration {"fixed:my_feature/_isenabled": true"}</param>
+        /// <param name="data">json object with properties to add to the identity - for example {"age":30}, data could also include fixed keys configuration {"@fixed:my_feature/_isenabled": true"}</param>
         /// <returns>Result status</returns>
         /// <response code="200">Success</response>
         /// <response code="403">Access denied</response>
@@ -74,6 +74,25 @@ namespace Tweek.ApiService.Controllers
             if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
             var identity = new Identity(identityType, identityId);
             await _contextDriver.RemoveFromContext(identity, prop);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete identity from context db
+        /// </summary>
+        /// <param name="identityType">the type of the identity - for example user</param>
+        /// <param name="identityId">the identifier of the identity to delete - for example jaime</param>
+        /// <returns>Result status</returns>
+        /// <response code="200">Success</response>
+        /// <response code="403">Access denied</response>
+        [HttpDelete("{identityType}/{identityId}")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
+        public async Task<ActionResult> DeleteContext([FromRoute] string identityType, [FromRoute] string identityId)
+        {
+            if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
+            var identity = new Identity(identityType, identityId);
+            await _contextDriver.DeleteContext(identity);
             return Ok();
         }
 

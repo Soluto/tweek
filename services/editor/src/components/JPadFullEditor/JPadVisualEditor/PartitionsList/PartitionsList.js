@@ -17,7 +17,7 @@ const extractPartitionToObject = (mutate, partitions) => {
   return R.flatten(
     Object.keys(mutate.getValue()).map((partitionValue) => {
       const innerResults = extractPartitionToObject(mutate.in(partitionValue), partitions.slice(1));
-      return innerResults.map(innerResult => ({
+      return innerResults.map((innerResult) => ({
         [partitions[0]]: partitionValue,
         ...innerResult,
       }));
@@ -25,8 +25,17 @@ const extractPartitionToObject = (mutate, partitions) => {
   );
 };
 
-const sortPartitions = partitions =>
-  R.sortWith(partitions.map((_, i) => R.descend(R.pipe(R.prop('partitionsValues'), R.prop(i)))));
+const sortPartitions = (partitions) =>
+  R.sortWith(
+    partitions.map((_, i) =>
+      R.descend(
+        R.pipe(
+          R.prop('partitionsValues'),
+          R.prop(i),
+        ),
+      ),
+    ),
+  );
 
 const NewPartitionPropertyValue = mapProps(
   ({ value, onUpdate: onChange, name, identity, id: property }) => {
@@ -58,20 +67,20 @@ class NewPartition extends React.Component {
     const { partitions, valueType } = this.props;
     const allProperties = ContextService.getSchemaProperties();
     const indexedPartitions = partitions.map(
-      partition =>
-        allProperties.find(property => property.id === partition) || {
+      (partition) =>
+        allProperties.find((property) => property.id === partition) || {
           id: partition,
           name: partition,
         },
     );
     return (
       <div className="new-partition-container" data-comp="new-partition">
-        {indexedPartitions.map(partition => (
+        {indexedPartitions.map((partition) => (
           <div className="new-partition-item-container" key={partition.id}>
             <NewPartitionPropertyValue
               {...partition}
               value={this.state.partition[partition.id] || ''}
-              onUpdate={value =>
+              onUpdate={(value) =>
                 this.setState({ partition: { ...this.state.partition, [partition.id]: value } })
               }
             />
@@ -80,7 +89,7 @@ class NewPartition extends React.Component {
         <InputValue
           value={this.state.defaultValue}
           valueType={valueType}
-          onChange={defaultValue => this.setState({ defaultValue })}
+          onChange={(defaultValue) => this.setState({ defaultValue })}
           placeholder="Partition's default value"
         />
         <button
@@ -116,7 +125,7 @@ export default class PartitionsList extends React.Component {
       ...x,
       valueType,
       id: i,
-      partitionsValues: partitions.map(partitionName => x[partitionName]),
+      partitionsValues: partitions.map((partitionName) => x[partitionName]),
     }));
 
     partitionsData = sortPartitions(partitions)(partitionsData);
@@ -151,7 +160,7 @@ export default class PartitionsList extends React.Component {
               rules[0].Type === 'SingleVariant';
 
             const partitionGroupName = partitionData.partitionsValues
-              .map(x => (x === '*' ? 'Default' : x))
+              .map((x) => (x === '*' ? 'Default' : x))
               .join(', ');
             return (
               <AccordionItem
@@ -166,10 +175,10 @@ export default class PartitionsList extends React.Component {
                     <div className="partitions-accordion-container-item-title-details">
                       {isOnlyDefault
                         ? `value: ${
-                          valueType.name === 'object'
-                            ? JSON.stringify(rules[0].Value)
-                            : rules[0].Value
-                        }`
+                            valueType.name === 'object'
+                              ? JSON.stringify(rules[0].Value)
+                              : rules[0].Value
+                          }`
                         : `rules: ${rules.length}`}
                     </div>
                     <div className="partitions-accordion-container-item-title-actions">

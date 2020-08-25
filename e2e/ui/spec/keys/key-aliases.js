@@ -1,60 +1,80 @@
-/* global describe, before, beforeEach, after, afterEach, it, browser */
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import { getLocation } from '../../utils/location-utils';
+import { dataField } from '../../utils/selector-utils';
+import { createAlias, waitForKeyToBeDeleted } from '../../clients/authoring-client';
+import { tweekManagementClient } from '../../clients/tweek-clients';
+import EditKey from '../../pages/Keys/EditKey';
+import Alert from '../../pages/Alert';
+import KeysPage from '../../pages/Keys';
 
-import { expect } from 'chai';
-import Key from '../../utils/Key';
-import KeysList from '../../utils/KeysList';
-import Alert from '../../utils/Alert';
-import { dataComp, attributeSelector } from '../../utils/selector-utils';
-import { login } from '../../utils/auth-utils';
-import authoringClient from '../../clients/authoring-client';
+const originalKeyPath = 'behavior_tests/key_aliases/regular_key';
+const aliasKeyPath = 'behavior_tests/key_aliases/alias_key';
+const aliasToAliasKeyPath = 'behavior_tests/key_aliases/alias_to_alias';
+const newAliasKeyPath = 'behavior_tests/key_aliases/new_alias';
+const deleteAliasKeyPath = 'behavior_tests/key_aliases/delete_alias';
 
-const timeout = 5000;
-const addAliasButton = dataComp('add-alias');
-const aliasContainer = alias =>
-  `${dataComp('aliases')} ${attributeSelector('data-dependency', alias)}`;
-const deleteAliasButton = alias => `${aliasContainer(alias)} ${dataComp('delete-alias')}`;
+const alert = new Alert();
+const keysPage = new KeysPage();
 
-describe('key aliases', () => {
-  const originalKeyPath = 'behavior_tests/key_aliases/regular_key';
-  const aliasKeyPath = 'behavior_tests/key_aliases/alias_key';
-  const aliasToAliasKeyPath = 'behavior_tests/key_aliases/alias_to_alias';
-  const newAliasKeyPath = 'behavior_tests/key_aliases/new_alias';
-  const deleteAliasKeyPath = 'behavior_tests/key_aliases/delete_alias';
+fixture`Key Aliases`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-  before(login);
+test('add alias', async (t) => {
+  const editKey = await EditKey.open(originalKeyPath);
 
-  it('should add alias', () => {
-    Key.open(originalKeyPath);
+  await t
+    .click(editKey.addAliasButton)
+    .expect(alert.okButton.visible)
+    .ok()
+    .typeText(alert.section.find(dataField('new-key-name-input')), newAliasKeyPath, {
+      replace: true,
+    })
+    .click(alert.okButton)
+    .click(editKey.aliases.toggleButton)
+    .expect(editKey.aliases.alias(newAliasKeyPath).container.visible)
+    .ok();
 
-    browser.clickWhenVisible(addAliasButton, timeout);
-    Alert.waitFor('ok');
-    Key.setName(newAliasKeyPath);
-    Alert.ok();
+  const link = await keysPage.navigateToLink(newAliasKeyPath);
 
-    Key.toggle('aliases');
-    browser.waitForVisible(aliasContainer(newAliasKeyPath));
-    KeysList.assertInList(newAliasKeyPath);
-  });
+  await t.expect(link.visible).ok();
+}).before(async (t) => {
+  await tweekManagementClient.deleteKey(newAliasKeyPath);
+  await login(t);
+});
 
-  it('should delete alias', () => {
-    Key.open(deleteAliasKeyPath);
-    Key.toggle('aliases');
+test('should delete alias', async (t) => {
+  const editKey = await EditKey.open(deleteAliasKeyPath); // should redirect to original key
 
-    browser.clickWhenVisible(deleteAliasButton(deleteAliasKeyPath));
-    Alert.ok();
-    browser.waitForVisible(aliasContainer(deleteAliasKeyPath), true);
-    KeysList.assertInList(deleteAliasKeyPath, true);
-    authoringClient.waitForKeyToBeDeleted(deleteAliasKeyPath);
-  });
+  const alias = editKey.aliases.alias(deleteAliasKeyPath);
 
-  it('should redirect to key when navigating to alias', () => {
-    KeysList.navigate(aliasKeyPath);
+  await t
+    .click(editKey.aliases.toggleButton)
+    .expect(alias.container.visible)
+    .ok()
+    .click(alias.deleteButton)
+    .click(alert.okButton)
+    .expect(alias.container.exists)
+    .notOk();
 
-    browser.waitUntil(() => Key.isCurrent(originalKeyPath), timeout);
+  const link = await keysPage.navigateToLink(deleteAliasKeyPath);
 
-    Key.toggle('aliases');
+  await t.expect(link.exists).notOk();
 
-    browser.waitForVisible(aliasContainer(aliasKeyPath));
-    browser.waitForVisible(aliasContainer(aliasToAliasKeyPath));
-  });
+  await waitForKeyToBeDeleted(deleteAliasKeyPath);
+}).before(async (t) => {
+  await createAlias(originalKeyPath, deleteAliasKeyPath);
+  await login(t);
+});
+
+test('should redirect to key when navigating to alias', async (t) => {
+  const editKey = await keysPage.openKey(aliasKeyPath);
+
+  await t
+    .expect(getLocation())
+    .eql(`${editorUrl}/keys/${originalKeyPath}`)
+    .click(editKey.aliases.toggleButton)
+    .expect(editKey.aliases.alias(aliasKeyPath).container.visible)
+    .ok()
+    .expect(editKey.aliases.alias(aliasToAliasKeyPath).container.visible)
+    .ok();
 });

@@ -2,20 +2,19 @@ package security
 
 import (
 	"context"
-	"crypto/x509"
-	"encoding/pem"
-	"errors"
+	"crypto/rsa"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/audit"
-	"github.com/Soluto/tweek/services/gateway/externalApps"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/audit"
+	"tweek-gateway/externalApps"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 )
 
@@ -56,8 +55,15 @@ func (u *userInfo) Name() string               { return u.name }
 func (u *userInfo) Issuer() string             { return u.issuer }
 func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
+var tweekPrivateKey *rsa.PrivateKey
+
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
 func AuthenticationMiddleware(configuration *appConfig.Security, extractor SubjectExtractor, auditor audit.Auditor) negroni.HandlerFunc {
+	var err error
+	tweekPrivateKey, err = getPrivateKey(&configuration.TweekSecretKey)
+	if err != nil {
+		logrus.Panicln("Error reading tweek private key", err)
+	}
 	var jwksEndpoints []string
 	for _, issuer := range configuration.Auth.Providers {
 		jwksEndpoints = append(jwksEndpoints, issuer.JWKSURL)
@@ -68,7 +74,7 @@ func AuthenticationMiddleware(configuration *appConfig.Security, extractor Subje
 		info, err := userInfoFromRequest(r, configuration, extractor)
 		if err != nil {
 			auditor.TokenError(err)
-			log.Println("Error extracting the user from the request", err)
+			logrus.WithError(err).Error("Error extracting the user from the request")
 			next(rw, r)
 			return
 		}
@@ -80,11 +86,11 @@ func AuthenticationMiddleware(configuration *appConfig.Security, extractor Subje
 
 func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, extractor SubjectExtractor) (UserInfo, error) {
 	var claims jwt.MapClaims
-	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
+	token, err := request.ParseFromRequest(req, request.AuthorizationHeaderExtractor, func(t *jwt.Token) (interface{}, error) {
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
 			if issuer == "tweek" || issuer == "tweek-basic-auth" {
-				return getGitKey(&configuration.TweekSecretKey)
+				return tweekPrivateKey.Public(), nil
 			}
 
 			if keyID, ok := t.Header["kid"].(string); ok {
@@ -113,7 +119,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		} else {
 			validateCredentialsErr := externalApps.ValidateCredentials(clientID, clientSecret)
 			if validateCredentialsErr != nil {
-				log.Printf("App %s wasn't validated: %v\n", clientID, validateCredentialsErr)
+				logrus.WithError(validateCredentialsErr).WithField("clientID", clientID).Error("Couldn't validate app for clientID")
 				return nil, validateCredentialsErr
 			}
 
@@ -124,12 +130,17 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 	} else {
 		var extractSubjectErr error
 		claims = token.Claims.(jwt.MapClaims)
-		sub, extractSubjectErr = extractor.ExtractSubject(req.Context(), claims)
-		if extractSubjectErr != nil {
-			log.Println("Failed to extract user info from JWT claims", extractSubjectErr)
-			return nil, fmt.Errorf("Failed to extract user info from JWT claims")
-		}
 		issuer = claims["iss"].(string)
+		if issuer == "tweek-basic-auth" {
+			sub = &Subject{User: claims["sub"].(string), Group: "externalapps"}
+		} else {
+			sub, extractSubjectErr = extractor.ExtractSubject(req.Context(), claims)
+			if extractSubjectErr != nil {
+				logrus.WithError(extractSubjectErr).Error("Failed to extract user info from JWT claims")
+				return nil, fmt.Errorf("Failed to extract user info from JWT claims")
+			}
+		}
+
 	}
 
 	var name, email string = getNameAndEmail(req.URL, claims, sub)
@@ -185,21 +196,4 @@ func getProviderByIssuer(issuer string, providers map[string]appConfig.AuthProvi
 		}
 	}
 	return nil, false
-}
-
-func getGitKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
-	pemFile, err := appConfig.HandleEnvInlineOrPath(keyEnv)
-	if err != nil {
-		return nil, err
-	}
-	pemBlock, _ := pem.Decode(pemFile)
-	if pemBlock == nil {
-		return nil, errors.New("no PEM found")
-	}
-	key, err := x509.ParsePKCS1PrivateKey(pemBlock.Bytes)
-	if err != nil {
-		return nil, err
-	}
-	rsaPublicKey := key.Public()
-	return rsaPublicKey, nil
 }

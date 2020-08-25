@@ -7,6 +7,7 @@ import { TagsController } from './tags';
 import { SearchController } from './search';
 import { AppsController } from './apps';
 import { PolicyController } from './policies';
+import { HooksController } from './hooks';
 import { SubjectExtractionRulesController } from './subject-extraction-rules';
 import { RoutesConfig } from './config';
 import { Container } from 'typescript-ioc';
@@ -15,17 +16,22 @@ import KeysRepository from '../repositories/keys-repository';
 import TagsRepository from '../repositories/tags-repository';
 import PolicyRepository from '../repositories/policy-repository';
 import SubjectExtractionRulesRepository from '../repositories/extraction-rules-repository';
+import { HooksRepositoryFactory } from '../repositories/hooks-repository';
+import ServiceFactoryIoC from 'typescript-rest-ioc';
 
-Server.useIoC();
+Server.registerServiceFactory(ServiceFactoryIoC);
 
 export default function configureRoutes(config: RoutesConfig): any {
   const app = express();
 
-  Container.bind(AppsRepository).provider({ get: () => config.appsRepository });
-  Container.bind(KeysRepository).provider({ get: () => config.keysRepository });
-  Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
-  Container.bind(PolicyRepository).provider({ get: () => config.policyRepository });
-  Container.bind(SubjectExtractionRulesRepository).provider({ get: () => config.subjectExtractionRulesRepository });
+  Container.bind(AppsRepository).factory(() => config.appsRepository);
+  Container.bind(KeysRepository).factory(() => config.keysRepository);
+  Container.bind(TagsRepository).factory(() => config.tagsRepository);
+  Container.bind(PolicyRepository).factory(() => config.policyRepository);
+  Container.bind(HooksRepositoryFactory).factory(() => config.hooksRepositoryFactory);
+  Container.bind(SubjectExtractionRulesRepository).factory(
+    () => config.subjectExtractionRulesRepository,
+  );
 
   const prefixes = [
     { from: 'keys', to: 'key' },
@@ -34,7 +40,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     { from: 'dependents', to: 'dependent' },
   ];
 
-  prefixes.forEach(prefix => {
+  prefixes.forEach((prefix) => {
     app.all(`/${prefix.from}/*`, (req, res, next) => {
       req.query['keyPath'] = req.params[0];
       req.url = `/${prefix.to}`;
@@ -43,7 +49,8 @@ export default function configureRoutes(config: RoutesConfig): any {
   });
 
   Server.setFileDest('uploads/');
-  Server.buildServices(app,
+  Server.buildServices(
+    app,
     AppsController,
     TagsController,
     SearchController,
@@ -52,6 +59,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     KeysController,
     PolicyController,
     SubjectExtractionRulesController,
+    HooksController,
   );
 
   return app;

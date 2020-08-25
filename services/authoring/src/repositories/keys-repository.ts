@@ -87,8 +87,7 @@ async function getManifestFile(keyPath: string, gitRepo, revision?: string) {
 }
 
 export default class KeysRepository {
-  constructor(private _gitTransactionManager: Transactor<GitRepository>) {
-  }
+  constructor(private _gitTransactionManager: Transactor<GitRepository>) {}
 
   getAllKeys() {
     return this._gitTransactionManager.with(async (gitRepo) => {
@@ -102,9 +101,9 @@ export default class KeysRepository {
     return this._gitTransactionManager.with(async (gitRepo) => {
       const normalizedPrefix = `${path.normalize(`manifests/${prefix}/.`)}`.replace(/\\/g, '/');
       const files = await gitRepo.listFiles(normalizedPrefix);
-      const manifestFiles = files.map(keyPath => `${normalizedPrefix}/${keyPath}`);
+      const manifestFiles = files.map((keyPath) => `${normalizedPrefix}/${keyPath}`);
       const manifests = await Promise.all(
-        manifestFiles.map(pathForManifest => gitRepo.readFile(pathForManifest)),
+        manifestFiles.map((pathForManifest) => gitRepo.readFile(pathForManifest)),
       );
       return manifests.map(<any>JSON.parse);
     });
@@ -168,6 +167,6 @@ export default class KeysRepository {
   }
 
   getRevision() {
-    return this._gitTransactionManager.with(gitRepo => gitRepo.getLastCommit());
+    return this._gitTransactionManager.with((gitRepo) => gitRepo.getLastCommit());
   }
 }

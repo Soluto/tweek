@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Soluto</Authors>
     <Description>Package for Tweek Api addon development</Description>
@@ -11,13 +11,14 @@
     <NuspecFile>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),$(MSBuildProjectName))).nuspec</NuspecFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="App.Metrics" Version="2.1.0" />
+    <PackageReference Include="App.Metrics" Version="4.1.0" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.1.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />

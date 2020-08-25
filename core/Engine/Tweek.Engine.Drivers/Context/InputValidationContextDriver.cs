@@ -64,5 +64,7 @@ namespace Tweek.Engine.Drivers.Context
         public Task<Dictionary<string, JsonValue>> GetContext(Identity identity) => _child.GetContext(identity);
 
         public Task RemoveFromContext(Identity identity, string key) => _child.RemoveFromContext(identity, key);
+
+        public Task DeleteContext(Identity identity) => _child.DeleteContext(identity);
     }
 }

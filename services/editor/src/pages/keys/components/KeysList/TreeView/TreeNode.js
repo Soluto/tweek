@@ -9,7 +9,10 @@ import TreeDirectory from './TreeDirectory';
 import { compsPathSorter, leaf } from './pathSorter';
 
 const TreeNode = compose(
-  connect(state => state, { ...keysActions, addKey }),
+  connect(
+    (state) => state,
+    { ...keysActions, addKey },
+  ),
   mapProps(({ selectedPath, fullPath, ...props }) => ({
     selectedPath,
     fullPath,
@@ -50,7 +53,7 @@ const TreeNode = compose(
         }}
       >
         {Object.keys(node)
-          .map(childPath => (
+          .map((childPath) => (
             <TreeNode
               key={childPath}
               name={childPath}

@@ -3,10 +3,10 @@ package security
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+	"tweek-gateway/appConfig"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"github.com/sirupsen/logrus"
 )
 
 // NewUserInfoHandler - returns user name and group for the token in question
@@ -18,9 +18,15 @@ func NewUserInfoHandler(configuration *appConfig.Security, extractor SubjectExtr
 			return
 		}
 
-		jsonUserInfo, err := json.Marshal(userInfo.Sub())
+		jsonUserInfo, err := json.Marshal(map[string]interface{}{
+			"User":  userInfo.Sub().User,
+			"Group": userInfo.Sub().Group,
+			"Email": userInfo.Email(),
+			"Name":  userInfo.Name(),
+		})
+
 		if err != nil {
-			log.Panicln("Error serializing user info", err)
+			logrus.WithError(err).Panic("Error serializing user info")
 		}
 
 		rw.Write(jsonUserInfo)

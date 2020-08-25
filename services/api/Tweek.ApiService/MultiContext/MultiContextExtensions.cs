@@ -4,7 +4,6 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using Couchbase.Search;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;

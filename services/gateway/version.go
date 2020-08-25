@@ -1,4 +1,3 @@
 package main
 
-// Version is the version of gateway
-const Version = "1.0.0-rc3"
+const Version = "1.0.0-rc16"

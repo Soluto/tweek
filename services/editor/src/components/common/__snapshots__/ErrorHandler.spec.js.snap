@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorHandler component should not render when exception is thrown and no error message is passed 1`] = `null`;
+
+exports[`ErrorHandler component should render error message when exception is thrown 1`] = `
+<div>
+  some error message
+</div>
+`;
+
+exports[`ErrorHandler component should render original component correctly 1`] = `
+Array [
+  <div>
+    some element
+  </div>,
+  <div>
+    another element
+  </div>,
+]
+`;

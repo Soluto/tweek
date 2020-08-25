@@ -4,6 +4,7 @@ using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Tweek.Publishing.Service.Utils
@@ -95,7 +96,7 @@ namespace Tweek.Publishing.Service.Utils
                     .With(exited.ToObservable().Do(_ =>
                     {
                         if (process.ExitCode != 0)
-                            throw new Exception("proccess failed")
+                            throw new Exception("proccess failed", new Exception(sbErr.ToString()))
                             {
                                 Data =
                                 {
@@ -107,6 +108,12 @@ namespace Tweek.Publishing.Service.Utils
                             };
                     }));
             });
+        }
+
+        private static readonly Regex HexRegex = new Regex("^[a-f0-9]+$");
+        public static bool IsCommitIdString(string str)
+        {
+            return HexRegex.IsMatch(str);
         }
 
         public static async Task<string> ExecTask(this ShellExecutor shellExecutor, string command, string args, Action<ProcessStartInfo> paramsInit = null)

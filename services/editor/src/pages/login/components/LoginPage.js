@@ -1,17 +1,12 @@
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
-import styled from 'react-emotion';
-
-import {
-  getAuthProviders,
-  configureOidc,
-  signinRequest,
-  azureSignin,
-} from '../../../services/auth-service';
+import styled from '@emotion/styled';
+import { configureOidc, signinRequest, azureSignin } from '../../../services/auth-service';
+import { tweekManagementClient } from '../../../utils/tweekClients';
 import logoSrc from '../../../components/resources/logo.svg';
 import BasicAuthLoginButton from './BasicAuthLoginButton';
 
-const MainComponent = styled('div')`
+const MainComponent = styled.div`
   display: flex;
   flex-direction: row;
   flex: 1;
@@ -23,7 +18,7 @@ const MainComponent = styled('div')`
   right: 0px;
 `;
 
-const LeftPane = styled('div')`
+const LeftPane = styled.div`
   flex: 35;
   background-color: #00aeef;
   display: flex;
@@ -31,7 +26,7 @@ const LeftPane = styled('div')`
   align-items: center;
 `;
 
-const RightPane = styled('div')`
+const RightPane = styled.div`
   flex: 65;
   background-color: #eee;
   display: flex;
@@ -39,7 +34,7 @@ const RightPane = styled('div')`
   align-items: center;
 `;
 
-const WelcomeMessageSpan = styled('span')`
+const WelcomeMessageSpan = styled.span`
   font-family: Roboto;
   font-size: 20px;
   font-weight: bold;
@@ -48,11 +43,11 @@ const WelcomeMessageSpan = styled('span')`
   margin-bottom: 90px;
 `;
 
-const TweekLogo = styled('img')`
+const TweekLogo = styled.img`
   width: 65%;
 `;
 
-const LoginMessageSpan = styled('span')`
+const LoginMessageSpan = styled.span`
   ֿ: Roboto;
   font-size: 20px;
   font-weight: bold;
@@ -61,7 +56,7 @@ const LoginMessageSpan = styled('span')`
   margin-top: 250px;
 `;
 
-const LoginButton = styled('div')`
+const LoginButton = styled.div`
   padding-top: 14px;
   padding-bottom: 17px;
   margin: 15px;
@@ -87,7 +82,7 @@ const LoginPage = ({ authProviders, location: { state = {} } }) => (
     </LeftPane>
     <RightPane>
       <LoginMessageSpan>Log into Tweek using:</LoginMessageSpan>
-      {authProviders.map(ap => (
+      {authProviders.map((ap) => (
         <LoginButton key={ap.id} onClick={() => ap.action({ state })} data-comp={ap.id}>
           {ap.name}
         </LoginButton>
@@ -100,9 +95,11 @@ const LoginPage = ({ authProviders, location: { state = {} } }) => (
 const enhancer = compose(
   withState('authProviders', 'setAuthProviders', []),
   lifecycle({
-    componentWillMount() {
-      getAuthProviders().then((res) => {
-        const providers = Object.keys(res).map(key => ({
+    async componentWillMount() {
+      const res = await tweekManagementClient.getAuthProviders();
+      const providers = Object.keys(res)
+        .filter((key) => res[key].login_info && res[key].login_info.login_type)
+        .map((key) => ({
           id: key,
           name: res[key].name,
           action: (state) => {
@@ -119,8 +116,7 @@ const enhancer = compose(
             }
           },
         }));
-        this.props.setAuthProviders(providers);
-      });
+      this.props.setAuthProviders(providers);
     },
   }),
 );

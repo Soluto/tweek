@@ -1,37 +1,30 @@
-# ---- Base ----
-FROM node:8.9.3-alpine AS base
-
 # ---- Deps ----
-FROM base AS deps
-
-WORKDIR /src/
+FROM node:14.7.0-alpine AS dependencies
+WORKDIR /opt/app/
 COPY package.json yarn.lock ./
-RUN yarn --prod
+RUN yarn --production --network-timeout 1000000
 
 # ---- Build ----
-FROM deps AS build
+FROM dependencies AS build
 
-RUN yarn
+RUN yarn --prefer-offline
 
-COPY . ./
-RUN yarn test && yarn build
+COPY . .
+RUN CI=true yarn test && yarn build
 
 # ---- Release ----
-FROM base AS release
+FROM dependencies AS release
 
 ENV NODE_ENV=production
 ENV PORT=3000
 EXPOSE 3000
 
-WORKDIR /opt/app/
-
-COPY --from=build /src/build/ ./build
-COPY --from=deps /src/node_modules ./node_modules
-COPY --from=deps /src/package.json ./package.json
-COPY --from=build /src/index.js ./index.js
+COPY --from=build /opt/app/build/ ./build
+COPY --from=build /opt/app/index.js ./index.js
 
 VOLUME [ "/opt/app/build/config" ]
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
       CMD wget -O - http://localhost:3000/health || exit 1
-CMD [ "node", "index.js" ]
+
+CMD node index.js

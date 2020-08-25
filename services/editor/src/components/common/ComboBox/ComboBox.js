@@ -39,7 +39,7 @@ class ComboBoxComponent extends Component {
     const { suggestions, getLabel, onChange, matchCase, setFocus } = this.props;
     const caseInput = createCase(matchCase, input);
     const getLabelWithCase = createCase(matchCase, getLabel);
-    const selected = suggestions.find(s => getLabelWithCase(s) === caseInput);
+    const selected = suggestions.find((s) => getLabelWithCase(s) === caseInput);
     onChange(input, selected);
     setFocus(true);
   };
@@ -59,7 +59,7 @@ class ComboBoxComponent extends Component {
       if (value === '') return '';
       suggestion = suggestions
         .map(getLabel)
-        .find(x => createCase(matchCase, x).startsWith(caseValue));
+        .find((x) => createCase(matchCase, x).startsWith(caseValue));
     } else {
       suggestion = suggestions[highlightedSuggestion];
     }
@@ -81,34 +81,34 @@ class ComboBoxComponent extends Component {
     } = this.props;
 
     switch (e.keyCode) {
-    case keyCode.TAB:
-      if (suggestions.length > 0) {
-        const selected = this.getSuggestion(highlightedSuggestion);
-        if (getLabel(selected) !== value) {
-          this.onSuggestionSelected(highlightedSuggestion);
-          e.preventDefault();
-          break;
+      case keyCode.TAB:
+        if (suggestions.length > 0) {
+          const selected = this.getSuggestion(highlightedSuggestion);
+          if (getLabel(selected) !== value) {
+            this.onSuggestionSelected(highlightedSuggestion);
+            e.preventDefault();
+            break;
+          }
         }
-      }
-      setFocus(false);
-      break;
-    case keyCode.RIGHT:
-    case keyCode.ENTER:
-      if (suggestions.length > 0) this.onSuggestionSelected(highlightedSuggestion);
-      break;
-    case keyCode.DOWN:
-      if (highlightedSuggestion < suggestions.length - 1) {
-        onSuggestionHighlighted(highlightedSuggestion + 1);
-      } else onSuggestionHighlighted(-1);
-      e.preventDefault();
-      break;
-    case keyCode.UP:
-      if (highlightedSuggestion === -1) onSuggestionHighlighted(suggestions.length - 1);
-      else onSuggestionHighlighted(highlightedSuggestion - 1);
-      e.preventDefault();
-      break;
-    default:
-      break;
+        setFocus(false);
+        break;
+      case keyCode.RIGHT:
+      case keyCode.ENTER:
+        if (suggestions.length > 0) this.onSuggestionSelected(highlightedSuggestion);
+        break;
+      case keyCode.DOWN:
+        if (highlightedSuggestion < suggestions.length - 1) {
+          onSuggestionHighlighted(highlightedSuggestion + 1);
+        } else onSuggestionHighlighted(-1);
+        e.preventDefault();
+        break;
+      case keyCode.UP:
+        if (highlightedSuggestion === -1) onSuggestionHighlighted(suggestions.length - 1);
+        else onSuggestionHighlighted(highlightedSuggestion - 1);
+        e.preventDefault();
+        break;
+      default:
+        break;
     }
 
     if (onKeyDown) onKeyDown(e);
@@ -148,7 +148,7 @@ class ComboBoxComponent extends Component {
             {...props}
             value={value}
             disabled={disabled}
-            onChange={e => this.onInputChange(e.target.value)}
+            onChange={(e) => this.onInputChange(e.target.value)}
             showHint={hasFocus && (hint.length > 0 || value.length > 0)}
             hint={hint}
             onKeyDown={this.handleKeyDown}
@@ -223,7 +223,7 @@ const ComboBox = compose(
             ((input, suggestion) =>
               input === '' || getCaseLabel(suggestion).includes(createCase(matchCase, input)));
 
-          const filteredSuggestions = suggestions.filter(s => filterFunc(value, s));
+          const filteredSuggestions = suggestions.filter((s) => filterFunc(value, s));
           if (
             !showValueInOptions &&
             filteredSuggestions.length === 1 &&
@@ -247,14 +247,12 @@ const ComboBox = compose(
 
     return Observable.combineLatest(propsWithValue$, suggestions$, highlighted$, focus$)
       .map(
-        (
-          [
-            { onChange, onFocus, ...props },
-            suggestions,
-            { index: highlightedSuggestion },
-            hasFocus,
-          ],
-        ) => ({
+        ([
+          { onChange, onFocus, ...props },
+          suggestions,
+          { index: highlightedSuggestion },
+          hasFocus,
+        ]) => ({
           ...props,
           hasFocus,
           setFocus: (...args) => {
@@ -267,7 +265,7 @@ const ComboBox = compose(
             onInputChanged(input);
             onChange && onChange(input, selected);
           },
-          onSuggestionHighlighted: index =>
+          onSuggestionHighlighted: (index) =>
             onHighlighted({ index, suggestion: suggestions[index] }),
         }),
       )

@@ -1,9 +1,9 @@
-/* global fetch console Headers localStorage window process location */
+/* global console Headers localStorage window process location */
 import Oidc from 'oidc-client';
 import adal from 'adal-angular';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
-import { unAuthFetch } from '../utils/fetch';
+import { omit } from 'ramda';
 
 const store = {};
 let storage;
@@ -13,8 +13,8 @@ if (typeof localStorage === 'undefined') {
     setItem: (itemKey, itemValue) => {
       store[itemKey] = itemValue;
     },
-    getItem: itemKey => store[itemKey],
-    removeItem: itemKey => delete store[itemKey],
+    getItem: (itemKey) => store[itemKey],
+    removeItem: (itemKey) => delete store[itemKey],
   };
 } else {
   storage = localStorage;
@@ -26,8 +26,10 @@ export const storeToken = (token) => {
 
 export const retrieveToken = () => storage.getItem('token');
 
+export const signOut = () => storage.removeItem('token');
+
 const storeOidcSettings = (settings) => {
-  storage.setItem('oidc-settings', JSON.stringify(settings));
+  storage.setItem('oidc-settings', JSON.stringify(omit(['userStore'], settings)));
 };
 
 const retrieveOidcSettings = () => JSON.parse(storage.getItem('oidc-settings'));
@@ -35,11 +37,16 @@ const retrieveOidcSettings = () => JSON.parse(storage.getItem('oidc-settings'));
 export const isAuthenticated = async () => {
   const token = retrieveToken();
   if (token) {
-    const expiration = moment.unix(jwt_decode(token).exp);
+    const decoded = jwt_decode(token);
+    const expiration = moment.unix(decoded.exp);
     if (moment().isBefore(expiration)) {
       return true;
     }
+
     if (isAzure()) {
+      return false;
+    }
+    if (decoded.iss === 'tweek-basic-auth') {
       return false;
     }
     const settings = retrieveOidcSettings();
@@ -75,15 +82,6 @@ const basicOidcConfig = {
   prompt: 'login',
 };
 
-export const getAuthProviders = async () => {
-  const res = await unAuthFetch(`/auth/providers`);
-  if (res.ok) {
-    const providers = await res.json();
-    return providers;
-  }
-  return [];
-};
-
 export const configureOidc = (authority, client_id, scope) => ({
   ...basicOidcConfig,
   authority,
@@ -100,7 +98,7 @@ export const signinRequest = (oidcSettings, state) => {
 
 export const processSigninRedirectCallback = async () => {
   const oidcClient = getOidcClient();
-  oidcClient.events.addSilentRenewError(error => console.log('Error while renew token', error));
+  oidcClient.events.addSilentRenewError((error) => console.log('Error while renew token', error));
   const user = await oidcClient.signinRedirectCallback();
   storeToken(user.id_token);
   return user;
@@ -150,5 +148,5 @@ export const getAzureState = () => {
   return config.state;
 };
 const getAzureConfig = () => JSON.parse(storage.getItem('azureConfig'));
-const setAzureConfig = config => storage.setItem('azureConfig', JSON.stringify(config));
+const setAzureConfig = (config) => storage.setItem('azureConfig', JSON.stringify(config));
 const isAzure = () => storage.getItem('azureConfig') !== null;

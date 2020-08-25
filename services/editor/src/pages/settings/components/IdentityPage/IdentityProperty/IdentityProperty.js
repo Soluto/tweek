@@ -13,7 +13,7 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
     data-comp="type-select"
     value={type}
     filterBy={() => true}
-    onChange={propType =>
+    onChange={(propType) =>
       onUpdate(propType === TypesServices.types.array.name ? CreateBaseArray() : propType)
     }
     suggestions={allowedTypes}
@@ -30,7 +30,7 @@ const SimpleTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => (
     <TypeCombobox
       allowedTypes={identityPropertyTypes}
       type={type}
-      onUpdate={newType => (newType !== type ? onUpdate(newType) : null)}
+      onUpdate={(newType) => (newType !== type ? onUpdate(newType) : null)}
     />
     <button data-comp="advanced" onClick={() => onUpdate({ base: type, allowedValues: [] })}>
       ...
@@ -43,12 +43,12 @@ const AdvancedTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => (
     <TypeCombobox
       allowedTypes={identityPropertyTypes}
       type={type.name || type.base}
-      onUpdate={type => onUpdate(type)}
+      onUpdate={(type) => onUpdate(type)}
     />
     <AllowedValuesSelector
       type={{ ...TypesServices.types.array, ofType: type.base }}
       allowedValues={type.allowedValues}
-      onUpdate={allowedValues => onUpdate({ ...type, allowedValues: allowedValues })}
+      onUpdate={(allowedValues) => onUpdate({ ...type, allowedValues: allowedValues })}
     />
   </div>
 );
@@ -60,20 +60,20 @@ const ArrayTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => {
       <TypeCombobox
         allowedTypes={identityPropertyTypes}
         type={type.name || type.base}
-        onUpdate={type => onUpdate(type)}
+        onUpdate={(type) => onUpdate(type)}
       />
       <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
         <Label text="Generic Type" />
         <TypeCombobox
           type={type.ofType.base}
           allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), identityPropertyTypes)}
-          onUpdate={ofType => onUpdate({ ...type, ofType: { base: ofType } })}
+          onUpdate={(ofType) => onUpdate({ ...type, ofType: { base: ofType } })}
         />
       </div>
       <AllowedValuesSelector
         type={{ ...TypesServices.types.array, ofType: { ...baseOfType } }}
         allowedValues={type.ofType.allowedValues}
-        onUpdate={allowedValues =>
+        onUpdate={(allowedValues) =>
           onUpdate({ ...type, ofType: { ...type.ofType, allowedValues: allowedValues } })
         }
       />
@@ -122,12 +122,12 @@ export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) => (
     <PropertyTypeSelector
       data-field="property-type"
       type={def.type}
-      onUpdate={type => onUpdate({ ...def, type })}
+      onUpdate={(type) => onUpdate({ ...def, type })}
     />
   </div>
 );
 
-const createUpdater = (propName, updateFn) => x => updateFn(R.assoc(propName, x));
+const createUpdater = (propName, updateFn) => (x) => updateFn(R.assoc(propName, x));
 const EMPTY_PROPERTY = { propName: '', def: { type: 'string' } };
 export const NewIdentityProperty = compose(
   withState('state', 'setState', EMPTY_PROPERTY),
@@ -160,7 +160,7 @@ export const NewIdentityProperty = compose(
       <PropertyTypeSelector
         data-field="property-type"
         type={state.def.type}
-        onUpdate={type => updateDef({ ...state.def, type })}
+        onUpdate={(type) => updateDef({ ...state.def, type })}
       />
       <button data-comp="add" onClick={applyChange} />
     </div>

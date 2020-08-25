@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import changeCase from 'change-case';
+import * as changeCase from 'change-case';
 import { getIdentities } from '../../../../../services/context-service';
 import { openContext } from '../../../../../store/ducks/context';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
@@ -20,7 +20,7 @@ class SearchBox extends Component {
   }
 
   componentWillMount() {
-    const identities = getIdentities().map(x => ({ label: changeCase.pascalCase(x), value: x }));
+    const identities = getIdentities().map((x) => ({ label: changeCase.pascalCase(x), value: x }));
     this.setState({ identities });
   }
 
@@ -84,4 +84,7 @@ class SearchBox extends Component {
   }
 }
 
-export default connect(() => ({}), { openContext })(SearchBox);
+export default connect(
+  () => ({}),
+  { openContext },
+)(SearchBox);

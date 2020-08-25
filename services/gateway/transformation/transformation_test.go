@@ -9,8 +9,10 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/security"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/metrics"
+	"tweek-gateway/security"
+
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )
@@ -27,7 +29,7 @@ func TestMount(t *testing.T) {
 		name string
 		args args
 	}{
-	// TODO: Add test cases.
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -43,16 +45,17 @@ func Test_mountRouteTransform(t *testing.T) {
 		routeConfig appConfig.V2Route
 		upstreams   map[string]*url.URL
 		forwarders  map[string]negroni.HandlerFunc
+		metricsVar  *metrics.Metrics
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-	// TODO: Add test cases.
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mountRouteTransform(tt.args.router, tt.args.middleware, tt.args.routeConfig, tt.args.upstreams, tt.args.forwarders)
+			mountRouteTransform(tt.args.router, tt.args.middleware, tt.args.routeConfig, tt.args.upstreams, tt.args.forwarders, tt.args.metricsVar)
 		})
 	}
 }
@@ -67,7 +70,7 @@ func Test_createTransformMiddleware(t *testing.T) {
 		args args
 		want negroni.HandlerFunc
 	}{
-	// TODO: Add test cases.
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -87,7 +90,7 @@ func Test_parseUpstreamOrPanic(t *testing.T) {
 		args args
 		want *url.URL
 	}{
-	// TODO: Add test cases.
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -144,7 +147,7 @@ func Test_setQueryParams(t *testing.T) {
 		name string
 		args args
 	}{
-	// TODO: Add test cases.
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

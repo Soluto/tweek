@@ -59,8 +59,8 @@ namespace Tweek.Publishing.Service.Sync.Converters
 
         private static (string, ExternalApp)  CreateAdminApp(byte[] secretKey)
         {
-            string appId = Guid.Empty.ToString();
-            
+            string appId = "admin-app";
+
             var salt = GenerateSalt();            
             byte[] hash;
             using(var pbkdf2 = new Rfc2898DeriveBytes(secretKey, salt,100, HashAlgorithmName.SHA512))

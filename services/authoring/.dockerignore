@@ -4,6 +4,7 @@
 .vscode/
 
 coverage-unit/
+dist/
 node_modules/
 rulesRepository/
 

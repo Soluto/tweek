@@ -1,51 +1,48 @@
-{    
-    "upstreams": {
-        "api": "http://localhost:4003",
-        "authoring": "http://localhost:4005",
-        "publishing": "http://localhost:4010"
-    },
-    "security": {
-        "auth": {
-            "providers": {
-                "mock": {
-                    "name": "Mock OpenId Connect server",
-                    "issuer": "http://localhost:4011",
-                    "authority": "http://localhost:4011",
-                    "jwks_uri": "http://localhost:4011/.well-known/openid-configuration/jwks",
-                    "client_id": "tweek-openid-mock-client",
-                    "login_info": {
-                        "login_type": "oidc",
-                        "scope": "openid profile email",
-                        "response_type": "id_token"
-                    }
-                }
-            }
-        },
-        "tweekSecretKey": {
-            "Path": "../../deployments/dev/ssh/tweekgit"
-        },
-        "policyStorage": {
-            "minioEndpoint": "localhost:4007",
-            "minioBucketName": "tweek",
-            "minioAccessKey": "AKIAIOSFODNN7EXAMPLE",
-            "minioSecretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
-            "minioSecure": false,
-            "natsEndpoint": "nats://localhost:4222",
-            "authorizationRules": "./authorization.rego"
-        },
-        "cors": {
-            "Enabled": true,
-            "MaxAge": 60,
-            "AllowedOrigins": null,
-            "AllowedMethods": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
-            "AllowedHeaders": null,
-            "AllowCredentials": true
+{
+  "upstreams": {
+    "api": "http://localhost:4003",
+    "authoring": "http://localhost:4005",
+    "publishing": "http://localhost:4010"
+  },
+  "security": {
+    "auth": {
+      "providers": {
+        "mock": {
+          "name": "Mock OpenId Connect server",
+          "issuer": "http://localhost:8082",
+          "authority": "http://localhost:8082",
+          "jwks_uri": "http://localhost:8082/.well-known/openid-configuration/jwks",
+          "client_id": "tweek-openid-mock-client",
+          "login_info": {
+            "login_type": "oidc",
+            "scope": "openid profile email",
+            "response_type": "id_token"
+          }
         }
+      }
     },
-    "server": {
-        "ports": [
-            3000,
-            8080
-        ]
+    "tweekSecretKey": {
+      "Path": "../../deployments/dev/ssh/tweekgit"
+    },
+    "policyStorage": {
+      "minioEndpoint": "localhost:4007",
+      "minioBucketName": "tweek",
+      "minioAccessKey": "AKIAIOSFODNN7EXAMPLE",
+      "minioSecretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+      "minioSecure": false,
+      "natsEndpoint": "nats://localhost:4222",
+      "authorizationRules": "./authorization.rego"
+    },
+    "cors": {
+      "Enabled": true,
+      "MaxAge": 60,
+      "AllowedOrigins": null,
+      "AllowedMethods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      "AllowedHeaders": null,
+      "AllowCredentials": true
     }
+  },
+  "server": {
+    "ports": [8081]
+  }
 }

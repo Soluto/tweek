@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using Tweek.Publishing.Service.Validation;
 using Xunit;
-using static FakeItEasy.Repeated;
 
 namespace Tweek.Publishing.Tests
 {
@@ -30,7 +29,7 @@ namespace Tweek.Publishing.Tests
                 }
             });
 
-            A.CallTo(() => fakeValidator.Validate(null, null)).WithAnyArguments().MustHaveHappened(Exactly.Once);
+            A.CallTo(() => fakeValidator.Validate(null, null)).WithAnyArguments().MustHaveHappenedOnceExactly();
             A.CallTo(() => fakeValidator.Validate("manifests/path/to/key.json",
                 A<Func<string, Task<string>>>.Ignored)).MustHaveHappened();
         }
@@ -56,7 +55,7 @@ namespace Tweek.Publishing.Tests
                 }
             });
 
-            A.CallTo(() => fakeValidator.Validate(null, null)).WithAnyArguments().MustHaveHappened(Exactly.Twice);
+            A.CallTo(() => fakeValidator.Validate(null, null)).WithAnyArguments().MustHaveHappenedTwiceExactly();
             A.CallTo(() => fakeValidator.Validate("manifests/path/to/add.json",
                 A<Func<string, Task<string>>>.Ignored)).MustHaveHappened();
             A.CallTo(() => fakeValidator.Validate("manifests/path/to/modify.json",
@@ -89,8 +88,8 @@ namespace Tweek.Publishing.Tests
                 }
             });
 
-            A.CallTo(() => manifestValidator.Validate(null, null)).WithAnyArguments().MustHaveHappened(Exactly.Once);
-            A.CallTo(() => jpadValidator.Validate(null, null)).WithAnyArguments().MustHaveHappened(Exactly.Once);
+            A.CallTo(() => manifestValidator.Validate(null, null)).WithAnyArguments().MustHaveHappenedOnceExactly();
+            A.CallTo(() => jpadValidator.Validate(null, null)).WithAnyArguments().MustHaveHappenedOnceExactly();
             A.CallTo(() => manifestValidator.Validate("manifests/path/to/key.json",
                 A<Func<string, Task<string>>>.Ignored)).MustHaveHappened();
             A.CallTo(() => jpadValidator.Validate("implementations/jpad/path/to/key.jpad",

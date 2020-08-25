@@ -2,32 +2,34 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/audit"
-	"github.com/Soluto/tweek/services/gateway/corsSupport"
-	"github.com/Soluto/tweek/services/gateway/externalApps"
-	"github.com/Soluto/tweek/services/gateway/handlers"
-	"github.com/Soluto/tweek/services/gateway/metrics"
-	"github.com/Soluto/tweek/services/gateway/proxy"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/audit"
+	"tweek-gateway/corsSupport"
+	"tweek-gateway/externalApps"
+	"tweek-gateway/handlers"
+	"tweek-gateway/metrics"
+	"tweek-gateway/proxy"
 
-	"github.com/Soluto/tweek/services/gateway/passThrough"
+	"tweek-gateway/passThrough"
 
-	"github.com/Soluto/tweek/services/gateway/security"
-	"github.com/Soluto/tweek/services/gateway/transformation"
+	"tweek-gateway/security"
+	"tweek-gateway/transformation"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/urfave/negroni"
+
+	joonix "github.com/joonix/log"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	logrus.SetFormatter(&joonix.FluentdFormatter{})
 	configuration := appConfig.InitConfig()
-	externalApps.Init(&configuration.Security.PolicyStorage)
 
 	app := newApp(configuration)
 
@@ -47,14 +49,20 @@ func runServer(port int, handler http.Handler) {
 		Handler: handler,
 	}
 
-	log.Printf("Gateway is listening on port %v", port)
-	log.Fatalf("Server on port %v failed unexpectedly: %v", port, server.ListenAndServe())
+	logrus.WithField("port", port).Info("Gateway is listening")
+	err := server.ListenAndServe()
+	logrus.WithError(err).WithField("port", port).Fatal("Server failed unexpectedly")
 }
 
 func newApp(config *appConfig.Configuration) http.Handler {
 	token := security.InitJWT(&config.Security.TweekSecretKey)
 
 	authorizer, err := withRetry(3, time.Second*5, initAuthorizer, &config.Security)
+	if err != nil {
+		panic("Unable to create Authorizer")
+	}
+
+	externalApps.Init(&config.Security.PolicyStorage)
 
 	auditor, err := audit.New(os.Stdout)
 	if err != nil {
@@ -63,7 +71,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	userInfoExtractor, err := setupSubjectExtractorWithRefresh(config.Security)
 	if err != nil {
-		log.Panicln("Unable to setup user info extractor", err)
+		logrus.WithError(err).Panic("Unable to setup user info extractor")
 	}
 
 	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, userInfoExtractor, auditor)
@@ -97,11 +105,9 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	handlers.SetupRevisionUpdater(config.Security.PolicyStorage.NatsEndpoint)
 
-	router.MainRouter().PathPrefix("/metrics").Handler(prometheus.Handler())
+	router.MainRouter().PathPrefix("/metrics").Handler(promhttp.Handler())
 
 	router.V2Router().PathPrefix("/current-user").HandlerFunc(security.NewUserInfoHandler(&config.Security, userInfoExtractor))
-
-	router.MainRouter().PathPrefix("/swagger.yml").HandlerFunc(swaggerHandler())
 
 	app := negroni.New(recovery)
 

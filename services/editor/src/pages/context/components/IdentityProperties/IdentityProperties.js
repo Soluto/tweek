@@ -21,8 +21,8 @@ const Property = ({ identityType, property, local, remote, onChange }) => {
         placeholder="(no value)"
         disabled={property.startsWith('@')}
       />
-      <div className="initial-value" title={remote}>
-        {remote === local ? null : remote}
+      <div className="initial-value" title={String(remote)}>
+        {remote === local ? null : String(remote)}
       </div>
     </div>
   );
@@ -35,14 +35,14 @@ const IdentityProperties = ({ className, identityType, local, remote, updateCont
   >
     <div className="identity-properties-title">Properties</div>
     <div className="property-list">
-      {Object.keys(remote).map(prop => (
+      {Object.keys(remote).map((prop) => (
         <Property
           key={prop}
           identityType={identityType}
           property={prop}
           local={local[prop]}
           remote={remote[prop]}
-          onChange={value =>
+          onChange={(value) =>
             updateContext(value === '' ? R.dissoc(prop, local) : R.assoc(prop, value, local))
           }
         />

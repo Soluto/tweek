@@ -3,16 +3,24 @@ import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox
 import ValidationIcon from '../../../../common/ValidationIcon';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
+import withSearchConfig from '../../../../../hoc/with-search-config';
 import Avatar from './Avatar';
 import PropertySuggestion from './PropertySuggestion';
 import './styles.css';
 
 const getProperty = (suggestedValues, property) => {
-  const result = suggestedValues.find(x => x.value === property);
+  const result = suggestedValues.find((x) => x.value === property);
   return result ? result.label : property;
 };
 
-const PropertyComboBox = ({ property, suggestedValues, warning, ...props }) => {
+const PropertyComboBox = ({
+  property,
+  suggestedValues,
+  warning,
+  maxSearchResults,
+  showInternalKeys,
+  ...props
+}) => {
   property = property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
   const [identity] = property.split('.');
 
@@ -27,8 +35,11 @@ const PropertyComboBox = ({ property, suggestedValues, warning, ...props }) => {
             const search = query.startsWith(ContextService.KEYS_IDENTITY)
               ? query.substring(ContextService.KEYS_IDENTITY.length)
               : query;
-            return SearchService.getSuggestions(search).then(suggestions =>
-              suggestions.map(label => ({
+            return SearchService.getSuggestions(search, {
+              maxSearchResults,
+              showInternalKeys,
+            }).then((suggestions) =>
+              suggestions.map((label) => ({
                 label,
                 value: `${ContextService.KEYS_IDENTITY}${label}`,
               })),
@@ -38,9 +49,11 @@ const PropertyComboBox = ({ property, suggestedValues, warning, ...props }) => {
         value={getProperty(suggestedValues, property)}
         placeholder="Property"
         filterBy={(currentInputValue, option) =>
-          option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
-        renderSuggestion={(suggestion, currentInputValue) =>
-          <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />}
+          option.value.toLowerCase().includes(currentInputValue.toLowerCase())
+        }
+        renderSuggestion={(suggestion, currentInputValue) => (
+          <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
+        )}
         className="property-name-wrapper"
         showValueInOptions
       />
@@ -49,4 +62,4 @@ const PropertyComboBox = ({ property, suggestedValues, warning, ...props }) => {
   );
 };
 
-export default PropertyComboBox;
+export default withSearchConfig(PropertyComboBox);

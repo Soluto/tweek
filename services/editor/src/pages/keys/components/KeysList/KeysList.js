@@ -4,8 +4,14 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Observable } from 'rxjs';
-import { componentFromStream, createEventHandler, withState } from 'recompose';
-import { getConfiguration } from '../../../../utils/fetch';
+import {
+  componentFromStream,
+  compose,
+  createEventHandler,
+  setDisplayName,
+  withState,
+} from 'recompose';
+import { withTweekValues } from 'react-tweek';
 import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
@@ -40,16 +46,6 @@ const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFi
   </div>
 ));
 
-const supportCardView = async () => {
-  try {
-    const response = await getConfiguration(`experimental/keys_search/enable_cards_view`);
-    return await response.json();
-  } catch (err) {
-    console.warn('failed to retrieve configuration for enable_cards_view', err);
-    return false;
-  }
-};
-
 const getDataValueType = (archived, keyType, valueType) => {
   if (archived) {
     return 'archived';
@@ -68,12 +64,13 @@ const KeyItem = ({ name, fullPath, depth, selected, item }) => {
   return (
     <div className="key-link-wrapper" data-comp="key-link">
       <Link
+        title={fullPath}
         className={classNames('key-link', { selected })}
         style={{ paddingLeft: (depth + 1) * 10 }}
         to={`/keys/${fullPath}`}
       >
         <div className={classNames('key-type', 'key-icon')} data-value-type={dataValueType} />
-        {name}
+        <span>{name}</span>
       </Link>
     </div>
   );
@@ -94,7 +91,11 @@ const CardItem = ({
           data-value-type={getDataValueType(archived, keyType, valueType)}
         />
         <div className="title">{name}</div>
-        <div>{(tags || []).map(x => <span className="tag">{x}</span>)}</div>
+        <div>
+          {(tags || []).map((x) => (
+            <span className="tag">{x}</span>
+          ))}
+        </div>
       </div>
       <div className="path">{key_path}</div>
       <div className="description">{description}</div>
@@ -102,20 +103,34 @@ const CardItem = ({
   </div>
 );
 
-const KeysList = connect((state, props) => ({
-  selectedKey: state.selectedKey && state.selectedKey.key,
-}))(
+const enhance = compose(
+  connect((state) => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
+  withTweekValues(
+    {
+      supportMultiResultsView: '@tweek/editor/experimental/keys_search/enable_cards_view',
+      maxSearchResults: '@tweek/editor/search/max_results',
+      showInternalKeys: '@tweek/editor/show_internal_keys',
+    },
+    {
+      defaultValues: {},
+    },
+  ),
+  setDisplayName('KeysList'),
+);
+
+const KeysList = enhance(
   componentFromStream((prop$) => {
-    const supportMultiResultsView$ = Observable.defer(supportCardView);
+    const supportMultiResultsView$ = prop$.pluck('supportMultiResultsView').distinctUntilChanged();
 
     const keyList$ = prop$
-      .map(x => x.keys)
-      .distinctUntilChanged()
-      .switchMap(async (allKeys) => {
-        const unarchivedKeys = R.filter(key => !key.meta.archived, allKeys);
+      .distinctUntilChanged(
+        (x, y) => x.showInternalKeys === y.showInternalKeys && x.keys === y.keys,
+      )
+      .map(({ keys: allKeys, showInternalKeys }) => {
+        const unarchivedKeys = R.filter((key) => !key.meta.archived, allKeys);
         return {
           keys: allKeys,
-          visibleKeys: await SearchService.filterInternalKeys(unarchivedKeys),
+          visibleKeys: SearchService.filterInternalKeys(unarchivedKeys, showInternalKeys),
         };
       });
 
@@ -123,27 +138,33 @@ const KeysList = connect((state, props) => ({
     const { handler: setResultsView, stream: resultsView$ } = createEventHandler();
 
     const filteredKeys$ = filter$
-      .map(x => x.trim())
+      .map((x) => x.trim())
       .distinctUntilChanged()
       .debounceTime(500)
       .startWith('')
-      .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
+      .withLatestFrom(prop$.pluck('maxSearchResults'))
+      .switchMap(async ([filter, maxResults]) =>
+        filter === '' ? undefined : SearchService.search(filter, maxResults),
+      )
+      .startWith(undefined);
 
     return Observable.combineLatest(
-      prop$.map(x => x.selectedKey).distinctUntilChanged(),
-
+      prop$.map((x) => x.selectedKey).distinctUntilChanged(),
       filteredKeys$,
       keyList$,
       supportMultiResultsView$,
       resultsView$.startWith('cards'),
     ).map(
-      (
-        [selectedKey, filteredKeys, { visibleKeys, keys }, supportMultiResultsView, resultsView],
-      ) => (
+      ([
+        selectedKey,
+        filteredKeys,
+        { visibleKeys, keys },
+        supportMultiResultsView,
+        resultsView,
+      ]) => (
         <div className="keys-list-container">
           <KeysFilter onFilterChange={setFilter} />
-          {filteredKeys &&
-            supportMultiResultsView && (
+          {filteredKeys && supportMultiResultsView && (
             <div className="view-selector">
               <button onClick={() => setResultsView('cards')}>List</button>
               <button onClick={() => setResultsView('tree')}>Tree</button>
@@ -153,9 +174,9 @@ const KeysList = connect((state, props) => ({
             <div className="search-results">
               {filteredKeys && supportMultiResultsView && resultsView === 'cards' ? (
                 <CardView
-                  itemSelector={x => x && x.key_path}
+                  itemSelector={(x) => x && x.key_path}
                   selectedItem={selectedKey}
-                  items={filteredKeys.map(x => keys[x]).filter(x => x)}
+                  items={filteredKeys.map((x) => keys[x]).filter((x) => x)}
                   renderItem={CardItem}
                 />
               ) : (
@@ -163,7 +184,7 @@ const KeysList = connect((state, props) => ({
                   selectedPath={selectedKey}
                   paths={filteredKeys || Object.keys(visibleKeys)}
                   expandByDefault={!!filteredKeys}
-                  renderItem={x => <KeyItem {...x} item={keys[x.fullPath]} />}
+                  renderItem={(x) => <KeyItem {...x} item={keys[x.fullPath]} />}
                 />
               )}
             </div>
@@ -173,7 +194,5 @@ const KeysList = connect((state, props) => ({
     );
   }),
 );
-
-KeysList.displayName = 'KeysList';
 
 export default KeysList;

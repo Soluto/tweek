@@ -6,8 +6,8 @@ import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
 import './JsonEditor.css';
 
-const parse = str => JSON.parse(str);
-const format = json => JSON.stringify(json, null, 4);
+const parse = (str) => JSON.parse(str);
+const format = (json) => JSON.stringify(json, null, 4);
 
 export const JsonEditor = compose(
   setDisplayName('JsonEditor'),
@@ -54,7 +54,7 @@ export const JsonEditor = compose(
             },
             readOnly: false,
           }}
-          onChange={newSource => changeText(newSource)}
+          onChange={(newSource) => changeText(newSource)}
         />
       )}
     </AutoSizer>

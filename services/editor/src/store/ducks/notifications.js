@@ -1,18 +1,29 @@
 import { handleActions } from 'redux-actions';
+import { FetchError } from 'tweek-client';
 import Chance from 'chance';
 const chance = new Chance();
 
 const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 
-export function showError({ error, title = 'Error', position = 'br' }) {
+const defaultFormat = (error) =>
+  error instanceof FetchError
+    ? `${error.response.status}: ${error.response.statusText}`
+    : (error && error.message) || error;
+
+export function showError({ error, title = 'Error', position = 'br', format = defaultFormat }) {
   const notification = {
     title,
-    message: `${error.status}: ${error.statusText}`,
+    message: format(error),
     level: 'error',
     position,
-    autoDismiss: 0,
+    autoDismiss: 15,
     uid: chance.guid(),
   };
+  return { type: ADD_NOTIFICATION, notification };
+}
+
+export function showSuccess({ title = 'Success', message = null, position = 'br' }) {
+  const notification = { title, message, level: 'success', position, uid: chance.guid() };
   return { type: ADD_NOTIFICATION, notification };
 }
 

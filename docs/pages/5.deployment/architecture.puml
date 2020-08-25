@@ -1,0 +1,41 @@
+@startuml
+
+skinparam{
+    BackgroundColor #eee
+    NodeFontColor white
+}
+
+node gateway #009fda
+node api #009fda
+database context
+queue nats
+cloud oidcProvider as "OIDC Provider"
+
+frame clients{
+    node editor #009fda
+    cloud backendapp as "Client Application"
+}
+
+frame rules{
+    node publishing #009fda
+    node authoring #009fda
+    database minio
+    database git
+}
+
+gateway -> editor
+gateway --> api :values/context requests
+gateway -right-> authoring : editor requests
+gateway -up-> oidcProvider : validate requests
+gateway <-up- nats : trigger sync
+gateway -> minio: read policies
+clients -left-> gateway : client requests
+authoring -down-> publishing 
+publishing -down-> git : sync git remote
+publishing -> nats : notify
+publishing -left-> minio : save bundles
+api <- nats: trigger sync
+api -down-> minio : read rules
+api -down--> context : read context
+
+@enduml

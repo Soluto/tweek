@@ -1,72 +1,75 @@
-/* global describe, before, beforeEach, after, it, browser */
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import { getLocation } from '../../utils/location-utils';
+import { tweekManagementClient } from '../../clients/tweek-clients';
+import KeysPage, { BLANK_KEY_NAME } from '../../pages/Keys';
 
-import { expect } from 'chai';
-import Key from '../../utils/Key';
-import { dataComp, dataField } from '../../utils/selector-utils';
-import { login } from '../../utils/auth-utils';
+const keysPage = new KeysPage();
 
-const addEmptyKey = (keyName, keyValueType = 'String') => {
-  Key.add()
-    .setName(keyName)
-    .setValueType(keyValueType)
-    .setKeyFormat('jpad')
-    .continueToDetails()
-    .commitChanges();
-};
+fixture`Key Name Validations`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-const keyNameValidation = `${dataComp('new-key-name')} ${dataComp('validation-icon')}`;
+test('name validations', async (t) => {
+  const invalidKeyNames = [
+    'key name',
+    'keyname@',
+    'keyName',
+    '/keyname',
+    'key@name/',
+    'category/key@_name',
+    '@keyName',
+    '@category/@keyName',
+    BLANK_KEY_NAME,
+  ];
+  const validKeyNames = [
+    'key_name',
+    'category/key_name',
+    'category/key_name/key_name',
+    '@key_name',
+    '@category/@keyname',
+  ];
 
-describe('key name validations', () => {
-  before(() => login());
+  const newKey = await keysPage.addNewKey();
 
-  describe('name validations', () => {
-    const invalidKeyNames = [
-      'key name',
-      'keyname@',
-      'keyName',
-      '/keyname',
-      'key@name/',
-      'category/key@_name',
-      '@keyName',
-      '@category/@keyName',
-      Key.BLANK_KEY_NAME,
-    ];
-    const validKeyNames = [
-      'key_name',
-      'category/key_name',
-      'category/key_name/key_name',
-      '@key_name',
-      '@category/@keyname',
-    ];
+  for (const keyName of invalidKeyNames) {
+    await t
+      .typeText(newKey.nameInput, keyName, { replace: true })
+      .expect(newKey.nameValidation.visible)
+      .ok('should show validation icon for invalid key name');
+  }
 
-    before(() => Key.add());
+  for (const keyName of validKeyNames) {
+    await t
+      .typeText(newKey.nameInput, keyName, { replace: true })
+      .expect(newKey.nameValidation.visible)
+      .notOk('should not show validation icon for valid key name');
+  }
+});
 
-    invalidKeyNames.forEach(keyName => {
-      it('should show validation icon for invalid key name', () => {
-        Key.setName(keyName);
-        browser.waitForVisible(keyNameValidation, 1000);
-      });
-    });
+test('should allow creating a key named "a/b/c" and also a key named "b"', async (t) => {
+  const addEmptyKey = async (keyPath) => {
+    const newKey = await keysPage.addNewKey();
+    await t.typeText(newKey.nameInput, keyPath, { replace: true });
 
-    validKeyNames.forEach(keyName => {
-      it('should not show validation icon for valid key name', () => {
-        Key.setName(keyName);
-        browser.waitForVisible(keyNameValidation, 1000, true);
-      });
-    });
-  });
+    const editKey = await newKey.continue();
 
-  it('should allow creating a key named "a/b/c" and also a key named "b"', () => {
-    addEmptyKey('a/b/c');
-    browser.refresh();
-    addEmptyKey('b');
-  });
+    await editKey.commitChanges();
+    await t.expect(getLocation()).eql(`${editorUrl}/keys/${keyPath}`);
+  };
 
-  it('should show validaton alert on clicking "Continue" without a value', () => {
-    Key.add()
-      .setValueType('string') // to make local changes
-      .clickContinue();
+  await addEmptyKey('a/b/c');
+  await t.navigateTo('/keys');
+  await addEmptyKey('b');
+}).before(async (t) => {
+  await tweekManagementClient.deleteKey('a/b/c');
+  await tweekManagementClient.deleteKey('b');
+  await login(t);
+});
 
-    browser.waitForVisible(keyNameValidation, 2000);
-  });
+test('should show validation alert on clicking "Continue" without a value', async (t) => {
+  const newKey = await keysPage.addNewKey();
+
+  await t
+    .click(newKey.continueButton)
+    .expect(newKey.nameValidation.visible)
+    .ok();
 });

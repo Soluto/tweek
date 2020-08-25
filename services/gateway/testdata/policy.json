@@ -1,95 +1,103 @@
 {
-    "policies": [
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {},
-            "object": "keys.*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {},
-            "object": "repo.keys/*",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {},
-            "object": "repo",
-            "action": "read",
-            "effect": "allow"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {},
-            "object": "repo.tags",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {},
-            "object": "repo.schemas",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {
-                "user": "*"
-            },
-            "object": "*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {
-                "user": "self"
-            },
-            "object": "user.name",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {
-                "user": "self",
-                "device": "testdevice"
-            },
-            "object": "keys.test/key",
-            "action": "read",
-            "effect": "allow"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {
-                "user": "*"
-            },
-            "object": "keys.denied/key",
-            "action": "*",
-            "effect": "deny"
-        },
-        {
-            "user": "00000000-0000-0000-0000-000000000000",
-            "group": "default",
-            "contexts": {
-                "*": "*"
-            },
-            "object": "keys.test/key_with_wildcard_context",
-            "action": "read",
-            "effect": "allow"
-        }
-    ]
+  "policies": [
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {},
+      "object": "keys.*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {},
+      "object": "repo.keys/*",
+      "action": "write",
+      "effect": "allow"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {},
+      "object": "repo*",
+      "action": "read",
+      "effect": "allow"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {},
+      "object": "repo.tags",
+      "action": "write",
+      "effect": "allow"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {},
+      "object": "repo.schemas",
+      "action": "write",
+      "effect": "allow"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {
+        "user": "*"
+      },
+      "object": "*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {
+        "user": "self"
+      },
+      "object": "user.name",
+      "action": "write",
+      "effect": "allow"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {
+        "user": "self",
+        "device": "testdevice"
+      },
+      "object": "keys.test/key",
+      "action": "read",
+      "effect": "allow"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {
+        "user": "*"
+      },
+      "object": "keys.denied/key",
+      "action": "*",
+      "effect": "deny"
+    },
+    {
+      "user": "00000000-0000-0000-0000-000000000000",
+      "group": "default",
+      "contexts": {
+        "*": "*"
+      },
+      "object": "keys.test/key_with_wildcard_context",
+      "action": "read",
+      "effect": "allow"
+    },
+    {
+      "user": "limited-editor",
+      "group": "default",
+      "contexts": {},
+      "object": "repo/keys/my_key",
+      "action": "write",
+      "effect": "allow"
+    }
+  ]
 }

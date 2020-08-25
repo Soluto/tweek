@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
-    <PackageReference Include="LanguageExt.Core" Version="3.0.17" />
+    <PackageReference Include="LanguageExt.Core" Version="3.4.15" />
     <PackageReference Include="Soluto.Collections.RadixTree" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>

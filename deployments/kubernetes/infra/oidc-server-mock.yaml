@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: oidc-server-mock
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: oidc-server-mock
+    spec:
+      containers:
+      - name: oidc-mock
+        image: soluto/oidc-server-mock
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: OIDC_CLIENT_ID
+          value: tweek-openid-mock-client
+        - name: REDIRECT_URIS
+          value: http://localhost:8081/auth-result/oidc
+        - name: TEST_USER
+          value: '{"SubjectId":"user","Username":"user","Password":"pwd"}'
+        ports:
+        - containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: oidc-server-mock
+spec:
+  type: LoadBalancer
+  selector:
+    app: oidc-server-mock
+  ports:
+    - port: 8082
+      targetPort: 80
+---

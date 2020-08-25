@@ -2,11 +2,18 @@ import R = require('ramda');
 import Transactor from '../utils/transactor';
 import GitRepository from './git-repository';
 import { Oid } from 'nodegit';
+import { PERMISSIONS } from '../security/permissions/consts';
+
+export type AppManifest = {
+  version: string;
+  name: string;
+  secretKeys: { salt: string; hash: string; creationDate: string }[];
+  permissions?: string[];
+};
 
 export default class AppsRepository {
-  apps: any;
-  constructor(private _gitTransactionManager: Transactor<GitRepository>) {
-  }
+  apps: { [id: string]: AppManifest };
+  constructor(private _gitTransactionManager: Transactor<GitRepository>) {}
 
   getApp(appId) {
     return this.apps[appId];
@@ -15,13 +22,17 @@ export default class AppsRepository {
   async refresh() {
     await this._gitTransactionManager.with(async (repo) => {
       const externalAppsFiles = await repo.listFiles('external_apps');
-      this.apps = (await Promise.all(
-        externalAppsFiles.map(async appFile => ({
+      this.apps = <any>(await Promise.all(
+        externalAppsFiles.map(async (appFile) => ({
           name: appFile.split('.')[0],
           data: JSON.parse(await repo.readFile(`external_apps/${appFile}`)),
         })),
       )).reduce((acc, { name, data }) => R.assoc(name, data)(acc), {});
     });
+  }
+
+  async getApps() {
+    return this.apps;
   }
 
   async saveApp(appId, manifest, author) {

@@ -3,14 +3,15 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http;
 using App.Metrics;
-using App.Metrics.Formatters.Prometheus.Internal.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Newtonsoft.Json;
@@ -35,8 +36,8 @@ namespace Tweek.Publishing.Service
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
-       
-        private readonly RetryPolicy _syncPolicy;
+
+        private readonly AsyncRetryPolicy _syncPolicy;
 
 
         public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
@@ -44,7 +45,7 @@ namespace Tweek.Publishing.Service
             _configuration = configuration;
             _logger = loggerFactory.CreateLogger("Default");
             _syncPolicy = Policy.Handle<Exception>()
-                        .WaitAndRetryAsync(3,
+                .WaitAndRetryAsync(3,
                             retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                             async (ex, timespan) =>
                             {
@@ -53,7 +54,7 @@ namespace Tweek.Publishing.Service
                             });
         }
 
-        private void RunSSHDeamon(IApplicationLifetime lifetime, ILogger logger)
+        private void RunSSHDeamon(IHostApplicationLifetime lifetime, ILogger logger)
         {
             var sshdConfigLocation = _configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
             var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-e -D -f {sshdConfigLocation}")
@@ -67,7 +68,7 @@ namespace Tweek.Publishing.Service
                     }
                     if (x.outputType == OutputType.StdErr)
                     {
-                        logger.LogWarning(x.data);
+                        logger.LogDebug(x.data);
                     }
                 }, ex =>
                 {
@@ -110,7 +111,7 @@ namespace Tweek.Publishing.Service
         }
 
 
-        private void RunIntervalPublisher(IApplicationLifetime lifetime, Func<string,Task> publisher,
+        private void RunIntervalPublisher(IHostApplicationLifetime lifetime, Func<string,Task> publisher,
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
             var intervalPublisher = new IntervalPublisher(publisher);
@@ -136,8 +137,8 @@ namespace Tweek.Publishing.Service
         private const string DEFAULT_MINIO_BUCKET_NAME = @"tweek";
 
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            IApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
+            IHostApplicationLifetime lifetime)
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(_configuration)
@@ -155,14 +156,15 @@ namespace Tweek.Publishing.Service
 
             var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
                                                .ForwardEnvVariable("GIT_SSH");
-                                               
-            
+
+
 
             var gitValidationFlow = new GitValidationFlow
             {
                 Validators =
                 {
                     (Patterns.Manifests, new CircularDependencyValidator()),
+                    (Patterns.Manifests, new ManifestStructureValidator()),
                     (Patterns.JPad, new CompileJPadValidator()),
                     (Patterns.SubjectExtractionRules, new SubjectExtractionValidator()),
                     (Patterns.Policy, new PolicyValidator()),
@@ -170,6 +172,7 @@ namespace Tweek.Publishing.Service
             };
 
             var minioConfig = _configuration.GetSection("Minio");
+            var metricsService = app.ApplicationServices.GetService<IMetrics>();
 
             var storageClient = Polly.Policy.Handle<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
@@ -182,23 +185,30 @@ namespace Tweek.Publishing.Service
             var versionPublisher = natsClient.GetSubjectPublisher("version");
 
             var repoSynchronizer = new RepoSynchronizer(executor.WithUser("git").CreateCommandExecutor("git"));
-            var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor.WithUser("git"),
-                app.ApplicationServices.GetService<IMetrics>());
+            var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor.WithUser("git"), metricsService);
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
 
             var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, lifetime.ApplicationStopping, loggerFactory.CreateLogger("SyncActor"));
-            
+
+            var triggerHelper = new TriggerHooksHelper(new HttpClient(), metricsService, loggerFactory.CreateLogger("TriggerHooksHelper"));
+            var hooksHelper = new HooksHelper(
+                executor.WithUser("git").CreateCommandExecutor("git"),
+                triggerHelper,
+                metricsService,
+                loggerFactory.CreateLogger("HooksHelper")
+            );
+
             app.UseRouter(router =>
             {
                 router.MapGet("validate",
                     ValidationHandler.Create(executor, gitValidationFlow,
                         loggerFactory.CreateLogger<ValidationHandler>(),
-                        app.ApplicationServices.GetService<IMetrics>()));
+                        metricsService));
                 router.MapGet("sync",
-                    SyncHandler.Create(syncActor, _syncPolicy, app.ApplicationServices.GetService<IMetrics>()));
-                router.MapGet("push", PushHandler.Create(syncActor, app.ApplicationServices.GetService<IMetrics>()));
+                    SyncHandler.Create(syncActor, _syncPolicy, metricsService));
+                router.MapGet("push", PushHandler.Create(syncActor, metricsService, hooksHelper));
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
                 router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly()

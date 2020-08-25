@@ -9,11 +9,19 @@ import withLoading from '../../../../hoc/with-loading';
 import { refreshTypes } from '../../../../services/types-service';
 import { refreshSchema } from '../../../../services/context-service';
 import hasUnsavedChanges from '../utils/hasUnsavedChanges';
+import ErrorPage from '../../../../components/ErrorPage';
 import './KeysPage.css';
 
 export default compose(
-  connect(state => state, { ...keysActions, addKey }),
-  withLoading(() => null, () => Promise.all([refreshTypes(), refreshSchema()])),
+  connect(
+    (state) => state,
+    { ...keysActions, addKey },
+  ),
+  withLoading(
+    () => null,
+    (error) => <ErrorPage error={error} />,
+    () => Promise.all([refreshTypes(), refreshSchema()]),
+  ),
 )(
   class KeysPage extends Component {
     displayName = 'KeysPage';

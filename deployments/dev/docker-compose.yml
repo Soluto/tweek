@@ -9,22 +9,29 @@ services:
 
   authoring:
     image: soluto/tweek-authoring
-    build: ../../services/authoring
+    build:
+      context: ../../services/authoring
+    depends_on:
+      - publishing
 
   editor:
-    image: soluto/tweek-editor    
-    build: ../../services/editor      
-    depends_on: 
+    image: soluto/tweek-editor
+    build:
+      context: ../../services/editor
+    depends_on:
       - gateway
 
   gateway:
     image: soluto/tweek-gateway
-    build: ../../services/gateway
+    build: 
+      context: ../../services/gateway
     depends_on:
+      - publishing
       - api
       - authoring
-  
+
   publishing:
     image: soluto/tweek-publishing
-    build: ../../services/publishing
+    build: 
+      context: ../../services/publishing
 

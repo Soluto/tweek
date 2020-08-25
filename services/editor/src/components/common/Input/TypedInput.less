@@ -24,8 +24,8 @@
 
 .property-name-wrapper {
   .combo-box-basic(250px, 250px);
-  :global(.bootstrap-typeahead) {
-    :global(.dropdown-menu) {
+  .bootstrap-typeahead {
+    .dropdown-menu {
       overflow-y: auto;
       overflow-x: visible;
       &::-webkit-scrollbar {
@@ -130,6 +130,7 @@ input {
 }
 
 .typed-input-with-icon {
+  position: relative;
   display: flex;
 
   .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input, input {

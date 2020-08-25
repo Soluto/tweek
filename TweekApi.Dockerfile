@@ -1,10 +1,12 @@
 # ---- *.csproj FILES ----
 FROM debian:stretch-slim as csproj-files
-COPY . /src
+COPY ./addons /src/addons
+COPY ./core /src/core
+COPY ./services/api /src/services/api
 RUN find /src -type f -not -name "*.csproj" -delete && find /src -type d -empty -delete
 
 # ---- BUILD & TEST ----
-FROM microsoft/dotnet:2.1-sdk as source
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as source
 ARG target="Release"
 WORKDIR /src
 COPY --from=csproj-files /src .
@@ -14,10 +16,10 @@ RUN dotnet restore ./Tweek.sln
 COPY . .
 RUN dotnet build Tweek.sln -c $target && \
     find . -regex '.*\.Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c $target --no-build && \
-    dotnet publish ./services/api/Tweek.ApiService/Tweek.ApiService.csproj -c $target -o ./obj/Docker/publish
+    cd ./services/api/Tweek.ApiService && dotnet publish Tweek.ApiService.csproj -c $target -o ./obj/Docker/publish
 
 # ---- RELEASE ----
-FROM microsoft/dotnet:2.1-aspnetcore-runtime as release
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.6 as release
 ARG target="Release"
 WORKDIR /app
 EXPOSE 80

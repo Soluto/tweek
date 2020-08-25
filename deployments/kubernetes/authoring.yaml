@@ -1,7 +1,6 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: tweek
   name: authoring
 spec:
   replicas: 1
@@ -37,7 +36,6 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: tweek
   name: authoring
 spec:
   type: NodePort
@@ -46,4 +44,3 @@ spec:
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 30005

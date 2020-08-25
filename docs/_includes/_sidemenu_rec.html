@@ -1,0 +1,25 @@
+{% assign first_page = include.pages | first %}
+{% if include.context == first_page.url %}
+  <a class="page-item {% if page.url == first_page.url %}selected{% endif %}" href="{{first_page.url}}">
+      <i class="fa fa-file-alt"></i><span style="margin-left:8px">{{first_page.title}}</span></a>
+  </a>
+{% else %}
+  <div data-folder="{{include.context}}" class="folder-container {% if page.url contains include.context %}open{% endif %}">
+  {% if include.context != "" %}
+  <div class="dir-item" parent><i class="fa"></i><span>{{include.context | split: '/'' | last | replace: "_", " "}}</span></div>
+  {% endif %}
+  {% capture prefix %}{{include.context}}/{% endcapture %}
+  {% assign filter = include.pages | where_exp: 'page', 'page.title' | where_exp: 'page', 'page.url contains prefix' | where_exp: 'page', 'page.hide != true' | group_by_exp: 'page', "page.url | remove_first: prefix | split: '/'' | first"  %}
+  <ul>
+    {% for group in filter %}
+      {% capture nprefix %}{{include.context}}/{% endcapture %}
+      {% capture path %}{{nprefix}}{{group.name}}{% endcapture %}
+      
+      <li>{% include _sidemenu_rec.html context=path pages=group.items %}</li>
+      
+    {% endfor %}
+  </ul>
+  </div>
+{% endif %}
+
+

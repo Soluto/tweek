@@ -3,16 +3,17 @@ package transformation
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"path"
 	"regexp"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/metrics"
+	"tweek-gateway/proxy"
+	"tweek-gateway/security"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/proxy"
-	"github.com/Soluto/tweek/services/gateway/security"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 )
 
@@ -30,17 +31,40 @@ func Mount(upstreamConfig *appConfig.Upstreams, routesConfig []appConfig.V2Route
 		"authoring": proxy.New(upstreams["authoring"], token),
 	}
 
+	metricsVar := metrics.NewMetricsVar("gateway")
+
 	// Mounting handlers
 	router.Methods("OPTIONS").Handler(middleware)
 	for _, routeConfig := range routesConfig {
-		mountRouteTransform(router, middleware, routeConfig, upstreams, forwarders)
+		mountRouteTransform(router, middleware, routeConfig, upstreams, forwarders, metricsVar)
 	}
 }
 
-func mountRouteTransform(router *mux.Router, middleware *negroni.Negroni, routeConfig appConfig.V2Route, upstreams map[string]*url.URL, forwarders map[string]negroni.HandlerFunc) {
-	handlerFunc := middleware.With(createTransformMiddleware(routeConfig, upstreams), forwarders[routeConfig.Service])
-	router.Methods(routeConfig.Methods...).PathPrefix(routeConfig.RoutePathPrefix).Handler(handlerFunc)
+func mountRouteTransform(router *mux.Router, middleware *negroni.Negroni, routeConfig appConfig.V2Route, upstreams map[string]*url.URL, forwarders map[string]negroni.HandlerFunc, metricsVar *metrics.Metrics) {
+	var handlers = []negroni.Handler{}
 
+	metricHandlers := metricsVar.NewMetricsMiddleware(routeConfig.Service + routeConfig.RoutePathPrefix)
+	for i := range metricHandlers {
+		handlers = append(handlers, metricHandlers[i])
+	}
+	handlers = append(handlers, createTransformMiddleware(routeConfig, upstreams))
+	handlers = append(handlers, forwarders[routeConfig.Service])
+
+	handlerFunc := middleware.With(handlers...)
+	if routeConfig.RewriteKeyPath {
+		handlerFunc = negroni.New(createRewriteKeyPathMiddleware()).With(handlerFunc.Handlers()...)
+	}
+	router.Methods(routeConfig.Methods...).PathPrefix(routeConfig.RoutePathPrefix).Handler(handlerFunc)
+}
+
+func createRewriteKeyPathMiddleware() negroni.HandlerFunc {
+	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		u := r.URL
+		if u.Query().Get("keyPath") != "" {
+			r.URL = replaceKeyPath(u)
+		}
+		next(rw, r)
+	}
 }
 
 func createTransformMiddleware(routeConfig appConfig.V2Route, upstreams map[string]*url.URL) negroni.HandlerFunc {
@@ -59,34 +83,31 @@ func createTransformMiddleware(routeConfig appConfig.V2Route, upstreams map[stri
 func parseUpstreamOrPanic(u string) *url.URL {
 	result, err := url.Parse(u)
 	if err != nil {
-		log.Panicln("Invalid upstream", u)
+		logrus.WithError(err).WithField("upstream", u).Panic("Invalid upstream")
 	}
 	return result
 }
 
 func getURLForUpstream(upstream *url.URL, req *http.Request, urlRegexp *regexp.Regexp, upstreamRoute string, keyPath bool) *url.URL {
-	var original string
-	u := req.URL
-	if keyPath && u.Query().Get("keyPath") != "" {
-		original = replaceKeyPath(u)
-	} else {
-		original = u.String()
-	}
-	newURL := urlRegexp.ReplaceAllString(original, fmt.Sprintf("%v%v", upstream.String(), upstreamRoute))
+	newURL := urlRegexp.ReplaceAllString(req.URL.String(), fmt.Sprintf("%v%v", upstream.String(), upstreamRoute))
 	result, err := url.Parse(newURL)
 	if err != nil {
-		log.Panicln("Failed converting context URL", err)
+		logrus.WithError(err).Panic("Failed converting context URL")
 	}
 	return result
 }
 
-func replaceKeyPath(u *url.URL) string {
+func replaceKeyPath(u *url.URL) *url.URL {
 	path := path.Join(u.Path, u.Query().Get("keyPath"))
 	newQuery := u.Query()
-
 	newQuery.Del("keyPath")
 
-	return fmt.Sprintf("%s?%s", path, newQuery.Encode())
+	return &url.URL{
+		Scheme:   u.Scheme,
+		Host:     u.Host,
+		Path:     path,
+		RawQuery: newQuery.Encode(),
+	}
 }
 
 func setQueryParams(ctx context.Context, url *url.URL, key interface{}) {

@@ -7,47 +7,50 @@
   "scripts": {
     "build": "yarn docker-compose build",
     "build:e2e": "yarn docker-compose:e2e build",
-    "build:clean": "concurrently --kill-others-on-fail \"yarn teardown\"",
+    "build:test": "run-p -l build:e2e teardown",
     "start": "yarn docker-compose up -d",
     "start:e2e": "yarn docker-compose:e2e up -d",
-    "start:test": "yarn docker-compose:e2e up --exit-code-from",
-    "test:ui": "cd e2e/ui && yarn test",
-    "test:integration": "cd e2e/integration && yarn test",
-    "test": "yarn test:integration && yarn test:ui",
-    "test:full-env": "yarn build:clean && yarn start:e2e editor publishing && yarn test",
-    "test:docker": "yarn build:clean && yarn start:test smoke-tests smoke-tests && yarn start:test e2e-integration e2e-integration && yarn start:test e2e-ui e2e-ui",
+    "start:test": "yarn start:e2e editor publishing gateway api authoring",
+    "test": "run-s -l test:local:*",
+    "test:local:integration": "cd e2e/integration && yarn test",
+    "test:local:ui": "cd e2e/ui && yarn test",
+    "test:full-env": "run-s build:test start:test test",
+    "test:docker": "run-s build:test test:docker:*",
+    "test:docker:smoke": "yarn docker-compose:e2e run --rm smoke-tests",
+    "test:docker:integration": "yarn docker-compose:e2e run --rm e2e-integration",
+    "test:docker:ui": "yarn docker-compose:e2e run --rm e2e-ui",
     "logs": "yarn docker-compose logs",
     "logs:e2e": "yarn docker-compose:e2e logs",
     "teardown": "yarn docker-compose down --remove-orphans",
-    "docker-compose": "docker-compose -f ./deployments/dev/docker-compose.yml -f ./deployments/dev/docker-compose.override.yml",
-    "docker-compose:e2e": "yarn docker-compose -f ./deployments/dev/docker-compose.e2e.yml",
-    "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
-    "format:ts": "tsfmt -r",
-    "format:go": "gofmt -l -w",
-    "precommit": "lint-staged"
+    "docker-compose": "DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose -f ./deployments/dev/docker-compose.yml -f ./deployments/dev/docker-compose.override.yml",
+    "docker-compose:e2e": "DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 yarn docker-compose -f ./deployments/dev/docker-compose.e2e.yml",
+    "format:go": "gofmt -l -w"
   },
   "devDependencies": {
-    "concurrently": "^3.5.1",
-    "husky": "^0.14.3",
-    "lint-staged": "^6.0.0",
-    "prettier": "^1.9.0",
-    "prettier-eslint-cli": "^4.4.2",
-    "typescript-formatter": "^7.0.0"
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.16.1"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "arrowParens": "always"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
-    "linters": {
-      "**/*.js": [
-        "yarn format",
-        "git add"
-      ],
-      "**/*.ts": [
-        "yarn format:ts",
-        "git add"
-      ],
-      "**/*.go": [
-        "yarn format:go",
-        "git add"
-      ]
-    }
+    "*.{js,jsx,ts,tsx,json,css,md,jsx}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.go": [
+      "yarn format:go",
+      "git add"
+    ]
   }
 }
