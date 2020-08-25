@@ -54,6 +54,7 @@ export default compose(
             handleTagClick={(i) => navigateToTagResults(tags[i].text)}
             autofocus={false}
             allowDeleteFromEmptyInput
+            allowDragDrop={false}
             minQueryLength={1}
             classNames={{
               tags: 'tags-container',

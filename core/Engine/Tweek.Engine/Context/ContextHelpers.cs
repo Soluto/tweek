@@ -20,7 +20,7 @@ namespace Tweek.Engine.Context
 
         public static GetLoadedContextByIdentityType Fallback(params GetLoadedContextByIdentityType[] list)
         {
-            return list.Reduce((l,r)=> identityType => key => l(identityType)(key).IfNone(()=>r(identityType)(key)));
+            return list.Reduce((l,r)=> identityType => key => l(identityType)(key).Match( x=>x, ()=>r(identityType)(key)));
         }
 
         public static GetLoadedContextByIdentityType AddSystemContext(GetLoadedContextByIdentityType context)

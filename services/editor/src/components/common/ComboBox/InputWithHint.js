@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 const style = {
@@ -25,26 +25,34 @@ const style = {
   },
 };
 
-const InputWithHint = ({ className, value, showHint, hint, autofocus, placeholder, ...props }) => (
-  <div className={`${className}-container`} style={style.container} tabIndex={-1}>
-    <input
-      className={`${className} input-main`}
-      {...props}
-      value={value}
-      autoComplete="off"
-      style={style.input(props)}
-      ref={(e) => e && autofocus && e.focus()}
-    />
-    <input
-      className={`${className} input-hint`}
-      value={showHint ? hint : value.length > 0 ? '' : placeholder}
-      readOnly
-      autoComplete="off"
-      style={style.hint}
-      tabIndex={-1}
-    />
-  </div>
-);
+const InputWithHint = ({ className, value, showHint, hint, autofocus, placeholder, ...props }) => {
+  let inputRef = useRef();
+  useEffect(() => {
+    if (inputRef.current && autofocus) {
+      inputRef.current.focus();
+    }
+  }, []);
+  return (
+    <div className={`${className}-container`} style={style.container} tabIndex={-1}>
+      <input
+        className={`${className} input-main`}
+        {...props}
+        value={value}
+        autoComplete="off"
+        style={style.input(props)}
+        ref={inputRef}
+      />
+      <input
+        className={`${className} input-hint`}
+        value={showHint ? hint : value.length > 0 ? '' : placeholder}
+        readOnly
+        autoComplete="off"
+        style={style.hint}
+        tabIndex={-1}
+      />
+    </div>
+  );
+};
 
 InputWithHint.propTypes = {
   showHint: PropTypes.bool.isRequired,

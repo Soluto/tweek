@@ -1,6 +1,7 @@
 /* global jest, beforeEach, describe, it, afterEach, expect Promise process */
 
-import { testHook, act } from 'react-testing-library';
+import { act } from 'react-dom/test-utils';
+import { renderHook } from '@testing-library/react-hooks';
 import { useRemoteState } from './hooks';
 
 describe('useRemoteState', () => {
@@ -8,12 +9,12 @@ describe('useRemoteState', () => {
     let data, setData, remote;
     const mockLoad = jest.fn(() => Promise.resolve({ test: 'abc' }));
 
-    testHook(() => {
+    const { waitForNextUpdate } = renderHook(() => {
       [data, setData, remote] = useRemoteState(mockLoad, jest.fn());
     });
     expect(mockLoad).toHaveBeenCalledTimes(1);
     expect((remote.loadingState = 'loading'));
-    await Promise.resolve();
+    await waitForNextUpdate();
     expect(data).toEqual({ test: 'abc' });
     expect((remote.loadingState = 'idle'));
     expect(true).toEqual(true);
@@ -23,10 +24,10 @@ describe('useRemoteState', () => {
     let data, setData, remote;
     const mockLoad = jest.fn(() => Promise.resolve('abc'));
 
-    testHook(() => {
+    const { waitForNextUpdate } = renderHook(() => {
       [data, setData, remote] = useRemoteState(mockLoad, jest.fn());
     });
-    await Promise.resolve();
+    await waitForNextUpdate();
     expect(remote.isDirty).toEqual(false);
     act(() => {
       setData('abc1');
@@ -41,14 +42,18 @@ describe('useRemoteState', () => {
   it('should save state', async () => {
     let data, setData, remote;
     let remoteData = 'abc';
-    const mockLoad = jest.fn(() => Promise.resolve(remoteData));
+    const mockLoad = jest.fn(() => {
+      console.log('loading@@@@@@@@@@!!!!');
+      return Promise.resolve(remoteData);
+    });
     const mockSave = jest.fn(async (newData) => (remoteData = newData));
 
-    const { unmount, rerender } = testHook(() => {
+    let { waitForNextUpdate } = renderHook(() => {
       [data, setData, remote] = useRemoteState(mockLoad, mockSave);
     });
 
-    await Promise.resolve();
+    expect(remote.loadingState).toEqual('loading');
+    await waitForNextUpdate();
     act(() => {
       setData('abc1');
     });
@@ -57,13 +62,15 @@ describe('useRemoteState', () => {
     });
 
     expect(remote.loadingState).toEqual('saving');
-    await Promise.resolve();
+    await waitForNextUpdate();
     expect(remote.loadingState).toEqual('idle');
 
-    unmount();
-    rerender();
+    let { waitForNextUpdate: waitAfter } = renderHook(() => {
+      [data, setData, remote] = useRemoteState(mockLoad, mockSave);
+    });
+
     expect(remote.loadingState).toEqual('loading');
-    await Promise.resolve();
+    await waitAfter();
     expect(remote.loadingState).toEqual('idle');
     expect(data).toEqual('abc1');
   });
@@ -73,11 +80,11 @@ describe('useRemoteState', () => {
     const mockLoad = jest.fn(() => Promise.resolve('abc'));
     const mockSave = jest.fn();
 
-    testHook(() => {
+    const { waitForNextUpdate } = renderHook(() => {
       [data, setData, remote] = useRemoteState(mockLoad, mockSave);
     });
 
-    await Promise.resolve();
+    await waitForNextUpdate();
     act(() => {
       setData('abc1');
     });
@@ -96,11 +103,11 @@ describe('useRemoteState', () => {
     let data, setData, remote;
     const mockLoad = jest.fn(() => Promise.reject(new Error('some error')));
 
-    testHook(() => {
+    const { waitForNextUpdate } = renderHook(() => {
       [data, setData, remote] = useRemoteState(mockLoad, jest.fn());
     });
     expect((remote.loadingState = 'loading'));
-    await Promise.resolve();
+    await waitForNextUpdate();
     expect((remote.loadingState = 'error'));
     expect(remote.error.message).toEqual('some error');
   });
@@ -114,11 +121,11 @@ describe('useRemoteState', () => {
       tries++ == 0 ? Promise.reject(new Error('failed to save')) : (remoteData = newData),
     );
 
-    testHook(() => {
+    const { waitForNextUpdate } = renderHook(() => {
       [data, setData, remote] = useRemoteState(mockLoad, mockSave);
     });
 
-    await Promise.resolve();
+    await waitForNextUpdate();
 
     act(() => {
       setData('abc1');
@@ -128,7 +135,7 @@ describe('useRemoteState', () => {
     });
 
     expect(remote.loadingState).toEqual('saving');
-    await Promise.resolve();
+    await waitForNextUpdate();
     expect(remote.loadingState).toEqual('idle');
     expect(remoteData).toEqual('abc');
     expect(remote.error.message).toEqual('failed to save');
@@ -138,7 +145,7 @@ describe('useRemoteState', () => {
     });
 
     expect(remote.loadingState).toEqual('saving');
-    await Promise.resolve();
+    await waitForNextUpdate();
     expect(remote.loadingState).toEqual('idle');
     expect(remoteData).toEqual('abc1');
     expect(remote.error).toEqual(undefined);
