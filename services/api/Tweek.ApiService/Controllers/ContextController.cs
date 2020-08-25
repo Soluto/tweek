@@ -1,7 +1,6 @@
 using System;
 using FSharpUtils.Newtonsoft;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -20,7 +19,6 @@ namespace Tweek.ApiService.Controllers
 
         public ContextController(
             IContextDriver contextDriver,
-            JsonSerializer serializer,
             CheckWriteContextAccess checkAccess)
         {
             _contextDriver = contextDriver;

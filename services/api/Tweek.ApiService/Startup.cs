@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Serilog;
 using Serilog.Formatting.Json;
 using System;
@@ -105,10 +104,6 @@ namespace Tweek.ApiService
             services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));
             services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<GetRuleParser>()));
 
-            var tweekContactResolver = new TweekContractResolver();
-            var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
-
-            services.AddSingleton(jsonSerializer);
             services.AddControllers()
                 .AddMetrics()
                 .AddJsonOptions(options =>
