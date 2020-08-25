@@ -69,7 +69,7 @@ export class HooksController {
   ): Promise<void> {
     try {
       const hooksRepository = this.hooksRepositoryFactory.createRepository();
-      hook = {...hook, id};
+      hook = { ...hook, id };
       if (!(await this._handleETagValidation(hooksRepository))) return;
 
       const oid = await hooksRepository.updateHook(hook, { name, email });

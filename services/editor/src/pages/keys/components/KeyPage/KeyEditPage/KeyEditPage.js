@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import ConstEditor from '../../../../../components/ConstEditor';
-import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
 import KeyTags from './KeyTags/KeyTags';
+import MarkdownEditor from '../../../../../components/common/MarkdownEditor/MarkdownEditor';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import HeaderMainInput from './HeaderMainInput';
@@ -228,13 +228,9 @@ const KeyFullHeader = (props) => {
 
           <div className="key-description-tags-hooks-wrapper">
             <div className="key-description-wrapper">
-              <EditableTextArea
+              <MarkdownEditor
                 value={keyManifest.meta.description}
-                onTextChanged={(text) => onDescriptionChanged(text)}
-                placeHolder="Write key description"
-                title="Click to edit description"
-                classNames={{ input: 'description-input' }}
-                maxLength={400}
+                onChange={onDescriptionChanged}
               />
               <UsedBy items={usedBy} />
               <DependsOn items={keyManifest.dependencies} />

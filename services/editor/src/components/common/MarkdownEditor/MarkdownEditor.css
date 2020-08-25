@@ -1,0 +1,9 @@
+.textarea-container .CodeMirror,
+.textarea-container .CodeMirror-scroll {
+  min-height: 0;
+  max-height: 120px;
+  min-width: 400px;
+}
+.textarea-container .CodeMirror-scroll {
+  overflow-y: auto;
+}

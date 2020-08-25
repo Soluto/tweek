@@ -24,14 +24,16 @@ export default ({ location, history }) => {
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const isValid = useMemo(() => validateInput({ keyPath, type, url, format }), [keyPath, type, url, format]);
-  const hasChanges = useMemo(() => checkForChanges({ initialHookData, keyPath, type, url, format, tags }), [
+  const isValid = useMemo(() => validateInput({ keyPath, type, url, format }), [
     keyPath,
     type,
     url,
     format,
-    tags
   ]);
+  const hasChanges = useMemo(
+    () => checkForChanges({ initialHookData, keyPath, type, url, format, tags }),
+    [keyPath, type, url, format, tags],
+  );
 
   useErrorNotifier(saveError, 'Failed to save hook');
 
@@ -92,7 +94,7 @@ const HookTypeSelector = ({ setType, type }) => (
 );
 
 const HookFormatSelector = ({ setFormat, format, type }) => {
-  if(type !== 'notification_webhook') {
+  if (type !== 'notification_webhook') {
     return null;
   }
 
@@ -112,29 +114,28 @@ const HookFormatSelector = ({ setFormat, format, type }) => {
   );
 };
 
-const TagsPicker = ({ tags, setTags }) =>
-  (
-    <div className="tags-picker">
-      <label className="field-label">Tags:</label>
-      <ReactTags
-        tags={tags.map(tag => ({ id: tag, text: tag }))}
-        handleDelete={index => setTags(tags.filter((t, i) => i !== index))}
-        handleAddition={tag => setTags([...tags, tag.text])}
-        placeholder="New tag"
-        autofocus={false}
-        allowDeleteFromEmptyInput
-        allowDragDrop={false}
-        minQueryLength={1}
-        classNames={{
-          tags: 'tags-container',
-          tagInput: 'tag-input',
-          tag: 'tag',
-          remove: 'tag-delete-button',
-          suggestions: 'tags-suggestion',
-        }}
-      />
-    </div>
-  );
+const TagsPicker = ({ tags, setTags }) => (
+  <div className="tags-picker">
+    <label className="field-label">Tags:</label>
+    <ReactTags
+      tags={tags.map((tag) => ({ id: tag, text: tag }))}
+      handleDelete={(index) => setTags(tags.filter((t, i) => i !== index))}
+      handleAddition={(tag) => setTags([...tags, tag.text])}
+      placeholder="New tag"
+      autofocus={false}
+      allowDeleteFromEmptyInput
+      allowDragDrop={false}
+      minQueryLength={1}
+      classNames={{
+        tags: 'tags-container',
+        tagInput: 'tag-input',
+        tag: 'tag',
+        remove: 'tag-delete-button',
+        suggestions: 'tags-suggestion',
+      }}
+    />
+  </div>
+);
 
 const useSaveHookCallback = ({
   id,
@@ -164,13 +165,12 @@ const useSaveHookCallback = ({
     }
   }, [id, keyPath, type, url, format, tags]);
 
-const validateInput = ({ keyPath, type, url, format }) => Boolean(keyPath && type && url && (type === 'notification_webhook' ? format : true));
+const validateInput = ({ keyPath, type, url, format }) =>
+  Boolean(keyPath && type && url && (type === 'notification_webhook' ? format : true));
 
 const checkForChanges = ({ initialHookData, keyPath, type, url, format, tags }) =>
-  (
-    keyPath !== initialHookData.keyPath ||
-    type !== initialHookData.type ||
-    url !== initialHookData.url ||
-    format !== initialHookData.format ||
-    tags !== initialHookData.tags
-  );
+  keyPath !== initialHookData.keyPath ||
+  type !== initialHookData.type ||
+  url !== initialHookData.url ||
+  format !== initialHookData.format ||
+  tags !== initialHookData.tags;

@@ -108,6 +108,7 @@ Request body:
 Based on the format, it will format the call:
 
 ## JSON format
+
 POST request with JSON content showing the new state of the keys.
 **Notes**:
 
@@ -195,9 +196,11 @@ Example request body:
 ```
 
 ## Slack format
+
 POST to a Slack webhook with a descriptive message on the event
 
 Example request body:
+
 ```JSON
 {
   "text": "Tweek key changed!..."

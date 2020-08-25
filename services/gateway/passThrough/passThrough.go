@@ -22,7 +22,7 @@ func prepareMiddleware(upstream string, metricsName string, metricsVar *metrics.
 	for i := range metricHandlers {
 		handlers = append(handlers, metricHandlers[i])
 	}
-	
+
 	// Proxy forwarder
 	handlers = append(handlers, proxy.New(parsedUpstream, nil))
 

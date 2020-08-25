@@ -3,7 +3,10 @@ export const webhookFormats = [
   { label: 'Slack', value: 'slack' },
 ];
 
-export const webhookLabelsByFormat = webhookFormats.reduce((labelsByFormat, { value, label }) => ({
-  ...labelsByFormat,
-  [value]: label,
-}), {});
+export const webhookLabelsByFormat = webhookFormats.reduce(
+  (labelsByFormat, { value, label }) => ({
+    ...labelsByFormat,
+    [value]: label,
+  }),
+  {},
+);
