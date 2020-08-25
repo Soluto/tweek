@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gorilla/mux"
 	"tweek-gateway/appConfig"
+
+	"github.com/gorilla/mux"
 )
 
 // Router struct contains all subrouters

@@ -1,9 +1,10 @@
 package corsSupport
 
 import (
+	"tweek-gateway/appConfig"
+
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
-	"tweek-gateway/appConfig"
 )
 
 // New creates and configures CORS support middlware

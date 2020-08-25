@@ -31,7 +31,7 @@ const Editor = ({
       FileEditor = JPadFullEditor;
     }
     return (
-      <JPadFullEditor
+      <FileEditor
         keyPath={keyPath}
         alerter={alerter}
         source={sourceFile}
