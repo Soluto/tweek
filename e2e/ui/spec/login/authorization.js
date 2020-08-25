@@ -8,7 +8,7 @@ const errorMessage = Selector(dataComp('error-message'));
 
 fixture`Authorization error`.page`${editorUrl}`;
 
-test('no permissions to access tweek', async (t) => {
+test.skip('no permissions to access tweek', async (t) => {
   await login(t, { username: 'user2', password: 'pwd' });
 
   await t

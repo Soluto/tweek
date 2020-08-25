@@ -18,12 +18,14 @@ Centralized storage in a JSON file at the git repo. Format:
     "id": "auto_generated_uid",
     "keyPath": "path/to/key",
     "type": "notification_webhook",
+    "format": "json",
     "url": "http://some-domain/awesome_hook"
   },
   {
     "id": "auto_generated_uid",
     "keyPath": "wildcard/path/*",
     "type": "notification_webhook",
+    "format": "json",
     "url": "http://some-other-domain/another_awesome_hook"
   }
 ]
@@ -47,18 +49,21 @@ Response:
       "id": "auto_generated_uid",
       "keyPath":"path/to/key",
       "type":"notification_webhook",
+      "format": "json",
       "url":"http://some-domain/hook"
    },
    {
       "id": "auto_generated_uid",
       "keyPath":"path/to/key",
       "type":"notification_webhook",
+      "format": "json",
       "url":"http://another-domain/hook"
    },
    {
       "id": "auto_generated_uid",
       "keyPath":"wildcard/path/*",
       "type":"notification_webhook",
+      "format": "json",
       "url":"http://some-domain/hook"
    }
 ]
@@ -74,6 +79,7 @@ Request body:
 {
   "keyPath": "path/to/key",
   "type": "notification_webhook",
+  "format": "json",
   "url": "http://hook-url"
 }
 ```
@@ -88,6 +94,7 @@ Request body:
 {
   "keyPath": "path/to/key",
   "type": "notification_webhook",
+  "format": "json",
   "url": "http://hook-url"
 }
 ```
@@ -98,6 +105,9 @@ Request body:
 
 # The webhook request
 
+Based on the format, it will format the call:
+
+## JSON format
 POST request with JSON content showing the new state of the keys.
 **Notes**:
 
@@ -181,5 +191,15 @@ Example request body:
       }
     }
   ]
+}
+```
+
+## Slack format
+POST to a Slack webhook with a descriptive message on the event
+
+Example request body:
+```JSON
+{
+  "text": "Tweek key changed!..."
 }
 ```

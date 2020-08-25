@@ -10,12 +10,6 @@ const deleteRuleAlert = {
 export default class RulesList extends React.Component {
   state = {};
 
-  componentDidUpdate() {
-    if (this.state.autofocusRuleIndex !== undefined) {
-      this.setState({ autofocusRuleIndex: undefined });
-    }
-  }
-
   render() {
     let { mutate, valueType, keyPath } = this.props;
     let { autofocusRuleIndex } = this.state;

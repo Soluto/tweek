@@ -1,11 +1,11 @@
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Path, GET, PUT, ServiceContext, Context, QueryParam } from 'typescript-rest';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import SubjectExtractionRulesRepository from '../repositories/extraction-rules-repository';
 import { addOid } from '../utils/response-utils';
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Path('/subject-extraction-rules')
 export class SubjectExtractionRulesController {
   @Context

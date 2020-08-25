@@ -1,13 +1,12 @@
 ﻿using App.Metrics.AspNetCore;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using App.Metrics.Formatters.Prometheus;
 using Serilog;
-using System.Collections.Generic;
-using System.IO;
 using System;
 using System.Reflection;
-using App.Metrics.AspNetCore.Health;
-using App.Metrics.Formatters.Prometheus;
+using App.Metrics;
 
 namespace Tweek.ApiService
 {
@@ -28,20 +27,14 @@ namespace Tweek.ApiService
                             tags["host"] = Environment.MachineName;
                             tags["app_name"] = Assembly.GetEntryAssembly().GetName().Name;
                             tags["app_version"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-                        });
+                        }).OutputMetrics.AsPrometheusPlainText();
                 })
-                .UseHealth()
-                .UseMetrics(options => { 
-                    options.EndpointOptions = endpointsOptions => {
-                        endpointsOptions.MetricsEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
-                        endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
-                    };
-                })
+                .UseMetrics()
                 .UseKestrel(opts=> opts.Limits.MaxRequestLineSize = 128 * 1024)
                 .UseStartup<Startup>()
                 .UseSerilog()
                 .Build();
-            
+
             host.Run();
         }
     }

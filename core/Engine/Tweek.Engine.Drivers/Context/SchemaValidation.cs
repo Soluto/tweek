@@ -50,6 +50,16 @@ namespace Tweek.Engine.Drivers.Context
                                Error($"property \"{propName}\" not found")));
         }
 
+
+        private static IDictionary<string, PropertyValidator> primitiveValidators = new Dictionary<string, PropertyValidator> {
+            ["number"] = new PropertyValidator(x => x.IsNumber ? Valid : Error("value is not a number")),
+            ["date"] = new PropertyValidator(x => DateTime.TryParse(x.AsString(), out var _) ? Valid : Error("value is not a date")),
+            ["string"] = new PropertyValidator(x => x.IsString ? Valid : Error("value is not a string")),
+            ["boolean"] = new PropertyValidator(x => x.IsBoolean ? Valid : Error("value is not a boolean")),
+            ["array"] = new PropertyValidator(x => x.IsArray ? Valid : Error("value is not a array")),
+            ["object"] = new PropertyValidator(x => x.IsRecord ? Valid : Error("value is not a object")),
+        };
+
         private static PropertyValidator CreateSinglePropertyValidator(JsonValue schema, CustomTypeDefinitionProvider provider)
         {
             switch (schema)
@@ -60,23 +70,17 @@ namespace Tweek.Engine.Drivers.Context
                     var validator = fun((Func<JsonValue, bool> fn) =>
                         new PropertyValidator(x => fn(x) ? Valid : Error($"value is not a {type}")));
 
-                    switch (type)
-                    {
-                        case "number": return validator(x => x.IsNumber);
-                        case "date": return validator(x => DateTime.TryParse(x.AsString(), out var _));
-                        case "string": return validator(x => x.IsString);
-                        case "boolean": return validator(x => x.IsBoolean);
-                        case "array": return validator(x => x.IsArray);
-                        case "object": return validator(x => x.IsRecord);
-                        default:
-                            return provider(type)
+                    return primitiveValidators.TryGetValue(type).IfNone(() => 
+                            provider(type)
                            .Map(customType => CreateCustomTypeValidator(customType))
-                           .IfNone(() => (JsonValue value) => Error($"custom type \"{type}\" not exists"));
-                    }
+                           .IfNone(() => (JsonValue value) => Error($"custom type \"{type}\" not exists"))
+                        );
+                    
                 case JsonValue.Record customTypeRaw:
                     return customTypeRaw.GetPropertyOption("name").Bind(x => customTypeRaw.GetPropertyOption("ofType")).Match(arrayType => {
                         var arrayValidator = CreateSinglePropertyValidator(arrayType, provider);
-                        return (x => x.AsArray().Map(i => arrayValidator(i)).Reduce((a,b) => a | b));
+                        var isArray = primitiveValidators["array"];
+                        return (x => isArray(x) | x.AsArray().Map(i => arrayValidator(i)).Fold(Valid, (a,b) => a | b));
                     }, () => CreateCustomTypeValidator(CustomTypeDefinition.FromJsonValue(customTypeRaw)));
                 default:
                     return (JsonValue _) => Error("unknown type definition");
@@ -85,7 +89,8 @@ namespace Tweek.Engine.Drivers.Context
 
         private static PropertyValidator CreateCustomTypeValidator(CustomTypeDefinition typeDefinition)
         {
-            var validators = Enumerable.Empty<Func<JsonValue, ValidationResult>>();
+            var validators = primitiveValidators.TryGetValue(typeDefinition.Base).AsEnumerable();
+
             if (typeDefinition.AllowedValues.Any())
             {
                 validators = validators.Append((JsonValue property) => typeDefinition.AllowedValues.Any(v => 
@@ -98,7 +103,7 @@ namespace Tweek.Engine.Drivers.Context
                          {
                              var match = validation.IsMatch(property.AsString());
                              return match ? Valid : Error($"value {property.ToString()} does not match regex");
-                         }));
+                         })).Map(x=>new PropertyValidator(x));
 
             validators = validators.Append(regexValidation);
 

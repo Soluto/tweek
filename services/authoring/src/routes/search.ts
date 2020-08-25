@@ -3,7 +3,7 @@ import lunr from 'lunr';
 import { GET, Path, QueryParam } from 'typescript-rest';
 import { Tags } from 'typescript-rest-swagger';
 import searchIndex from '../search-index';
-import { AutoWired } from 'typescript-ioc';
+import { OnlyInstantiableByContainer } from 'typescript-ioc';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import logger from '../utils/logger';
@@ -47,7 +47,7 @@ function performSearch(searchString = '', { maxResults = 25, field, index }): st
   }
 }
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Tags('search')
 @Path('/')
 export class SearchController {

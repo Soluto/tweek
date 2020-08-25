@@ -41,15 +41,15 @@ func Mount(upstreamConfig *appConfig.Upstreams, routesConfig []appConfig.V2Route
 }
 
 func mountRouteTransform(router *mux.Router, middleware *negroni.Negroni, routeConfig appConfig.V2Route, upstreams map[string]*url.URL, forwarders map[string]negroni.HandlerFunc, metricsVar *metrics.Metrics) {
-	handlers := []negroni.Handler{
-		createTransformMiddleware(routeConfig, upstreams),
-		forwarders[routeConfig.Service],
-	}
+	var handlers = []negroni.Handler{}
 
 	metricHandlers := metricsVar.NewMetricsMiddleware(routeConfig.Service + routeConfig.RoutePathPrefix)
 	for i := range metricHandlers {
 		handlers = append(handlers, metricHandlers[i])
 	}
+	handlers = append(handlers, createTransformMiddleware(routeConfig, upstreams))
+	handlers = append(handlers, forwarders[routeConfig.Service])
+
 	handlerFunc := middleware.With(handlers...)
 	if routeConfig.RewriteKeyPath {
 		handlerFunc = negroni.New(createRewriteKeyPathMiddleware()).With(handlerFunc.Handlers()...)

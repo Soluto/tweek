@@ -1,42 +1,44 @@
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using App.Metrics.Health;
-using App.Metrics.Health.Builder;
+using HealthChecks.Uris;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Tweek.ApiService.Diagnostics
 {
-    public class LocalHttpHealthCheck : HealthCheck
+    public class LocalHttpHealthCheck : IHealthCheck
     {
         private readonly IServer server;
-        private HealthCheck healthCheck;
+        private IHealthCheck healthCheck;
 
-        public LocalHttpHealthCheck(IServer server) : base("LocalHttp")
+        private IHttpClientFactory httpClientFactory;
+
+        public LocalHttpHealthCheck(IServer server, IHttpClientFactory httpClientFactory)// : base("LocalHttp")
         {
             this.server = server;
+            this.httpClientFactory = httpClientFactory;
         }
 
-        protected async override ValueTask<HealthCheckResult> CheckAsync(CancellationToken cancellationToken = default(CancellationToken))
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             if (healthCheck == null){
                 var addresses = server.Features.Get<IServerAddressesFeature>().Addresses;
                 if (!addresses.Any()){
                     return HealthCheckResult.Unhealthy();
                 }
-                healthCheck = AppMetricsHealth.CreateDefaultBuilder()
-                    .HealthChecks.AddHttpGetCheck("local", new Uri(addresses
-                    .First()
-                    .Replace("[::]", "localhost")
-                    ), TimeSpan.FromSeconds(5), degradedOnError: true)
-                    .Build()
-                    .Checks.First();
+                
+                healthCheck = new UriHealthCheck(
+                    new UriHealthCheckOptions().UseGet().AddUri(new Uri(addresses.First().Replace("[::]", "localhost" ) )), ()=>httpClientFactory.CreateClient() );
+                
             }
 
-            return (await healthCheck.ExecuteAsync(cancellationToken)).Check;
+            return (await healthCheck.CheckHealthAsync(context, cancellationToken));
         }
     }
 }

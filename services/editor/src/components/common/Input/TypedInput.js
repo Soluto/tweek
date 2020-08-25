@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose, mapProps, withContext, getContext } from 'recompose';
-import changeCase from 'change-case';
+import * as changeCase from 'change-case';
 import { connect } from 'react-redux';
 import ComboBox from '../ComboBox/ComboBox';
 import { showCustomAlert } from '../../../store/ducks/alerts';
@@ -23,7 +23,9 @@ export const withTypesService = ({ safeConvertValue, types, isAllowedValue }) =>
 export const getTypesService = getContext(typesServiceContextType);
 
 const valueToItem = (value) =>
-  value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
+  value === undefined || value === ''
+    ? undefined
+    : { label: changeCase.pascalCase(value.toString()), value };
 
 const CodeEditor = withJsonEditor(
   ({ editJson, onChange, value, valueType, 'data-comp': dataComp, ...props }) => (
@@ -81,7 +83,7 @@ const InputComponent = ({
     return (
       <ComboBox
         {...props}
-        value={value === undefined ? undefined : changeCase.pascalCase(value)}
+        value={value === undefined ? undefined : changeCase.pascalCase(value.toString())}
         suggestions={allowedValues.map(valueToItem)}
         onChange={(input, selected) =>
           selected && onChange(selected.value === undefined ? selected : selected.value)
