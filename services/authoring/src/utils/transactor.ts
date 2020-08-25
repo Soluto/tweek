@@ -13,7 +13,7 @@ export default class Transactor<T> {
   _lock: Locker;
   constructor(
     private _contextPromise: Promise<T>,
-    private _rollbackAction: (context: T) => Promise<void> = async (_) => {},
+    private _rollbackAction: (context: T) => Promise<void> = async _ => {},
     private _shouldRetry: (error: any, context: T) => Promise<boolean> = async (_, __) => false,
   ) {
     this._lock = new Locker();
@@ -31,11 +31,10 @@ export default class Transactor<T> {
 
   async write<U>(transaction: AsyncFunc<T, U>): Promise<U> {
     const context = await this._contextPromise;
-    const transactionObject =
-      typeof transaction === 'function' ? { action: transaction } : transaction;
+    const transactionObject = typeof transaction === 'function' ? { action: transaction } : transaction;
 
     return await this._lock.lock(async () => {
-      while (true) {
+      for (;;) {
         try {
           return await transactionObject.action(context);
         } catch (err) {
