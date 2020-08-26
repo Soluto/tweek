@@ -1,8 +1,8 @@
 diff --git a/node_modules/tweek-client/dist/TweekManagementClient/TweekManagementClient.js b/node_modules/tweek-client/dist/TweekManagementClient/TweekManagementClient.js
-index 5c74098..edf5af7 100644
+index 7401a7a..a67bdce 100644
 --- a/node_modules/tweek-client/dist/TweekManagementClient/TweekManagementClient.js
 +++ b/node_modules/tweek-client/dist/TweekManagementClient/TweekManagementClient.js
-@@ -77,19 +77,23 @@ var TweekManagementClient = (function () {
+@@ -79,19 +79,23 @@ var TweekManagementClient = (function () {
          };
          return this._fetch(url, config).then(noop);
      };
@@ -31,10 +31,10 @@ index 5c74098..edf5af7 100644
          var queryString = utils_1.toQueryString(queryParamsObject);
          var url = this.config.baseServiceUrl + "/api/v2/search" + queryString;
 diff --git a/node_modules/tweek-client/src/TweekManagementClient/TweekManagementClient.ts b/node_modules/tweek-client/src/TweekManagementClient/TweekManagementClient.ts
-index 29686bf..3acdc24 100644
+index 14291fd..ecd9e93 100644
 --- a/node_modules/tweek-client/src/TweekManagementClient/TweekManagementClient.ts
 +++ b/node_modules/tweek-client/src/TweekManagementClient/TweekManagementClient.ts
-@@ -95,20 +95,24 @@ export default class TweekManagementClient implements ITweekManagementClient {
+@@ -94,20 +94,24 @@ export default class TweekManagementClient implements ITweekManagementClient {
      return this._fetch(url, config).then(noop);
    }
  
