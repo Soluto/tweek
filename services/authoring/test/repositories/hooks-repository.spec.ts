@@ -11,11 +11,11 @@ const expect = chai.expect;
 describe('HooksRepository', () => {
   let mockGitRepo;
   let hooksRepo: HooksRepository;
-  const runAction = (action) => action(mockGitRepo);
+  const runAction = action => action(mockGitRepo);
   const mockTransactionManager = {
     write: runAction,
     read: runAction,
-    with: runAction,
+    with: runAction
   };
 
   const hooksFilePath = 'hooks.json';
@@ -33,20 +33,20 @@ describe('HooksRepository', () => {
         id: 'id1',
         keyPath: 'path/to/key',
         type: 'notification_webhook',
-        url: 'http://some-domain/awesome_hook',
+        url: 'http://some-domain/awesome_hook'
       },
       {
         id: 'id2',
         keyPath: 'path/to/key',
         type: 'notification_webhook',
-        url: 'http://some-domain/another_awesome_hook',
+        url: 'http://some-domain/another_awesome_hook'
       },
       {
         id: 'id3',
         keyPath: 'wildcard/path/*',
         type: 'notification_webhook',
-        url: 'https://some-domain/awesome_hook',
-      },
+        url: 'https://some-domain/awesome_hook'
+      }
     ];
     testHooksJson = JSON.stringify(testHooks);
     testAuthor = { name: 'Joel', email: 'joel@lou.com' };
@@ -86,10 +86,7 @@ describe('HooksRepository', () => {
       const newHooks = [testHooks[1]];
       await _updateHooksFile(newHooks, testAuthor);
 
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(newHooks),
-      );
+      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(hooksFilePath, JSON.stringify(newHooks));
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
     });
   });
@@ -105,15 +102,12 @@ describe('HooksRepository', () => {
       const newHook = {
         keyPath: 'some/path',
         type: 'notification_webhook',
-        url: 'http://not-a-real/url',
+        url: 'http://not-a-real/url'
       };
       await hooksRepo.createHook(newHook, testAuthor);
 
       testHooks.push(newHook);
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(testHooks),
-      );
+      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(hooksFilePath, JSON.stringify(testHooks));
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
     });
   });
@@ -131,16 +125,13 @@ describe('HooksRepository', () => {
         id,
         keyPath: 'updated/key/path',
         type: 'notification_webhook',
-        url: 'http://not-a-real/url',
+        url: 'http://not-a-real/url'
       };
 
       await hooksRepo.updateHook(updatedHook, testAuthor);
 
       testHooks[0] = updatedHook;
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(testHooks),
-      );
+      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(hooksFilePath, JSON.stringify(testHooks));
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
     });
   });
@@ -158,10 +149,7 @@ describe('HooksRepository', () => {
       await hooksRepo.deleteHook(id, testAuthor);
 
       testHooks.splice(1, 1);
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(testHooks),
-      );
+      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(hooksFilePath, JSON.stringify(testHooks));
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
     });
   });

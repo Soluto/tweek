@@ -19,9 +19,7 @@ export class HooksRepository {
     if (this._allHooks && !forceRead) return this._allHooks;
 
     try {
-      hooksJson = await this._gitTransactionManager.read((gitRepo) =>
-        gitRepo.readFile(hooksFilePath),
-      );
+      hooksJson = await this._gitTransactionManager.read(gitRepo => gitRepo.readFile(hooksFilePath));
     } catch (err) {
       if (err.message !== missingHooksFileMessage) throw err;
 
@@ -52,7 +50,7 @@ export class HooksRepository {
   }
 
   async deleteHook(id: string, author: Author): Promise<Oid> {
-    let allHooks = await this.getHooks();
+    const allHooks = await this.getHooks();
     const hookIndex = allHooks.findIndex(({ id: hookId }) => hookId === id);
 
     if (hookIndex === -1) throw new Error('deleteHook - The hook to delete does not exist');
@@ -74,7 +72,7 @@ export class HooksRepository {
   private async _updateHooksFile(hooks: Hook[], author: Author): Promise<Oid> {
     const hooksJson = JSON.stringify(hooks);
 
-    return this._gitTransactionManager.write(async (gitRepo) => {
+    return this._gitTransactionManager.write(async gitRepo => {
       await gitRepo.updateFile(hooksFilePath, hooksJson);
       const oid = await gitRepo.commitAndPush('Updating hooks', author);
 

@@ -4,11 +4,11 @@ const simple = require('simple-mock');
 
 describe('TagsRepository', () => {
   let mockGitRepo = <any>{};
-  const runAction = (action) => action(mockGitRepo);
+  const runAction = action => action(mockGitRepo);
   const mockTransactionManager = {
     write: runAction,
     read: runAction,
-    with: runAction,
+    with: runAction
   };
   const target = new TagsRepository(<any>mockTransactionManager);
 
@@ -57,10 +57,7 @@ describe('TagsRepository', () => {
       await target.mergeTags(['tag2', 'tag3'], testAuthor);
 
       // Assert
-      const expected = [
-        'tags.json',
-        JSON.stringify([{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }], null, 4),
-      ];
+      const expected = ['tags.json', JSON.stringify([{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }], null, 4)];
       expect(mockGitRepo.updateFile.calls[0].args).to.deep.equal(expected);
     });
 
