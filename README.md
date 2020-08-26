@@ -1,6 +1,6 @@
 # <img src="https://tweek.soluto.io/assets/logo-with-background.png" width="400" />
 
-[![Codefresh build status](https://g.codefresh.io/api/badges/pipeline/soluto/Soluto%2Ftweek%2Ftweek-all?type=cf-2&branch=master)](https://g.codefresh.io/public/accounts/soluto/pipelines/Soluto/tweek/tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![Github build status](https://github.com/Soluto/tweek/workflows/Main/badge.svg?branch=master)](https://github.com/Soluto/tweek/actions?query=workflow%3AMain+branch%3Amaster) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh)[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 tweek@soluto.com
 
