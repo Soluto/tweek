@@ -12,7 +12,6 @@ services:
       - tweek_ssh_public_key
 
   publishing:
-    image: soluto/tweek-publishing
     build:
       args:
         target: Debug
