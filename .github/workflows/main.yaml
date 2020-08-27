@@ -141,7 +141,7 @@ jobs:
   push-images:
     needs: ["run-net-tests", "run-e2e-integration", "run-e2e-ui"]
     runs-on: ubuntu-latest
-    if: ${{ github.repository == 'soluto/tweek' }}
+    if: ${{ github.repository == 'soluto/tweek' && !startWith(github.ref, 'refs/heads/dependabot') }}
     steps:
       - uses: actions/checkout@v2
         with:
