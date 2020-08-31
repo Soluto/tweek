@@ -7,7 +7,7 @@ const simple = require('simple-mock');
 
 describe('keys-repository', () => {
   let mockGitRepo = <any>{};
-  const runAction = (action) => action(mockGitRepo);
+  const runAction = action => action(mockGitRepo);
   const mockTransactionManager = {
     write: runAction,
     read: runAction,
@@ -34,7 +34,7 @@ describe('keys-repository', () => {
 
       // Assert
       expect(mockGitRepo.listFiles.calls[0].arg).to.equal('manifests');
-      expect(keys).to.deep.equal(expecetdKeys.map((key) => key.replace('.json', '')));
+      expect(keys).to.deep.equal(expecetdKeys.map(key => key.replace('.json', '')));
     });
   });
 
@@ -65,15 +65,12 @@ describe('keys-repository', () => {
       await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
       // Assert
-      const args = mockGitRepo.updateFile.calls.map((x) => x.args);
+      const args = mockGitRepo.updateFile.calls.map(x => x.args);
       expect(args).to.include.something.that.deep.equals([
         `manifests/${testKeyPath}.json`,
         JSON.stringify(testManifest, null, 4),
       ]);
-      expect(args).to.include.something.that.deep.equals([
-        `implementations/jpad/${testKeyPath}.jpad`,
-        testRulesSource,
-      ]);
+      expect(args).to.include.something.that.deep.equals([`implementations/jpad/${testKeyPath}.jpad`, testRulesSource]);
     });
 
     it('should commit and push with the author sent', async () => {
@@ -105,7 +102,7 @@ describe('keys-repository', () => {
       await target.deleteKeys([testKeyPath], testAuthor);
 
       // Assert
-      const args = mockGitRepo.deleteFile.calls.map((x) => x.arg);
+      const args = mockGitRepo.deleteFile.calls.map(x => x.arg);
       expect(args).to.include(`manifests/${testKeyPath}.json`);
       expect(args).to.include(`implementations/jpad/${testKeyPath}.jpad`);
     });
@@ -219,19 +216,15 @@ describe('keys-repository', () => {
         valueType: '',
       },
     };
-    const getKeyRevisions = (revision) =>
+    const getKeyRevisions = revision =>
       Object.keys(keyRevisions)
-        .filter((rev) => JSON.parse(rev.slice(-1)) <= JSON.parse(revision.slice(-1)))
-        .map((rev) => ({ sha: rev }));
+        .filter(rev => JSON.parse(rev.slice(-1)) <= JSON.parse(revision.slice(-1)))
+        .map(rev => ({ sha: rev }));
 
     beforeEach(() => {
-      mockGitRepo.getHistory = simple.spy((path, { revision = 'revision-3' } = {}) =>
-        getKeyRevisions(revision),
-      );
+      mockGitRepo.getHistory = simple.spy((path, { revision = 'revision-3' } = {}) => getKeyRevisions(revision));
       mockGitRepo.readFile = simple.spy((path, { revision = 'revision-3' } = {}) =>
-        JSON.stringify(
-          path.startsWith('manifests') ? manifestRevisions[revision] : keyRevisions[revision],
-        ),
+        JSON.stringify(path.startsWith('manifests') ? manifestRevisions[revision] : keyRevisions[revision]),
       );
     });
 
@@ -302,7 +295,7 @@ describe('keys-repository', () => {
         rules: oldFormatJPAD,
       };
 
-      mockGitRepo.readFile = simple.spy((path) =>
+      mockGitRepo.readFile = simple.spy(path =>
         path.startsWith('manifests') ? metaSource : JSON.stringify(oldFormatJPAD),
       );
 

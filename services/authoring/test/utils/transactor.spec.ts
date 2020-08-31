@@ -18,28 +18,28 @@ describe('Transactor', () => {
   describe('r/w locks', () => {
     it(`'write' should to run in sequence`, async () => {
       const testObject = new Counter();
-      const transactor = new Transactor(Promise.resolve(testObject), (counter) => counter.reset());
-      transactor.write(async (counter) => counter.increment());
-      transactor.write(async (counter) => Promise.resolve().then(() => counter.reset()));
-      await transactor.write(async (counter) => counter.increment());
+      const transactor = new Transactor(Promise.resolve(testObject), counter => counter.reset());
+      transactor.write(async counter => counter.increment());
+      transactor.write(async counter => Promise.resolve().then(() => counter.reset()));
+      await transactor.write(async counter => counter.increment());
       expect(testObject.counter).to.equal(1);
     });
 
     it(`'read' should wait for write to finish`, async () => {
       const testObject = new Counter();
-      const transactor = new Transactor(Promise.resolve(testObject), (counter) => counter.reset());
-      transactor.write(async (counter) => counter.increment());
-      transactor.write(async (counter) => Promise.resolve().then(() => counter.increment()));
-      const value = await transactor.read(async (counter) => counter.counter);
+      const transactor = new Transactor(Promise.resolve(testObject), counter => counter.reset());
+      transactor.write(async counter => counter.increment());
+      transactor.write(async counter => Promise.resolve().then(() => counter.increment()));
+      const value = await transactor.read(async counter => counter.counter);
       expect(value).to.equal(2);
     });
 
     it(`'with' should ignore r/w locks`, async () => {
       const testObject = new Counter();
-      const transactor = new Transactor(Promise.resolve(testObject), (counter) => counter.reset());
-      transactor.write(async (counter) => counter.increment());
-      transactor.write(async (counter) => Promise.resolve().then(() => counter.increment()));
-      const value = await transactor.with(async (counter) => counter.counter);
+      const transactor = new Transactor(Promise.resolve(testObject), counter => counter.reset());
+      transactor.write(async counter => counter.increment());
+      transactor.write(async counter => Promise.resolve().then(() => counter.increment()));
+      const value = await transactor.with(async counter => counter.counter);
       expect(value).to.equal(1);
     });
   });
@@ -47,9 +47,9 @@ describe('Transactor', () => {
   describe('transaction', () => {
     it('should rollback a failed transaction', async () => {
       const testObject = new Counter();
-      const transactor = new Transactor(Promise.resolve(testObject), (counter) => counter.reset());
+      const transactor = new Transactor(Promise.resolve(testObject), counter => counter.reset());
       try {
-        await transactor.write((counter) => {
+        await transactor.write(counter => {
           counter.increment();
           throw new Error('FAIL');
         });
@@ -65,10 +65,10 @@ describe('Transactor', () => {
       const testObject = new Counter();
       const transactor = new Transactor(
         Promise.resolve(testObject),
-        (counter) => counter.reset(),
-        async (c) => ++retryCount && true,
+        counter => counter.reset(),
+        async c => ++retryCount && true,
       );
-      await transactor.write(async (counter) => {
+      await transactor.write(async counter => {
         counter.increment();
         if (retryCount < 3) {
           throw new Error('FAIL');
@@ -83,11 +83,11 @@ describe('Transactor', () => {
       const testObject = new Counter();
       const transactor = new Transactor(
         Promise.resolve(testObject),
-        (counter) => counter.reset(),
-        async (c) => ++retryCount && retryCount < 3,
+        counter => counter.reset(),
+        async c => ++retryCount && retryCount < 3,
       );
       try {
-        await transactor.write(async (counter) => {
+        await transactor.write(async counter => {
           counter.increment();
           throw new Error('FAIL');
         });

@@ -49,7 +49,4 @@ const configs = [
   'CONTINUOUS_UPDATER_INTERVAL',
 ];
 
-export = configs.reduce(
-  (constants, config) => Object.assign({}, constants, { [config]: nconf.get(config) }),
-  {},
-);
+export = configs.reduce((constants, config) => Object.assign({}, constants, { [config]: nconf.get(config) }), {});

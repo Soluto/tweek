@@ -11,7 +11,7 @@ const expect = chai.expect;
 describe('HooksRepository', () => {
   let mockGitRepo;
   let hooksRepo: HooksRepository;
-  const runAction = (action) => action(mockGitRepo);
+  const runAction = action => action(mockGitRepo);
   const mockTransactionManager = {
     write: runAction,
     read: runAction,
@@ -86,10 +86,7 @@ describe('HooksRepository', () => {
       const newHooks = [testHooks[1]];
       await _updateHooksFile(newHooks, testAuthor);
 
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(newHooks),
-      );
+      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(hooksFilePath, JSON.stringify(newHooks));
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
     });
   });
@@ -110,10 +107,7 @@ describe('HooksRepository', () => {
       await hooksRepo.createHook(newHook, testAuthor);
 
       testHooks.push(newHook);
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(testHooks),
-      );
+      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(hooksFilePath, JSON.stringify(testHooks));
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
     });
   });
@@ -137,10 +131,7 @@ describe('HooksRepository', () => {
       await hooksRepo.updateHook(updatedHook, testAuthor);
 
       testHooks[0] = updatedHook;
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(testHooks),
-      );
+      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(hooksFilePath, JSON.stringify(testHooks));
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
     });
   });
@@ -158,10 +149,7 @@ describe('HooksRepository', () => {
       await hooksRepo.deleteHook(id, testAuthor);
 
       testHooks.splice(1, 1);
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(testHooks),
-      );
+      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(hooksFilePath, JSON.stringify(testHooks));
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
     });
   });

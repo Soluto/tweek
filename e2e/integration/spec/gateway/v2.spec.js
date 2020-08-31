@@ -5,18 +5,24 @@ const client = require('../../utils/client');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
 
+const okJsonResponse = (expected) => (res) => {
+  if (!(res.statusCode === 200 && res.body === expected)) {
+    throw new Error('Mismatched json body=' + res.body + ' type=' + typeof res.body);
+  }
+};
+
 describe('Gateway v2 API', () => {
   const key = 'integration_tests/some_key';
 
   it('should get key using v2 (proxy to api service)', async () =>
-    await client.get(`/api/v2/values/${key}`).expect(200, '1.0'));
+    await client.get(`/api/v2/values/${key}`).expect(okJsonResponse(1)));
 
   it('should get key using v2 with keyPath query', async () =>
-    await client.get(`/api/v2/values?keyPath=${encodeURI(key)}`).expect(200, '1.0'));
+    await client.get(`/api/v2/values?keyPath=${encodeURI(key)}`).expect(okJsonResponse(1)));
 
   it('should get key using v2 without authentication', async () => {
     const apiClient = await client.with((client) => client.unset('Authorization'));
-    await apiClient.get(`/api/v2/values/${key}`).expect(200, '1.0');
+    await apiClient.get(`/api/v2/values/${key}`).expect(okJsonResponse(1));
   });
 
   it('should set and get context', async () => {
