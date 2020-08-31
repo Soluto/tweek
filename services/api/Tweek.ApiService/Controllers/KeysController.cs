@@ -85,7 +85,7 @@ namespace Tweek.ApiService.Controllers
 
             var values = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
 
-            var errors = values.Where(x => x.Value.Exception != null).ToDictionary(x => x.Key, x => x.Value.Exception.Message);
+            var errors = values.Where(x => x.Value.Exception != null).ToDictionary(x => x.Key.ToString(), x => x.Value.Exception.Message);
 
             Response.Headers.Add("X-Error-Count", errors.Count.ToString());
 

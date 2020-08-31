@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Threading;
+using System.Text.Json;
 using FSharpUtils.Newtonsoft;
-using Newtonsoft.Json;
 using Xunit;
-using Tweek.Utils;
 
 namespace Tweek.Utils.Tests
 {
-    class Test
+    public class NativeJsonValueConverterTests
     {
-        public JsonValue numberValue;
-        public JsonValue stringValue;
-        public JsonValue nullValue;
-        public JsonValue arrayOfObjectsValue;
-        public JsonValue dateLikeString;
-    }
+        class Test
+        {
+            public JsonValue numberValue { get; set; }
+            public JsonValue stringValue { get; set; }
+            public JsonValue nullValue { get; set; }
+            public JsonValue arrayOfObjectsValue { get; set; }
+            public JsonValue dateLikeString { get; set; }
+        }
 
-    public class JsonValueConverterTests
-    {
         [Fact]
         public void CheckJsonConversation()
         {
@@ -31,17 +29,16 @@ namespace Tweek.Utils.Tests
                     new[] {
                     JsonValue.NewNumber(10),
                     JsonValue.NewRecord(new [] {Tuple.Create("propA", JsonValue.NewNumber(5)), Tuple.Create("propB", JsonValue.NewNumber(10))}),
-                    JsonValue.Null,
                     JsonValue.NewArray(new [] {JsonValue.NewNumber(10)})
                     }                    
                )
             };
-            var converter = new JsonValueConverter();
-            var target = JsonConvert.DeserializeObject<Test>(JsonConvert.SerializeObject(testSubject, converter), converter);
+            var options = new JsonSerializerOptions {Converters = {new NativeJsonValueConverter()}};
+            var target = JsonSerializer.Deserialize<Test>(JsonSerializer.Serialize(testSubject, options), options);
 
             Assert.Equal(testSubject.numberValue, target.numberValue);
             Assert.Equal(testSubject.stringValue, target.stringValue);
-            Assert.Equal(testSubject.nullValue, target.nullValue);
+            Assert.Null(target.nullValue);
             Assert.Equal(testSubject.arrayOfObjectsValue, target.arrayOfObjectsValue);
             Assert.Equal(testSubject.dateLikeString, target.dateLikeString);
 

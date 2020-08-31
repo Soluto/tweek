@@ -55,7 +55,7 @@ namespace Tweek.Utils
                 }
                 writer.WriteEndObject();
             }
-            else if (value == JsonValue.Null)
+            else if (value == JsonValue.Null || value == null)
             {
                 writer.WriteNull();
             }
