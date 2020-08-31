@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import * as SearchService from '../../../../services/search-service';
 import { getTagLink } from '../../utils/search';
+import DocumentTitle from 'react-document-title';
 
 const useSearchResults = (query) => {
   const [searchResults, setSearchResults] = useState(null);
@@ -92,18 +93,16 @@ function searchResult({
   valueType,
 }) {
   return (
-    <SearchResult data-comp="search-result">
+    <SearchResult key={key_path} data-comp="search-result">
       <Link title={key_path} to={`/keys/${key_path}`}>
-        <div>
-          <div data-value-type={getDataValueType(archived, keyType, valueType)} />
-          <div className="title">{name}</div>
-          <div className="tags">
-            {(tags || []).map((x) => (
-              <Link to={getTagLink(x)}>
-                <span className="tag">{x}</span>
-              </Link>
-            ))}
-          </div>
+        <div data-value-type={getDataValueType(archived, keyType, valueType)} />
+        <div className="title">{name}</div>
+        <div className="tags">
+          {(tags || []).map((x) => (
+            <Link to={getTagLink(x)}>
+              <span className="tag">{x}</span>
+            </Link>
+          ))}
         </div>
         <div className="path">{key_path}</div>
         <div className="description">{description}</div>
@@ -123,9 +122,10 @@ export default function SearchResults({
   return (
     <>
       <SearchResultsContainer>
+        <DocumentTitle title={`Tweek - Search results for ${query}`} />
         <div>
           <h1>
-            Showing results for <span class="query">{query}</span>
+            Showing results for <span className="query">{query}</span>
           </h1>
         </div>
         <div>

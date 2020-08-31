@@ -79,6 +79,7 @@ const enhance = compose(
       const { openKey } = this.props;
       if (
         configKey !== BLANK_KEY_NAME &&
+        !configKey.startsWith('$sarch') &&
         (configKey !== this.props.configKey || revision !== this.props.revision)
       ) {
         openKey(configKey, { revision, historySince });
