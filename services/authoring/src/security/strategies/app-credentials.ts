@@ -1,5 +1,5 @@
 import { Strategy } from 'passport-strategy';
-import { generateHash } from '../../apps/apps-utils';
+import { generateHash } from '../../utils/app-utils';
 import crypto = require('crypto');
 
 class ExternalAppsCredentialsStrategy extends Strategy {
@@ -36,7 +36,7 @@ class ExternalAppsCredentialsStrategy extends Strategy {
     const keys = app['secretKeys'];
     this.validateKeys(keys, clientSecret, clientId)
       .then(() => this.success(app, undefined))
-      .catch((ex) => this.error(ex));
+      .catch(ex => this.error(ex));
   }
 }
 
