@@ -34,9 +34,7 @@ export type AppCreationResponseModel = {
   appSecret: string;
 };
 
-export type AppsListResponseModel = {
-  [id: string]: string;
-};
+export type App = AppManifest & { id: string };
 
 export type AppSecretKeyCreationResponseModel = {
   appId: string;
@@ -56,16 +54,17 @@ export class AppsController {
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @GET
-  async getApps(): Promise<AppsListResponseModel> {
+  async getApps(): Promise<App[]> {
     const apps = await this.appsRepository.getApps();
-    return <any>R.pluck('name')(<any>apps);
+    return Object.entries(apps).map(([id, app]) => ({ id, ...app }));
   }
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @Path('/:appId')
   @GET
-  async getApp(@PathParam('appId') appId: string): Promise<AppManifest> {
-    return await this.appsRepository.getApp(appId);
+  async getApp(@PathParam('appId') appId: string): Promise<App> {
+    const app = await this.appsRepository.getApp(appId);
+    return { id: appId, ...app };
   }
 
   @Authorize({ permission: PERMISSIONS.ADMIN })

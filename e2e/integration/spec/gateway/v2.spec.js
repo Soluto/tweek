@@ -32,10 +32,7 @@ describe('Gateway v2 API', () => {
       IsInGroup: true,
     };
 
-    await client
-      .post(`/api/v2/context/user/v2user`)
-      .send(context)
-      .expect(200);
+    await client.post(`/api/v2/context/user/v2user`).send(context).expect(200);
 
     await client
       .get(`/api/v2/context/user/v2user`)
@@ -66,10 +63,7 @@ describe('Gateway v2 API', () => {
       });
 
     const schema = { test: { type: 'string' } };
-    await client
-      .post(`/api/v2/schemas/test_schema`)
-      .send(schema)
-      .expect(200);
+    await client.post(`/api/v2/schemas/test_schema`).send(schema).expect(200);
 
     await client.delete(`/api/v2/schemas/test_schema`).expect(200);
   });
@@ -198,7 +192,9 @@ describe('Gateway v2 API', () => {
 
     const appsRes = await client.get('/api/v2/apps').expect(200);
 
-    expect(appsRes.body).to.include({ [app.appId]: 'test app' });
+    const createdApp = appsRes.body.find((a) => a.id === app.appId);
+    expect(createdApp).to.exist;
+    expect(createdApp).to.have.property('name', 'test app');
 
     const policyRes = await client.get('/api/v2/policies').expect(200);
 
