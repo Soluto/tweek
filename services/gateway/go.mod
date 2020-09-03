@@ -6,7 +6,7 @@ require (
 	github.com/OneOfOne/xxhash v1.2.8 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-ini/ini v1.57.0 // indirect
-	github.com/gorilla/mux v1.7.4
+	github.com/gorilla/mux v1.8.0
 	github.com/gravitational/trace v1.1.11 // indirect
 	github.com/jinzhu/configor v1.2.0
 	github.com/jonboulle/clockwork v0.2.0 // indirect
