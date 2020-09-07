@@ -118,6 +118,76 @@ func TestExtractFromRequest(t *testing.T) {
 			wantErr: nil,
 		},
 		{
+			name: "Get app",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/apps/some_app_id", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/apps", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "read",
+			wantErr: nil,
+		},
+		{
+			name: "Create app",
+			args: args{
+				r: createTestRequest("POST", "https://gateway.tweek.com/api/v2/apps", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/apps", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "write",
+			wantErr: nil,
+		},
+		{
+			name: "Delete app",
+			args: args{
+				r: createTestRequest("DELETE", "https://gateway.tweek.com/api/v2/apps/some_app_id", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/apps", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "write",
+			wantErr: nil,
+		},
+		{
+			name: "Get app keys",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/apps/some_app_id/keys", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/apps", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "read",
+			wantErr: nil,
+		},
+		{
+			name: "Get app key",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/apps/some_app_id/keys/some_key_id", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/apps", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "read",
+			wantErr: nil,
+		},
+		{
+			name: "Create app key",
+			args: args{
+				r: createTestRequest("POST", "https://gateway.tweek.com/api/v2/apps/some_app_id/keys", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/apps", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "write",
+			wantErr: nil,
+		},
+		{
+			name: "Delete app key",
+			args: args{
+				r: createTestRequest("DELETE", "https://gateway.tweek.com/api/v2/apps/some_app_id/keys/some_key_id", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/apps", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "write",
+			wantErr: nil,
+		},
+		{
 			name: "Get Policies",
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/policies", userInfo),
