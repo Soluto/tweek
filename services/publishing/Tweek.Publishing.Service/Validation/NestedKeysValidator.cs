@@ -1,10 +1,6 @@
 using System;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using LanguageExt;
-using Newtonsoft.Json;
-using Tweek.Publishing.Service.Model.Rules;
 
 namespace Tweek.Publishing.Service.Validation
 {
@@ -14,7 +10,7 @@ namespace Tweek.Publishing.Service.Validation
         {
             var currentFilePath = Path.GetDirectoryName(filePath);
             
-            while (currentFilePath != "manifests")
+            while (currentFilePath != "manifests" && !string.IsNullOrEmpty(currentFilePath))
             {
                 try
                 {
