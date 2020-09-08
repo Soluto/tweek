@@ -21,6 +21,8 @@ import { signOut } from './services/auth-service';
 import PoliciesPage from './pages/settings/components/PoliciesPage/PoliciesPage';
 import HooksPage from './pages/settings/components/HooksPage/HooksPage';
 import EditHookPage from './pages/settings/components/HooksPage/EditHookPage';
+import ExternalAppsPage from './pages/settings/components/ExternalAppsPage/ExternalAppsPage';
+import EditExternalAppsPage from './pages/settings/components/ExternalAppsPage/EditExternalAppPage';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
@@ -45,6 +47,8 @@ const renderSettingsRoutes = ({ match }) => (
     <PrivateRoute path={`${match.path}/policies`} component={PoliciesPage} />
     <PrivateRoute exact path={`${match.path}/hooks`} component={HooksPage} />
     <PrivateRoute path={`${match.path}/hooks/edit`} component={EditHookPage} />
+    <PrivateRoute exact path={`${match.path}/externalApps`} component={ExternalAppsPage} />
+    <PrivateRoute path={`${match.path}/externalApps/edit`} component={EditExternalAppsPage} />
   </SettingsPage>
 );
 

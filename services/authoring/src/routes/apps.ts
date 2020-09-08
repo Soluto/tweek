@@ -24,6 +24,8 @@ const allowedPermissions = R.without(<any>PERMISSIONS.ADMIN, R.values(PERMISSION
 
 const hasValidPermissions = R.all(<any>R.contains((<any>R).__, allowedPermissions));
 
+const getPublicProps = (s: AppSecretKey) => ({ id: s.id, creationDate: s.creationDate });
+
 export type AppCreationRequestModel = {
   name: string;
   permissions: Array<string>;
@@ -34,7 +36,13 @@ export type AppCreationResponseModel = {
   appSecret: string;
 };
 
-export type App = AppManifest & { id: string };
+export type App = {
+  id: string;
+  version: string;
+  name: string;
+  secretKeys: Pick<AppSecretKey, 'id' | 'creationDate'>[];
+  permissions?: string[];
+};
 
 export type AppSecretKeyCreationResponseModel = {
   appId: string;
@@ -56,7 +64,7 @@ export class AppsController {
   @GET
   async getApps(): Promise<App[]> {
     const apps = await this.appsRepository.getApps();
-    return Object.entries(apps).map(([id, app]) => ({ id, ...app }));
+    return Object.entries(apps).map(([id, app]) => ({ id, ...app, secretKeys: app.secretKeys.map(getPublicProps) }));
   }
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
