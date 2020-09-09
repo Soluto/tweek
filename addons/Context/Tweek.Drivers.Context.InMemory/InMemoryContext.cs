@@ -36,16 +36,16 @@ namespace Tweek.Drivers.Context.InMemory
         {
             var key = GetKey(identity);
 
-            if (_data.TryGetValue(key, out var existingContext))
-            {
-                _data[key] = MergeContexts(existingContext, context);
-                return Task.CompletedTask;
-            }
+            _data.AddOrUpdate(
+                key,
+                key => {
+                    var contextWithDate = new Dictionary<string, JsonValue>(context);
+                    contextWithDate.Add("@CreationDate", JsonValue.NewString(DateTimeOffset.UtcNow.ToString()));
+                    return contextWithDate;
+                },
+                (key, existingContext) => MergeContexts(existingContext, context)
+            );
 
-            var contextWithDate = new Dictionary<string, JsonValue>(context);
-            contextWithDate.Add("@CreationDate", JsonValue.NewString(DateTimeOffset.UtcNow.ToString()));
-
-            _data[key] = contextWithDate;
             return Task.CompletedTask;
         }
 

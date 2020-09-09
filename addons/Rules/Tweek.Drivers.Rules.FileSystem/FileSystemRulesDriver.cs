@@ -14,30 +14,23 @@ namespace Tweek.Drivers.Rules.FileSystem
 
     public FileSystemRulesDriver(string directoryPathInput) => directoryPath = directoryPathInput;
 
-    public async Task<string> GetVersion(CancellationToken _)
+    public async Task<string> GetVersion(CancellationToken cancellationToken = default(CancellationToken))
     {
-      var json = await readFile("versions");
+      var json = await readFile("versions", cancellationToken);
       var versions = JObject.Parse(json);
       return versions["latest"].Value<string>();
     }
 
-    public async Task<Dictionary<string, RuleDefinition>> GetRuleset(string version, CancellationToken _)
+    public async Task<Dictionary<string, RuleDefinition>> GetRuleset(string version, CancellationToken cancellationToken = default(CancellationToken))
     {
-      var json = await readFile(version);
+      var json = await readFile(version, cancellationToken);
       return JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>(json);
     }
 
-    private async Task<string> readFile(string fileName)
+    private Task<string> readFile(string fileName, CancellationToken cancellationToken)
     {
       var filePath = Path.Combine(directoryPath, fileName);
-      string json = null;
-
-      using (var streamReader = new StreamReader(filePath))
-      {
-        json = await streamReader.ReadToEndAsync();
-      }
-
-      return json;
+      return File.ReadAllTextAsync(filePath, cancellationToken);
     }
   }
 }
