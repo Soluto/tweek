@@ -56,6 +56,7 @@ namespace Tweek.ApiService.Controllers
         }
 
         [HttpGet("api/v1/keys/{*path}")]
+        [HttpGet("api/v2/values/{*path}")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
         [Produces("application/json")]
