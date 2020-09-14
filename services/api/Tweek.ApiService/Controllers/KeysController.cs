@@ -61,7 +61,23 @@ namespace Tweek.ApiService.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
         [Produces("application/json")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult> GetAsync([FromRoute] string path)
+        public Task<ActionResult> GetAsync([FromRoute] string path)
+        {
+            return GetKey(path);
+        }
+
+        [HttpGet("api/v1/keys")]
+        [HttpGet("api/v2/values")]
+        [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
+        [Produces("application/json")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public Task<ActionResult> GetFromQueryAsync([FromQuery] string keyPath)
+        {
+            return GetKey(keyPath);
+        }
+
+        private async Task<ActionResult> GetKey(string path)
         {
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
             var modifiers = allParams.Item1;
