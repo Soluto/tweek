@@ -15,9 +15,9 @@ namespace Tweek.Drivers.Rules.FileSystem
         public void Configure(IServiceCollection services, IConfiguration configuration)
         {
             var fileSystemConfiguration = configuration.GetSection("Rules:FileSystem");
-            var directoryPath = fileSystemConfiguration.GetValue<string>("DirectoryPath");
+            var filePath = fileSystemConfiguration.GetValue<string>("FilePath");
 
-            services.AddSingleton<IRulesDriver>(new FileSystemRulesDriver(directoryPath));
+            services.AddSingleton<IRulesDriver>(new FileSystemRulesDriver(filePath));
         }
     }
 }
