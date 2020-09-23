@@ -11670,10 +11670,10 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tweek-client@^2.0.1:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-2.0.4.tgz#cad51993527353af7ded29d81099e043f245727b"
-  integrity sha512-j2OCicYTFuqMyQuaMwBevanRI16TfZGYVHcm9dA4nZpRC63RV2Xjw0DYE0tti40Jy5puHKrylQ8Ik0xAZL5I1g==
+tweek-client@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-2.2.0.tgz#29459cb9501909e71c3e194f1429a8ff2a80517d"
+  integrity sha512-Gr/5aTg6Zm7+tXHZJL+gSoyhaUarmEPi2qFt1PsfFfoBh2XE/CaNfoPXE0g3tj+WHGH7+9jASNMIEJVzKp4STw==
   dependencies:
     change-emitter "^0.1.6"
     cross-fetch "^3.0.1"

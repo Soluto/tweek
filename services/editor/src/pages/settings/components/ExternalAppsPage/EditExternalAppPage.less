@@ -1,0 +1,68 @@
+@import "../../../../styles/core/core.less";
+@import "../../../../styles/core/comboBox.less";
+@import (reference) "../../../../styles/core/tags.less";
+
+@text-padding: 10px;
+@panel-padding: 35px;
+@small-font: 16px;
+@smaller-font: 15px;
+
+@button-width: 100px;
+@button-height: 25px;
+
+.edit-external-app-page {
+  .panel;
+  padding: @panel-padding;
+  border-width: 0;
+  box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.2);
+  margin-top: 18px * 2 + 36px;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0.5;
+
+  h3 {
+    font-size: 22px;
+    padding-left: @text-padding;
+    margin: 0px 0px 58px 0px;
+    font-weight: 400;
+  }
+
+  .field-input-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    align-content: space-between;
+    padding-left: @text-padding;
+    padding-right: @button-width + @panel-padding;
+    margin-bottom: 41px;
+
+    > input {
+      .metro-textbox;
+      font-size: @small-font;
+      width: 550px;
+    }
+  }
+
+  .field-label {
+    .label-text();
+    align-items: center;
+    padding-bottom: 1px;
+  }
+
+  .permissions-picker {
+    .field-input-wrapper;
+    .metro-tags;
+  }
+}
+
+.label-text() {
+  all: unset;
+  font-size: @small-font;
+  margin: 0px 5px 0 0;
+  color: gray;
+  display: flex;
+  white-space: nowrap;
+}

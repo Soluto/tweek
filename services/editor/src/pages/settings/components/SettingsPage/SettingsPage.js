@@ -25,6 +25,9 @@ const SettingsPage = ({ children }) => (
               <li>
                 <Link to={`/settings/hooks`}>Hooks</Link>
               </li>
+              <li>
+                <Link to={`/settings/externalApps`}>External Apps</Link>
+              </li>
             </ul>
           </li>
         </ul>
