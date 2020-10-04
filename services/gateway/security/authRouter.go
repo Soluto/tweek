@@ -60,6 +60,7 @@ func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath, basicAuthConfig 
 			}
 			if !utils.ContainsString(basicAuthConfig.RedirectURLs, redirectURL.Scheme+"://"+redirectURL.Host) {
 				http.Error(w, "Redirect URL is invalid", http.StatusBadRequest)
+				return
 			}
 
 			state := requestQuery.Get("state")
