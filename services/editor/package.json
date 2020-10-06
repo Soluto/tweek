@@ -38,7 +38,7 @@
     "jsonschema": "1.2.6",
     "jwt-decode": "^2.2.0",
     "md5": "^2.2.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.1",
     "oidc-client": "^1.6.1",
     "papp-polyfill": "^1.1.0",
     "prop-types": "^15.6.1",
