@@ -243,7 +243,7 @@ const MultiVariantValue = ({
                   m
                     .up()
                     .in('Value')
-                    .updateValue('true')
+                    .updateValue(true)
                     .up()
                     .in('Type')
                     .updateValue('SingleVariant')
@@ -267,7 +267,7 @@ const MultiVariantValue = ({
                   m
                     .up()
                     .in('Value')
-                    .updateValue('false')
+                    .updateValue(false)
                     .up()
                     .in('Type')
                     .updateValue('SingleVariant')
