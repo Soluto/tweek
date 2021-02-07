@@ -81,6 +81,7 @@ export const withJsonEditor = compose(
             )}
           </AutoSizer>
         ),
+        resizable: true,
         buttons: [saveButton, buttons.CANCEL],
       };
 
