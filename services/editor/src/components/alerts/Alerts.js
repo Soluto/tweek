@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withState, setDisplayName, compose } from 'recompose';
@@ -30,6 +31,7 @@ const Alert = addState(
     onClose,
     showCloseButton = false,
     componentData,
+    resizable = false,
     setComponentData,
   }) => (
     <Rodal
@@ -37,7 +39,7 @@ const Alert = addState(
       visible
       showCloseButton={showCloseButton}
       onClose={onClose}
-      className={'rodal-container'}
+      className={classNames('rodal-container', { resizable })}
     >
       {title && reactify(title, { className: 'rodal-header' })}
       {message && reactify(message, { className: 'rodal-body' })}

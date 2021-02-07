@@ -2,6 +2,13 @@
   color: #555;
   line-height: 1.42857143;
 
+  &.resizable .rodal-dialog {
+    resize: both;
+    overflow: auto;
+    min-width: 500px;
+    min-height: 400px;
+  }
+
   .rodal-header {
     font-size: 16px;
     padding-bottom: 10px;
@@ -24,24 +31,27 @@
       margin: 0 5px;
       padding: 4px 15px;
       border-radius: 3px;
-      transition: background .2s;
+      transition: background 0.2s;
       border: 1px solid #03a9f4;
     }
 
-    .rodal-confirm-btn, .rodal-save-btn, .auto-partition-btn {
+    .rodal-confirm-btn,
+    .rodal-save-btn,
+    .auto-partition-btn {
       color: #fff;
       background: #03a9f4;
       &:hover {
         background: #0098e3;
       }
-      &:disabled{
+      &:disabled {
         background: #dddddd;
         border: 1px solid #cccccc;
-        color:#888888;
+        color: #888888;
       }
     }
 
-    .rodal-cancel-btn, .reset-partitions-btn {
+    .rodal-cancel-btn,
+    .reset-partitions-btn {
       color: #03a9f4;
       background: #fff;
       &:hover {
