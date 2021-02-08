@@ -11,7 +11,7 @@ require (
 	github.com/jinzhu/configor v1.2.0
 	github.com/jonboulle/clockwork v0.2.0 // indirect
 	github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806
-	github.com/lestrrat-go/jwx v1.0.3
+	github.com/lestrrat-go/jwx v1.1.1
 	github.com/minio/minio-go v6.0.14+incompatible
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/nats-io/jwt v1.0.1 // indirect
@@ -26,10 +26,7 @@ require (
 	github.com/sirupsen/logrus v1.6.0
 	github.com/urfave/negroni v1.0.0
 	github.com/vulcand/oxy v1.1.0
-	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
-	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
-	golang.org/x/sys v0.0.0-20200808120158-1030fc2bf1d9 // indirect
-	golang.org/x/text v0.3.3 // indirect
+	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/h2non/gock.v1 v1.0.11
 	gopkg.in/ini.v1 v1.60.0 // indirect
