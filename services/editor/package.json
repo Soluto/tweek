@@ -78,7 +78,7 @@
     "rxjs": "^6.4.0",
     "rxjs-compat": "^6.4.0",
     "title-case": "3.0.2",
-    "tweek-client": "^2.2.1",
+    "tweek-client": "2.2.1-rc1",
     "tweek-local-cache": "^0.6.2",
     "velocity-react": "^1.3.3"
   },
