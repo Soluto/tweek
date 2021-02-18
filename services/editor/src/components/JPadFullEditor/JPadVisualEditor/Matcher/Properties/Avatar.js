@@ -15,7 +15,12 @@ function getAvatarText(identity) {
   let i = 1;
   while (i < identity.length) {
     const result = identity.substring(0, i).toLowerCase();
-    if (!lowerNames.some((n) => n.startsWith(result))) return result;
+    if (!lowerNames.some((n) => n.startsWith(result))) {
+      if (result.length > 1) {
+        return result.slice(0,1).concat(result.slice(-1));
+      }
+      else return result;
+    }
     i++;
   }
   return identity;
