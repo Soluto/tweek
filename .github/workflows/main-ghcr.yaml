@@ -152,12 +152,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Login Docker DH
-        if: ${{ github.repository == 'soluto/tweek' }}
-        env:
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-          DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
-        run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: Download build images
         uses: actions/download-artifact@v2
         with:
