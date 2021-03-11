@@ -16,6 +16,7 @@ import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
 import './KeysList.css';
+import { getTagLink } from '../../utils/search';
 
 const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFilter, filter }) => (
   <div className="search-input-wrapper">
@@ -93,7 +94,9 @@ const CardItem = ({
         <div className="title">{name}</div>
         <div>
           {(tags || []).map((x) => (
-            <span className="tag">{x}</span>
+            <Link className="tag" to={getTagLink(x)}>
+              {x}
+            </Link>
           ))}
         </div>
       </div>

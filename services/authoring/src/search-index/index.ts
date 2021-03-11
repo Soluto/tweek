@@ -74,13 +74,13 @@ function createDependencyIndexes(manifests) {
 }
 
 export default {
-  get indexPromise() {
+  get indexPromise(): Promise<lunr.Index> {
     return indexPromise;
   },
   get manifests() {
     return manifestPromise;
   },
-  get index() {
+  get index(): lunr.Index {
     return index;
   },
   dependents(key) {

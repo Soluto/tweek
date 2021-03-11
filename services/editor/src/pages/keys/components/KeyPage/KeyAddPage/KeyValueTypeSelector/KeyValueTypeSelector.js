@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as changeCase from 'change-case';
-import {titleCase} from 'title-case';
+import { titleCase } from 'title-case';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 import ValidationIcon from '../../../../../../components/common/ValidationIcon';
 import * as TypesServices from '../../../../../../services/types-service';

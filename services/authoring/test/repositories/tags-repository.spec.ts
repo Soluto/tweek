@@ -8,7 +8,7 @@ describe('TagsRepository', () => {
   const mockTransactionManager = {
     write: runAction,
     read: runAction,
-    with: runAction
+    with: runAction,
   };
   const target = new TagsRepository(<any>mockTransactionManager);
 

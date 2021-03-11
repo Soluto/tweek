@@ -23,7 +23,10 @@ const mapSuggestionsToProps = compose(
       .startWith([]);
 
     return Observable.combineLatest(props$, suggestions$).map(
-      ([{ getSuggestions, maxSearchResults, onChange, ...props }, suggestions]) => ({
+      ([
+        { getSuggestions, maxSearchResults, onChange, showInternalKeys: _, ...props },
+        suggestions,
+      ]) => ({
         ...props,
         suggestions,
         onChange: (txt, ...args) => {

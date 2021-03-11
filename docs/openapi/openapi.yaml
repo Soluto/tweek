@@ -40,7 +40,7 @@ paths:
         require permissions "values:/{keyPath*}" (with limitation based on context policy and context params )
       
       tags:
-        - configuraiton
+        - configuration
       responses:
         '200':
           description: Success

@@ -2,7 +2,9 @@
 FROM node:14.7.0-alpine AS dependencies
 WORKDIR /opt/app/
 COPY package.json yarn.lock ./
+COPY patches ./patches
 RUN yarn --production --network-timeout 1000000
+RUN yarn patch-package
 
 # ---- Build ----
 FROM dependencies AS build

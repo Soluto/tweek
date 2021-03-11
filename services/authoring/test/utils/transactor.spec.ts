@@ -66,7 +66,7 @@ describe('Transactor', () => {
       const transactor = new Transactor(
         Promise.resolve(testObject),
         counter => counter.reset(),
-        async c => ++retryCount && true
+        async c => ++retryCount && true,
       );
       await transactor.write(async counter => {
         counter.increment();
@@ -84,7 +84,7 @@ describe('Transactor', () => {
       const transactor = new Transactor(
         Promise.resolve(testObject),
         counter => counter.reset(),
-        async c => ++retryCount && retryCount < 3
+        async c => ++retryCount && retryCount < 3,
       );
       try {
         await transactor.write(async counter => {

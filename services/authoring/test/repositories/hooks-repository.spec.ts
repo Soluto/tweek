@@ -15,7 +15,7 @@ describe('HooksRepository', () => {
   const mockTransactionManager = {
     write: runAction,
     read: runAction,
-    with: runAction
+    with: runAction,
   };
 
   const hooksFilePath = 'hooks.json';
@@ -33,20 +33,20 @@ describe('HooksRepository', () => {
         id: 'id1',
         keyPath: 'path/to/key',
         type: 'notification_webhook',
-        url: 'http://some-domain/awesome_hook'
+        url: 'http://some-domain/awesome_hook',
       },
       {
         id: 'id2',
         keyPath: 'path/to/key',
         type: 'notification_webhook',
-        url: 'http://some-domain/another_awesome_hook'
+        url: 'http://some-domain/another_awesome_hook',
       },
       {
         id: 'id3',
         keyPath: 'wildcard/path/*',
         type: 'notification_webhook',
-        url: 'https://some-domain/awesome_hook'
-      }
+        url: 'https://some-domain/awesome_hook',
+      },
     ];
     testHooksJson = JSON.stringify(testHooks);
     testAuthor = { name: 'Joel', email: 'joel@lou.com' };
@@ -102,7 +102,7 @@ describe('HooksRepository', () => {
       const newHook = {
         keyPath: 'some/path',
         type: 'notification_webhook',
-        url: 'http://not-a-real/url'
+        url: 'http://not-a-real/url',
       };
       await hooksRepo.createHook(newHook, testAuthor);
 
@@ -125,7 +125,7 @@ describe('HooksRepository', () => {
         id,
         keyPath: 'updated/key/path',
         type: 'notification_webhook',
-        url: 'http://not-a-real/url'
+        url: 'http://not-a-real/url',
       };
 
       await hooksRepo.updateHook(updatedHook, testAuthor);

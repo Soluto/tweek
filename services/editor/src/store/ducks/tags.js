@@ -1,6 +1,8 @@
 /* global process console */
 import { handleActions } from 'redux-actions';
+import { push } from 'connected-react-router';
 import { tweekManagementClient } from '../../utils/tweekClients';
+import { getTagLink } from '../../pages/keys/utils/search';
 import { showError } from './notifications';
 
 const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
@@ -14,6 +16,12 @@ export function downloadTags() {
     } catch (error) {
       return dispatch(showError({ title: 'Failed to download tags', error }));
     }
+  };
+}
+
+export function navigateToTagResults(tag) {
+  return (dispatch) => {
+    dispatch(push(getTagLink(tag)));
   };
 }
 
