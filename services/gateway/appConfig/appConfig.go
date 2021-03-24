@@ -60,12 +60,13 @@ type AuthLogin struct {
 
 // AuthProvider - configuration of each auth provider
 type AuthProvider struct {
-	Name      string    `json:"name" yaml:"name"`
-	Issuer    string    `json:"issuer" yaml:"issuer"`
-	Authority string    `json:"authority" yaml:"authority"`
-	ClientID  string    `json:"client_id" yaml:"client_id"`
-	JWKSURL   string    `json:"jwks_uri" yaml:"jwks_uri"`
-	LoginInfo AuthLogin `json:"login_info" yaml:"login_info"`
+	Name             string    `json:"name" yaml:"name"`
+	Issuer           string    `json:"issuer" yaml:"issuer"`
+	Authority        string    `json:"authority" yaml:"authority"`
+	ClientID         string    `json:"client_id" yaml:"client_id"`
+	JWKSURL          string    `json:"jwks_uri" yaml:"jwks_uri"`
+	UserInfoEndpoint string    `json:"userinfo_endpoint" yaml:"userinfo_endpoint"`
+	LoginInfo        AuthLogin `json:"login_info" yaml:"login_info"`
 }
 
 // Auth - struct with config related to authentication

@@ -3,7 +3,9 @@ package security
 import (
 	"context"
 	"crypto/rsa"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 
@@ -66,7 +68,9 @@ func AuthenticationMiddleware(configuration *appConfig.Security, extractor Subje
 	}
 	var jwksEndpoints []string
 	for _, issuer := range configuration.Auth.Providers {
-		jwksEndpoints = append(jwksEndpoints, issuer.JWKSURL)
+		if issuer.JWKSURL != "" {
+			jwksEndpoints = append(jwksEndpoints, issuer.JWKSURL)
+		}
 	}
 	LoadAllEndpoints(jwksEndpoints)
 	RefreshEndpoints(jwksEndpoints)
@@ -86,61 +90,66 @@ func AuthenticationMiddleware(configuration *appConfig.Security, extractor Subje
 
 func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, extractor SubjectExtractor) (UserInfo, error) {
 	var claims jwt.MapClaims
-	token, err := request.ParseFromRequest(req, request.AuthorizationHeaderExtractor, func(t *jwt.Token) (interface{}, error) {
-		claims := t.Claims.(jwt.MapClaims)
-		if issuer, ok := claims["iss"].(string); ok {
-			if issuer == "tweek" || issuer == "tweek-basic-auth" {
-				return tweekPrivateKey.Public(), nil
-			}
-
-			if keyID, ok := t.Header["kid"].(string); ok {
-				return getKeyByIssuer(issuer, keyID, configuration.Auth.Providers)
-			}
-
-			return nil, fmt.Errorf("No keyId in header")
-		}
-		return nil, fmt.Errorf("No issuer in claims")
-	})
-
-	if err != nil && err != request.ErrNoTokenInRequest {
-		return nil, err
-	}
-
 	var sub *Subject
+	var err error
 	var issuer string
 
-	if err == request.ErrNoTokenInRequest {
-		clientID := req.Header.Get("x-client-id")
-		clientSecret := req.Header.Get("x-client-secret")
+	providerHeader := req.Header.Get("X-Provider")
+	provider, ok := configuration.Auth.Providers[providerHeader]
 
-		if len(clientID) == 0 && len(clientSecret) == 0 {
-			sub = &Subject{User: "anonymous", Group: "anonymous"}
-			issuer = "none"
-		} else {
-			validateCredentialsErr := externalApps.ValidateCredentials(clientID, clientSecret)
-			if validateCredentialsErr != nil {
-				logrus.WithError(validateCredentialsErr).WithField("clientID", clientID).Error("Couldn't validate app for clientID")
-				return nil, validateCredentialsErr
-			}
-
-			sub = &Subject{User: clientID, Group: "externalapps"}
-			issuer = "tweek-externalapps"
+	if ok && len(provider.UserInfoEndpoint) > 0 {
+		claims, err = getUserInfoFromEndpoint(req, provider.UserInfoEndpoint)
+		if err != nil {
+			return nil, err
 		}
 
+		claims["iss"] = provider.Issuer
+		sub, err = extractor.ExtractSubject(req.Context(), claims)
+		if err != nil {
+			logrus.WithError(err).Error("Failed to extract user info from userinfo_endpoint claims")
+			return nil, fmt.Errorf("failed to extract user info from userinfo_endpoint claims")
+		}
+
+		issuer = provider.Issuer
 	} else {
-		var extractSubjectErr error
-		claims = token.Claims.(jwt.MapClaims)
-		issuer = claims["iss"].(string)
-		if issuer == "tweek-basic-auth" {
-			sub = &Subject{User: claims["sub"].(string), Group: "externalapps"}
-		} else {
-			sub, extractSubjectErr = extractor.ExtractSubject(req.Context(), claims)
-			if extractSubjectErr != nil {
-				logrus.WithError(extractSubjectErr).Error("Failed to extract user info from JWT claims")
-				return nil, fmt.Errorf("Failed to extract user info from JWT claims")
-			}
+		token, err := extractToken(req, configuration)
+
+		if err != nil && err != request.ErrNoTokenInRequest {
+			return nil, err
 		}
 
+		if err == request.ErrNoTokenInRequest {
+			clientID := req.Header.Get("x-client-id")
+			clientSecret := req.Header.Get("x-client-secret")
+
+			if len(clientID) == 0 && len(clientSecret) == 0 {
+				sub = &Subject{User: "anonymous", Group: "anonymous"}
+				issuer = "none"
+			} else {
+				validateCredentialsErr := externalApps.ValidateCredentials(clientID, clientSecret)
+				if validateCredentialsErr != nil {
+					logrus.WithError(validateCredentialsErr).WithField("clientID", clientID).Error("Couldn't validate app for clientID")
+					return nil, validateCredentialsErr
+				}
+
+				sub = &Subject{User: clientID, Group: "externalapps"}
+				issuer = "tweek-externalapps"
+			}
+
+		} else {
+			claims = token.Claims.(jwt.MapClaims)
+			issuer = claims["iss"].(string)
+			if issuer == "tweek-basic-auth" {
+				sub = &Subject{User: claims["sub"].(string), Group: "externalapps"}
+			} else {
+				sub, err = extractor.ExtractSubject(req.Context(), claims)
+				if err != nil {
+					logrus.WithError(err).Error("Failed to extract user info from JWT claims")
+					return nil, fmt.Errorf("Failed to extract user info from JWT claims")
+				}
+			}
+
+		}
 	}
 
 	var name, email string = getNameAndEmail(req.URL, claims, sub)
@@ -180,6 +189,54 @@ func getNameAndEmail(url *url.URL, claims jwt.MapClaims, subject *Subject) (name
 	}
 
 	return name, email
+}
+
+func getUserInfoFromEndpoint(r *http.Request, url string) (jwt.MapClaims, error) {
+	req, err := http.NewRequest(http.MethodPost, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Authorization", r.Header.Get("Authorization"))
+	client := http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return nil, fmt.Errorf("invalid response from user info endpoint: %d", resp.StatusCode)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var info jwt.MapClaims
+
+	err = json.Unmarshal(body, &info)
+
+	return info, err
+}
+
+func extractToken(req *http.Request, configuration *appConfig.Security) (token *jwt.Token, err error) {
+	return request.ParseFromRequest(req, request.AuthorizationHeaderExtractor, func(t *jwt.Token) (interface{}, error) {
+		claims := t.Claims.(jwt.MapClaims)
+		if issuer, ok := claims["iss"].(string); ok {
+			if issuer == "tweek" || issuer == "tweek-basic-auth" {
+				return tweekPrivateKey.Public(), nil
+			}
+
+			if keyID, ok := t.Header["kid"].(string); ok {
+				return getKeyByIssuer(issuer, keyID, configuration.Auth.Providers)
+			}
+
+			return nil, fmt.Errorf("No keyId in header")
+		}
+		return nil, fmt.Errorf("No issuer in claims")
+	})
 }
 
 func getKeyByIssuer(issuer, keyID string, providers map[string]appConfig.AuthProvider) (interface{}, error) {
