@@ -3,7 +3,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router';
 import { mapPropsStream } from 'recompose';
 import { Observable } from 'rxjs';
-import { isAuthenticated } from './services/auth-service';
+import { getClient } from './services/auth-service';
 
 const PrivateRoute = ({ component: Component, render, isAuthenticated, location, ...rest }) => (
   <Route
@@ -28,7 +28,10 @@ const PrivateRoute = ({ component: Component, render, isAuthenticated, location,
 );
 
 const enhance = mapPropsStream((props$) => {
-  const isAuthenticated$ = Observable.defer(() => isAuthenticated());
+  const isAuthenticated$ = Observable.defer(() => {
+    const client = getClient();
+    return client && client.isAuthenticated();
+  });
   return props$.switchMap((props) =>
     isAuthenticated$.map((isAuthenticated) => ({ ...props, isAuthenticated })),
   );

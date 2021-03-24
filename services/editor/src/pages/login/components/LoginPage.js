@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import styled from '@emotion/styled';
-import { configureOidc, signinRequest, azureSignin } from '../../../services/auth-service';
+import { setProvider } from '../../../services/auth-service';
 import { tweekManagementClient } from '../../../utils/tweekClients';
 import logoSrc from '../../../components/resources/logo.svg';
 import BasicAuthLoginButton from './BasicAuthLoginButton';
@@ -103,17 +103,8 @@ const enhancer = compose(
           id: key,
           name: res[key].name,
           action: (state) => {
-            if (res[key].login_info.login_type === 'azure') {
-              // need to figure out what to do with the state here.
-              const params = res[key].login_info.additional_info;
-              return azureSignin(params.resource, params.tenant, res[key].client_id, state);
-            }
-            if (res[key].login_info.login_type === 'oidc') {
-              return signinRequest(
-                configureOidc(res[key].authority, res[key].client_id, res[key].login_info.scope),
-                state,
-              );
-            }
+            const client = setProvider(res[key]);
+            return client.signIn(state);
           },
         }));
       this.props.setAuthProviders(providers);
