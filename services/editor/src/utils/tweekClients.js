@@ -10,6 +10,7 @@ const config = {
     const client = getClient();
     return client && client.getAuthToken();
   },
+  //todo remove this after updating the client code
   fetch: (info, init) => {
     const client = getClient();
     const provider = client && client.provider.id;
