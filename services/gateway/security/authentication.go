@@ -94,7 +94,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 	var err error
 	var issuer string
 
-	providerHeader := req.Header.Get("X-Provider")
+	providerHeader := req.Header.Get("X-Auth-Provider")
 	provider, ok := configuration.Auth.Providers[providerHeader]
 
 	if ok && len(provider.UserInfoEndpoint) > 0 {

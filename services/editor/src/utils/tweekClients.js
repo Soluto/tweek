@@ -17,12 +17,12 @@ const config = {
 
     if (init) {
       const headers = new Headers(init.headers);
-      headers.append('X-Provider', provider);
+      headers.append('X-Auth-Provider', provider);
       init.headers = headers;
     } else if (typeof info === 'string') {
-      init = { headers: { 'X-Provider': provider } };
+      init = { headers: { 'X-Auth-Provider': provider } };
     } else {
-      info.headers.append('X-Provider', provider);
+      info.headers.append('X-Auth-Provider', provider);
     }
 
     return fetch(info, init);
