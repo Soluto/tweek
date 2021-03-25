@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import styled from '@emotion/styled';
-import { setProvider } from '../../../services/auth-service';
+import { signIn } from '../../../services/auth-service';
 import { tweekManagementClient } from '../../../utils/tweekClients';
 import logoSrc from '../../../components/resources/logo.svg';
 import BasicAuthLoginButton from './BasicAuthLoginButton';
@@ -102,10 +102,7 @@ const enhancer = compose(
         .map((key) => ({
           id: key,
           name: res[key].name,
-          action: (state) => {
-            const client = setProvider(res[key]);
-            return client.signIn(state);
-          },
+          action: (state) => signIn({ id: key, ...res[key] }, state),
         }));
       this.props.setAuthProviders(providers);
     },

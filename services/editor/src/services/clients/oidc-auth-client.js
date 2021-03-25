@@ -22,6 +22,7 @@ export class OidcAuthClient extends BaseAuthClient {
       authority: provider.authority,
       client_id: provider.client_id,
       scope: provider.login_info.scope,
+      response_type: provider.login_info.response_type || basicOidcConfig.response_type,
       userStore: new Oidc.WebStorageStateStore({ store: storage }),
     });
 
@@ -39,8 +40,12 @@ export class OidcAuthClient extends BaseAuthClient {
   }
 
   async isAuthenticated() {
-    const authenticated = super.isAuthenticated();
-    if (authenticated) {
+    const user = await this.client.getUser();
+    if (!user) {
+      return false;
+    }
+
+    if (user && !user.expired) {
       return true;
     }
 
@@ -48,14 +53,21 @@ export class OidcAuthClient extends BaseAuthClient {
       await this.client.signinSilent();
       return true;
     } catch (err) {
-      await this.signIn();
       return false;
     }
   }
 
   async getAuthToken() {
     const user = await this.client.getUser();
-    return user && user.id_token;
+    if (!user) {
+      return undefined;
+    }
+
+    if (this.provider.userinfo_endpoint) {
+      return user.access_token;
+    }
+
+    return user.id_token;
   }
 
   processRedirect() {

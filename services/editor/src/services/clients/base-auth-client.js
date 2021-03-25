@@ -3,9 +3,13 @@ import moment from 'moment';
 import storage from './storage';
 
 export const isTokenValid = (token) => {
-  const decoded = jwt_decode(token);
-  const expiration = moment.unix(decoded.exp);
-  return moment().isBefore(expiration);
+  try {
+    const decoded = jwt_decode(token);
+    const expiration = moment.unix(decoded.exp);
+    return moment().isBefore(expiration);
+  } catch (err) {
+    console.error('failed to decode token', err);
+  }
 };
 
 export class BaseAuthClient {

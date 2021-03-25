@@ -28,13 +28,20 @@ const PrivateRoute = ({ component: Component, render, isAuthenticated, location,
 );
 
 const enhance = mapPropsStream((props$) => {
-  const isAuthenticated$ = Observable.defer(() => {
+  return props$.switchMap(async (props) => {
     const client = getClient();
-    return client && client.isAuthenticated();
+    if (!client) {
+      return { ...props, isAuthenticated: false };
+    }
+    const authenticated = await client.isAuthenticated();
+    if (authenticated) {
+      return { ...props, isAuthenticated: true };
+    }
+
+    await client.signIn({ redirect: props.location });
+
+    return { ...props, isAuthenticated: false };
   });
-  return props$.switchMap((props) =>
-    isAuthenticated$.map((isAuthenticated) => ({ ...props, isAuthenticated })),
-  );
 });
 
 export default enhance(PrivateRoute);

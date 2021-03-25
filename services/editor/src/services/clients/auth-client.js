@@ -23,6 +23,10 @@ export const storeProvider = (provider) => {
   storage.setItem(PROVIDER_KEY, JSON.stringify(provider));
 };
 
+export const clearProvider = () => {
+  storage.removeItem(PROVIDER_KEY);
+};
+
 export const getAuthClient = (provider = getStoredProvider()) => {
   if (!provider) {
     return undefined;

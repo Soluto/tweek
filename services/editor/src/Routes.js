@@ -18,7 +18,7 @@ import IdentityPage from './pages/settings/components/IdentityPage/IdentityPage'
 import NoMatch from './components/NoMatch';
 import browserHistory from './store/browserHistory';
 import './styles/styles.css';
-import { getClient } from './services/auth-service';
+import { getClient, signOut } from './services/auth-service';
 import PoliciesPage from './pages/settings/components/PoliciesPage/PoliciesPage';
 import HooksPage from './pages/settings/components/HooksPage/HooksPage';
 import EditHookPage from './pages/settings/components/HooksPage/EditHookPage';
@@ -65,8 +65,7 @@ const renderAppRoutes = () => (
         path="/logout"
         exact
         render={() => {
-          const client = getClient();
-          client && client.signOut();
+          signOut();
           return <Redirect to="/login" />;
         }}
       />
