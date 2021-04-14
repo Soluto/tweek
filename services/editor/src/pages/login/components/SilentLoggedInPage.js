@@ -1,26 +1,15 @@
-import { connect } from 'react-redux';
-import { replace } from 'connected-react-router';
-import { compose, lifecycle } from 'recompose';
+import React, { useEffect, useState } from 'react';
+import { Redirect } from 'react-router';
+import { processSilentSigninCallback } from '../../../services/auth-service';
 
-import { processSilentSigninCallback, storeToken } from '../../../services/auth-service';
+const SilentLoggedInPage = () => {
+  const [loading, setLoading] = useState(true);
 
-const mapDispatchToProps = (dispatch) => ({
-  redirect: (url) => dispatch(replace(url)),
-});
+  useEffect(() => {
+    processSilentSigninCallback().then(() => setLoading(false));
+  }, []);
 
-const enhance = compose(
-  connect(
-    null,
-    mapDispatchToProps,
-  ),
-  lifecycle({
-    componentDidMount() {
-      processSilentSigninCallback().then((user) => {
-        storeToken(user.access_token);
-        this.props.redirect('/');
-      });
-    },
-  }),
-);
+  return loading ? null : <Redirect to={'/'} />;
+};
 
-export default enhance(() => null);
+export default SilentLoggedInPage;

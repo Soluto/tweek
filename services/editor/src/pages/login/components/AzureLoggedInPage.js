@@ -1,25 +1,18 @@
-import { connect } from 'react-redux';
-import { replace } from 'connected-react-router';
-import { compose, lifecycle } from 'recompose';
-import { getAzureToken, getAzureState } from '../../../services/auth-service';
+import React, { useEffect, useState } from 'react';
+import { Redirect } from 'react-router';
+import { getAzureState, getAzureToken } from '../../../services/auth-service';
 
-const mapDispatchToProps = (dispatch) => ({
-  redirect: (url) => dispatch(replace(url)),
-});
+const AzureLoggedInPage = () => {
+  const [redirectUrl, setRedirectUrl] = useState('');
 
-const enhance = compose(
-  connect(
-    null,
-    mapDispatchToProps,
-  ),
-  lifecycle({
-    componentDidMount() {
-      const { state } = getAzureState();
-      getAzureToken();
-      const redirect = (state && state.redirect) || { pathname: '/' };
-      this.props.redirect(`${redirect.pathname}${redirect.hash || redirect.search || ''}`);
-    },
-  }),
-);
+  useEffect(() => {
+    const { state } = getAzureState();
+    getAzureToken();
+    const redirect = (state && state.redirect) || { pathname: '/' };
+    setRedirectUrl(`${redirect.pathname}${redirect.hash || redirect.search || ''}`);
+  }, []);
 
-export default enhance(() => null);
+  return redirectUrl ? <Redirect to={redirectUrl} /> : null;
+};
+
+export default AzureLoggedInPage;
