@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { compose, pure, lifecycle, mapProps, withState } from 'recompose';
 import * as R from 'ramda';
@@ -37,56 +38,61 @@ const KeyRulesEditor = ({
   onMutation,
   alerter,
   isReadonly,
-  selectedTab,
-  onTabSelected,
-  hasUnsavedChanges,
-  setHasUnsavedChanges,
-}) => (
-  <div className="key-rules-editor-container" data-comp="key-rules-editor" disabled={isReadonly}>
-    <Tabs
-      className="tab-container"
-      selectedIndex={selectedTab}
-      onSelect={async (index, lastIndex) => {
-        if (
-          lastIndex === 1 &&
-          hasUnsavedChanges &&
-          !(await alerter.showConfirm(confirmUnsavedAlert)).result
-        )
-          return true;
-        setHasUnsavedChanges(false);
-        onTabSelected(index);
-      }}
-    >
-      <TabList>
-        <Tab className="tab-header">
-          <label className="key-definition-tab-icon"> </label>
-          <label className="tab-title" data-tab-header="rules">
-            Rules
-          </label>
-        </Tab>
-        <Tab className="tab-header">
-          <label className="key-source-tab-icon"> </label>
-          <label className="tab-title" data-tab-header="source">
-            Source
-          </label>
-        </Tab>
-      </TabList>
-      <TabPanel className="tab-content">
-        <ErrorHandler errorMessage="Rules Editor does not support this format yet, please use Source instead">
-          <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-            <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
-          </fieldset>
-        </ErrorHandler>
-      </TabPanel>
-      <TabPanel className="tab-content">
-        <JPadTextEditor
-          {...{ source, isReadonly, setHasUnsavedChanges }}
-          onChange={(x) => onMutation(JSON.parse(x))}
-        />
-      </TabPanel>
-    </Tabs>
-  </div>
-);
+}) => {
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const history = useHistory();
+  const params = new URLSearchParams(history.location.search);
+  const selectedTab = Number(params.get('tab') || 0);
+
+  return (
+    <div className="key-rules-editor-container" data-comp="key-rules-editor" disabled={isReadonly}>
+      <Tabs
+        className="tab-container"
+        selectedIndex={selectedTab}
+        onSelect={async (index, lastIndex) => {
+          if (
+            lastIndex === 1 &&
+            hasUnsavedChanges &&
+            !(await alerter.showConfirm(confirmUnsavedAlert)).result
+          ) {
+            return false;
+          }
+          setHasUnsavedChanges(false);
+          params.set('tab', index);
+          history.replace({ ...history.location, search: params.toString() });
+        }}
+      >
+        <TabList>
+          <Tab className="tab-header">
+            <label className="key-definition-tab-icon"> </label>
+            <label className="tab-title" data-tab-header="rules">
+              Rules
+            </label>
+          </Tab>
+          <Tab className="tab-header">
+            <label className="key-source-tab-icon"> </label>
+            <label className="tab-title" data-tab-header="source">
+              Source
+            </label>
+          </Tab>
+        </TabList>
+        <TabPanel className="tab-content">
+          <ErrorHandler errorMessage="Rules Editor does not support this format yet, please use Source instead">
+            <fieldset disabled={isReadonly} style={{ border: 'none' }}>
+              <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
+            </fieldset>
+          </ErrorHandler>
+        </TabPanel>
+        <TabPanel className="tab-content">
+          <JPadTextEditor
+            {...{ source, isReadonly, setHasUnsavedChanges }}
+            onChange={(x) => onMutation(JSON.parse(x))}
+          />
+        </TabPanel>
+      </Tabs>
+    </div>
+  );
+};
 
 function getTypedValue(value, valueType) {
   try {
@@ -146,8 +152,6 @@ const JPadFullEditor = compose(
     ...other,
   })),
   MutatorFor('sourceTree'),
-  withState('selectedTab', 'onTabSelected', 0),
-  withState('hasUnsavedChanges', 'setHasUnsavedChanges', false),
   pure,
   lifecycle({
     componentWillReceiveProps({ valueType, mutate }) {

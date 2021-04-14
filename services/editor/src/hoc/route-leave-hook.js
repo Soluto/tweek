@@ -1,5 +1,5 @@
 import React from 'react';
-import { Prompt } from 'react-router';
+import { Prompt, useLocation } from 'react-router';
 import { lifecycle, compose } from 'recompose';
 
 const routeLeaveHook = (fn, message, wrapperProps) =>
@@ -19,12 +19,22 @@ const routeLeaveHook = (fn, message, wrapperProps) =>
         window.removeEventListener('beforeunload', this._onUnload);
       },
     }),
-    (Component) => (props) => (
-      <div {...wrapperProps}>
-        <Prompt message={message} when={fn(props)} />
-        <Component {...props} />
-      </div>
-    ),
+    (Component) => (props) => {
+      const location = useLocation();
+      return (
+        <div {...wrapperProps}>
+          <Prompt
+            message={(nextLocation) => {
+              if (fn(props, nextLocation, location)) {
+                return message;
+              }
+              return true;
+            }}
+          />
+          <Component {...props} />
+        </div>
+      );
+    },
   );
 
 export default routeLeaveHook;
