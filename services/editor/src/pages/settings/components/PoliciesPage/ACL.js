@@ -24,16 +24,20 @@ export default function ACLEditor() {
       validate={isValidJson}
       monacoProps={{
         editorWillMount: (monaco) => {
-          monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-            validate: true,
-            schemas: [
-              {
-                uri: 'http://tweek/policies',
-                fileMatch: ['*'],
-                schema: jsonSchema,
-              },
-            ],
-          });
+          try {
+            monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+              validate: true,
+              schemas: [
+                {
+                  uri: 'http://tweek/policies',
+                  fileMatch: ['*'],
+                  schema: jsonSchema,
+                },
+              ],
+            });
+          } catch (err) {
+            console.error('failed to set schema', err);
+          }
         },
       }}
     />
