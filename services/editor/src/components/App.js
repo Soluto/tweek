@@ -25,7 +25,7 @@ const App = ({ children }) => (
       <div className={'app'}>
         <GoogleTagManager />
         <AppHeader />
-        <AppPage children={children} />
+        <AppPage>{children}</AppPage>
       </div>
     </TweekProvider>
   </CurrentUserProvider>

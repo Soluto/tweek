@@ -8,8 +8,8 @@ import IdentitiesMenu from './IdentitiesMenu';
 const SettingsPage = ({ children }) => (
   <DocumentTitle title="Tweek - Settings">
     <div className="schema-page-container">
-      <div style={{ display: 'flex', flexDirection: 'column', flexBasis: 400 }}>
-        <ul style={{ flexGrow: 1 }} className="side-menu" key="SideMenu">
+      <div className="settings-menu">
+        <ul className="navigation-menu" key="SideMenu">
           <IdentitiesMenu />
           <li>
             <div data-comp="group">Security</div>

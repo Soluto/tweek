@@ -2,6 +2,11 @@
 
 .app {
   @header-size: 70px;
+
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
   .menu {
     li {
       list-style: none;
@@ -50,12 +55,9 @@
     }
   }
   .header {
-    top: 0;
-    left: 0;
-    right: 0;
+    width: 100%;
     height: @header-size;
     display: flex;
-    position: fixed;
     border-bottom: 1px solid lightgray;
     align-items: center;
     background-color: #009fda;
@@ -76,11 +78,9 @@
     }
   }
   .page {
-    position: absolute;
-    top: @header-size;
-    left: 0;
-    right: 0;
-    bottom: 0;
     display: flex;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
   }
 }
