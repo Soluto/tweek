@@ -6,7 +6,7 @@ import { editorUrl } from '../../utils/constants';
 import { getLocation } from '../../utils/location-utils';
 
 export default class SettingsPage {
-  sideMenu = Selector('.side-menu');
+  sideMenu = Selector('.navigation-menu');
 
   newIdentity = this.sideMenu.find(dataComp('add-new-identity'));
   newIdentityInput = this.newIdentity.find('input');
