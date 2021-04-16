@@ -1,4 +1,5 @@
 /* global Promise */
+import styled from '@emotion/styled';
 import React from 'react';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig, compose } from 'recompose';
@@ -7,26 +8,31 @@ import { CurrentUserProvider } from '../contexts/CurrentUser';
 import withLoading from '../hoc/with-loading';
 import { refreshSchema } from '../services/context-service';
 import * as TypesService from '../services/types-service';
-import AppHeader from './AppHeader';
+import AppHeader from './AppHeader/AppHeader';
 import AppPage from './AppPage';
 import ErrorPage from './ErrorPage';
 import GoogleTagManager from './googleTagManager';
 import { withTypesService } from './common/Input/TypedInput';
 import '../styles/core/fonts/fonts.css';
-import './App.css';
 
 setObservableConfig({
   fromESObservable: Observable.from,
 });
 
+const AppContainer = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+
 const App = ({ children }) => (
   <CurrentUserProvider>
     <TweekProvider>
-      <div className={'app'}>
+      <AppContainer>
         <GoogleTagManager />
         <AppHeader />
         <AppPage>{children}</AppPage>
-      </div>
+      </AppContainer>
     </TweekProvider>
   </CurrentUserProvider>
 );
