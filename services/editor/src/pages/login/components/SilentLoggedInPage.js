@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Redirect } from 'react-router';
+import React, { useEffect } from 'react';
 import { processSilentSigninCallback } from '../../../services/auth-service';
 
-const SilentLoggedInPage = () => {
-  const [loading, setLoading] = useState(true);
-
+const SilentLoggedInPage = ({ history }) => {
   useEffect(() => {
-    processSilentSigninCallback().then(() => setLoading(false));
+    processSilentSigninCallback().then(() => history.replace('/'));
   }, []);
 
-  return loading ? null : <Redirect to={'/'} />;
+  return null;
 };
 
 export default SilentLoggedInPage;

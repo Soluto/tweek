@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Redirect } from 'react-router';
+import React, { useEffect } from 'react';
 import { getAzureState, getAzureToken } from '../../../services/auth-service';
 
-const AzureLoggedInPage = () => {
-  const [redirectUrl, setRedirectUrl] = useState('');
-
+const AzureLoggedInPage = ({ history }) => {
   useEffect(() => {
     const { state } = getAzureState();
     getAzureToken();
-    const redirect = (state && state.redirect) || { pathname: '/' };
-    setRedirectUrl(`${redirect.pathname}${redirect.hash || redirect.search || ''}`);
+    const redirect = (state && state.redirect) || '/';
+    history.replace(redirect);
   }, []);
 
-  return redirectUrl ? <Redirect to={redirectUrl} /> : null;
+  return null;
 };
 
 export default AzureLoggedInPage;

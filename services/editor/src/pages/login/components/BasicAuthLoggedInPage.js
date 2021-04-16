@@ -1,26 +1,16 @@
-import { connect } from 'react-redux';
-import { replace } from 'connected-react-router';
-import { compose, lifecycle } from 'recompose';
 import qs from 'query-string';
+import { useEffect } from 'react';
 import { storeToken } from '../../../services/auth-service';
 
-const mapDispatchToProps = (dispatch) => ({
-  redirect: (url) => dispatch(replace(url)),
-});
+const BasicAuthLoggedInPage = ({ location, history }) => {
+  useEffect(() => {
+    const { jwt, state } = qs.parse(location.search);
+    storeToken(jwt);
+    const redirect = JSON.parse(state).redirect || '/';
+    history.replace(redirect);
+  }, []);
 
-const enhance = compose(
-  connect(
-    null,
-    mapDispatchToProps,
-  ),
-  lifecycle({
-    componentDidMount() {
-      const { jwt, state } = qs.parse(this.props.location.search);
-      storeToken(jwt);
-      const redirect = JSON.parse(state).redirect || { pathname: '/' };
-      this.props.redirect(`${redirect.pathname}${redirect.hash || redirect.search || ''}`);
-    },
-  }),
-);
+  return null;
+};
 
-export default enhance(() => null);
+export default BasicAuthLoggedInPage;

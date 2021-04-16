@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Redirect } from 'react-router';
+import React, { useEffect } from 'react';
 import { processSigninRedirectCallback } from '../../../services/auth-service';
 
-const LoggedInPage = () => {
-  const [redirectUrl, setRedirectUrl] = useState('');
+const LoggedInPage = ({ history }) => {
   useEffect(() => {
     processSigninRedirectCallback().then(({ state }) => {
-      const redirect = (state && state.redirect) || { pathname: '/' };
-      setRedirectUrl(`${redirect.pathname}${redirect.hash || redirect.search || ''}`);
+      const redirect = (state && state.redirect) || '/';
+      history.replace(redirect);
     });
   }, []);
 
-  return redirectUrl ? <Redirect to={redirectUrl} /> : null;
+  return null;
 };
 
 export default LoggedInPage;
