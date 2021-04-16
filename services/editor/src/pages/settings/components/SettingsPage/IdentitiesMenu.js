@@ -1,47 +1,40 @@
-import { Link } from 'react-router-dom';
-import React from 'react';
-import { compose, lifecycle, withPropsOnChange } from 'recompose';
+import React, { useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { loadSchema } from '../../../../store/ducks/schema';
 import AddIdentity from './AddIdentity';
+import { MenuItem, MenuLinkItem } from './MenuGroup';
 
 const IdentityLinkItem = ({ type }) => (
-  <li key={type}>
-    <Link data-identity-type={type} to={`/settings/identities/${type}`}>
-      {type}
-    </Link>
-  </li>
+  <MenuLinkItem data-identity-type={type} to={`/settings/identities/${type}`}>
+    {type}
+  </MenuLinkItem>
 );
 
-const enhanceIdentities = compose(
-  connect(
-    (state) => ({ schema: state.schema }),
-    { loadSchema },
-  ),
-  lifecycle({
-    componentWillMount() {
-      this.props.loadSchema();
-    },
-  }),
-  withPropsOnChange(['schema'], ({ schema }) => ({
-    identities: Object.entries(schema)
-      .filter(([_, { remote }]) => remote !== null)
-      .map(([type]) => type),
-  })),
-);
+const enhanceIdentities = connect((state) => ({ schema: state.schema }), { loadSchema });
 
-const IdentitiesMenu = ({ identities }) => (
-  <li>
-    <div data-comp="group">Identities</div>
-    <ul>
+const IdentitiesMenu = ({ loadSchema, schema }) => {
+  useEffect(() => {
+    loadSchema();
+  }, []);
+
+  const identities = useMemo(
+    () =>
+      Object.entries(schema)
+        .filter(([_, { remote }]) => remote !== null)
+        .map(([type]) => type),
+    [schema],
+  );
+
+  return (
+    <>
       {identities.map((identity) => (
         <IdentityLinkItem key={identity} type={identity} />
       ))}
-      <li>
+      <MenuItem>
         <AddIdentity />
-      </li>
-    </ul>
-  </li>
-);
+      </MenuItem>
+    </>
+  );
+};
 
 export default enhanceIdentities(IdentitiesMenu);
