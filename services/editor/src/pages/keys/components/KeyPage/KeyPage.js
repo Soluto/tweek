@@ -58,10 +58,7 @@ const mapStateToProps = (state, { match, location }) => {
 };
 
 const enhance = compose(
-  connect(
-    mapStateToProps,
-    { ...selectedKeyActions, ...alertActions },
-  ),
+  connect(mapStateToProps, { ...selectedKeyActions, ...alertActions }),
   routeLeaveHook(
     hasUnsavedChanges,
     'You have unsaved changes, are you sure you want to leave this page?',
@@ -79,7 +76,7 @@ const enhance = compose(
       const { openKey } = this.props;
       if (
         configKey !== BLANK_KEY_NAME &&
-        !configKey.startsWith('$sarch') &&
+        !configKey.startsWith('$search') &&
         (configKey !== this.props.configKey || revision !== this.props.revision)
       ) {
         openKey(configKey, { revision, historySince });
