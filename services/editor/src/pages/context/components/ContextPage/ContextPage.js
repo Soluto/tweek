@@ -20,6 +20,10 @@ const ContextPage = ({ children, isExact, ...props }) => (
 );
 
 export default compose(
-  withLoading(() => null, (error) => <ErrorPage error={error} />, refreshSchema),
+  withLoading(
+    () => <>Loading...</>,
+    (error) => <ErrorPage error={error} />,
+    refreshSchema,
+  ),
   mapProps(({ params, ...rest }) => ({ ...params, ...rest })),
 )(ContextPage);

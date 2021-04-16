@@ -1,21 +1,20 @@
-import React from 'react';
 import classNames from 'classnames';
-import { withState } from 'recompose';
+import React, { useState } from 'react';
 import wrapComponentWithClass from '../../../hoc/wrap-component-with-class';
 import './EditableText.css';
 
-const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
-  ({
-    value,
-    placeHolder,
-    maxLength,
-    classNames: classes = {},
-    isInEditMode,
-    setIsInEditMode,
-    onTextChanged = () => {},
-    isReadonly,
-    ...props
-  }) => (
+const EditableText = ({
+  value,
+  placeHolder,
+  maxLength,
+  classNames: classes = {},
+  onTextChanged = () => {},
+  isReadonly,
+  ...props
+}) => {
+  const [isInEditMode, setIsInEditMode] = useState(false);
+
+  return (
     <div
       className={classNames('editable-text-container', classes.container)}
       data-comp="editable-text"
@@ -52,7 +51,7 @@ const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
         </div>
       )}
     </div>
-  ),
-);
+  );
+};
 
 export default wrapComponentWithClass(EditableText);

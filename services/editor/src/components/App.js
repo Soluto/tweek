@@ -42,7 +42,7 @@ const preload = async () => await Promise.all([TypesService.refreshTypes(), refr
 const errorRenderer = (error) => <ErrorPage error={error} />;
 
 const enhance = compose(
-  withLoading(() => null, errorRenderer, preload),
+  withLoading(() => <>Loading...</>, errorRenderer, preload),
   withTypesService(TypesService),
 );
 

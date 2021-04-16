@@ -1,8 +1,7 @@
-import React from 'react';
-import { compose, withState, lifecycle } from 'recompose';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { configureOidc, signinRequest, azureSignin } from '../../../services/auth-service';
-import { tweekManagementClient } from '../../../utils/tweekClients';
+import { tweekManagementClient } from '../../../utils';
 import logoSrc from '../../../components/resources/logo.svg';
 import BasicAuthLoginButton from './BasicAuthLoginButton';
 
@@ -74,28 +73,11 @@ const LoginButton = styled.div`
   text-decoration: none;
 `;
 
-const LoginPage = ({ authProviders, location: { state = {} } }) => (
-  <MainComponent>
-    <LeftPane>
-      <WelcomeMessageSpan>Welcome to:</WelcomeMessageSpan>
-      <TweekLogo data-comp="tweek-logo" src={logoSrc} />
-    </LeftPane>
-    <RightPane>
-      <LoginMessageSpan>Log into Tweek using:</LoginMessageSpan>
-      {authProviders.map((ap) => (
-        <LoginButton key={ap.id} onClick={() => ap.action({ state })} data-comp={ap.id}>
-          {ap.name}
-        </LoginButton>
-      ))}
-      <BasicAuthLoginButton state={state} />
-    </RightPane>
-  </MainComponent>
-);
+const useAuthProviders = () => {
+  const [authProviders, setAuthProviders] = useState([]);
 
-const enhancer = compose(
-  withState('authProviders', 'setAuthProviders', []),
-  lifecycle({
-    async componentWillMount() {
+  useEffect(() => {
+    (async () => {
       const res = await tweekManagementClient.getAuthProviders();
       const providers = Object.keys(res)
         .filter((key) => res[key].login_info && res[key].login_info.login_type)
@@ -116,9 +98,33 @@ const enhancer = compose(
             }
           },
         }));
-      this.props.setAuthProviders(providers);
-    },
-  }),
-);
+      setAuthProviders(providers);
+    })();
+  }, []);
 
-export default enhancer(LoginPage);
+  return authProviders;
+};
+
+const LoginPage = ({ location: { state = {} } }) => {
+  const authProviders = useAuthProviders();
+
+  return (
+    <MainComponent>
+      <LeftPane>
+        <WelcomeMessageSpan>Welcome to:</WelcomeMessageSpan>
+        <TweekLogo data-comp="tweek-logo" src={logoSrc} />
+      </LeftPane>
+      <RightPane>
+        <LoginMessageSpan>Log into Tweek using:</LoginMessageSpan>
+        {authProviders.map((ap) => (
+          <LoginButton key={ap.id} onClick={() => ap.action({ state })} data-comp={ap.id}>
+            {ap.name}
+          </LoginButton>
+        ))}
+        <BasicAuthLoginButton state={state} />
+      </RightPane>
+    </MainComponent>
+  );
+};
+
+export default LoginPage;

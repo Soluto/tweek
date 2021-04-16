@@ -1,37 +1,30 @@
 /* global process */
-import React from 'react';
-import { Route, Redirect } from 'react-router';
-import { mapPropsStream } from 'recompose';
-import { Observable } from 'rxjs';
+import React, { useEffect, useState } from 'react';
+import { Route, useHistory } from 'react-router';
 import { isAuthenticated } from './services/auth-service';
 
-const PrivateRoute = ({ component: Component, render, isAuthenticated, location, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) =>
-      isAuthenticated ? (
-        Component ? (
-          <Component {...props} />
-        ) : (
-          render(props)
-        )
-      ) : (
-        <Redirect
-          to={{
-            pathname: '/login',
-            state: { redirect: location },
-          }}
-        />
-      )
-    }
-  />
-);
+const PrivateRoute = (props) => {
+  const [loading, setLoading] = useState(true);
+  const history = useHistory();
 
-const enhance = mapPropsStream((props$) => {
-  const isAuthenticated$ = Observable.defer(() => isAuthenticated());
-  return props$.switchMap((props) =>
-    isAuthenticated$.map((isAuthenticated) => ({ ...props, isAuthenticated })),
-  );
-});
+  useEffect(() => {
+    isAuthenticated().then((authenticated) => {
+      if (authenticated) {
+        setLoading(false);
+      } else {
+        history.replace({
+          pathname: '/login',
+          state: { redirect: history.location },
+        });
+      }
+    });
+  }, []);
 
-export default enhance(PrivateRoute);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return <Route {...props} />;
+};
+
+export default PrivateRoute;

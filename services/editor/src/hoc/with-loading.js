@@ -1,30 +1,25 @@
-import React from 'react';
-import { compose, lifecycle, withState } from 'recompose';
+import React, { useEffect, useState } from 'react';
 
-const withLoading = (loadingRenderer, loadingErrorRenderer, loadingPromiseFactory) => (Comp) =>
-  compose(
-    withState('isLoading', 'setIsLoading', true),
-    withState('loadingError', 'setLoadingError', null),
-    lifecycle({
-      componentWillMount() {
-        loadingPromiseFactory(this.props)
-          .then(() => {
-            this.props.setIsLoading(false);
-          })
-          .catch((e) => {
-            this.props.setLoadingError(e);
-            this.props.setIsLoading(false);
-          });
-      },
-    }),
-  )((props) => {
-    if (props.isLoading) {
-      return loadingRenderer();
-    }
-    if (props.loadingError) {
-      return loadingErrorRenderer(props.loadingError);
-    }
-    return <Comp {...props} />;
-  });
+const withLoading = (loadingRenderer, loadingErrorRenderer, loadingPromiseFactory) => (Comp) => (
+  props,
+) => {
+  const [{ loading, error }, setState] = useState({ loading: true });
+
+  useEffect(() => {
+    loadingPromiseFactory(props)
+      .then(() => setState({ loading: false }))
+      .catch((err) => setState({ loading: false, error: err }));
+  }, []);
+
+  if (loading) {
+    return loadingRenderer();
+  }
+
+  if (error) {
+    return loadingErrorRenderer(error);
+  }
+
+  return <Comp {...props} />;
+};
 
 export default withLoading;

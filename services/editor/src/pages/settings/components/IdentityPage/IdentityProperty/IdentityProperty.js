@@ -1,5 +1,4 @@
-import React from 'react';
-import { compose, withState, withHandlers } from 'recompose';
+import React, { useState } from 'react';
 import * as R from 'ramda';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
@@ -127,27 +126,23 @@ export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) => (
   </div>
 );
 
-const createUpdater = (propName, updateFn) => (x) => updateFn(R.assoc(propName, x));
 const EMPTY_PROPERTY = { propName: '', def: { type: 'string' } };
-export const NewIdentityProperty = compose(
-  withState('state', 'setState', EMPTY_PROPERTY),
-  withHandlers({
-    updatePropName: ({ setState }) => createUpdater('propName', setState),
-    updateDef: ({ setState }) => createUpdater('def', setState),
-    clear: ({ setState }) => () => setState(() => EMPTY_PROPERTY),
-  }),
-)(({ state, updateDef, updatePropName, onCreate, clear }) => {
-  let applyChange = () => {
+
+export const NewIdentityProperty = ({ onCreate }) => {
+  const [state, setState] = useState(EMPTY_PROPERTY);
+
+  const updatePropName = (propName) => setState((s) => ({ ...s, propName }));
+  const updateType = (type) => setState((s) => ({ ...s, def: { ...s.def, type } }));
+  const applyChange = () => {
     onCreate(state.propName, state.def);
-    clear();
+    setState(EMPTY_PROPERTY);
   };
+
   return (
     <div
       data-comp="new-property-item"
       onKeyUpCapture={(e) => {
-        if (e.keyCode !== 13) return;
-        if (state.propName === '') return;
-        if (typeof state.def.type === 'object') return;
+        if (e.keyCode !== 13 || state.propName === '' || typeof state.def.type === 'object') return;
         applyChange();
       }}
     >
@@ -160,9 +155,9 @@ export const NewIdentityProperty = compose(
       <PropertyTypeSelector
         data-field="property-type"
         type={state.def.type}
-        onUpdate={(type) => updateDef({ ...state.def, type })}
+        onUpdate={updateType}
       />
       <button data-comp="add" onClick={applyChange} />
     </div>
   );
-});
+};
