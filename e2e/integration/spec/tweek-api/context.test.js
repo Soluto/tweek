@@ -1,4 +1,4 @@
-const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 const { expect } = require('chai');
 const client = require('../../utils/client');
 
@@ -73,10 +73,7 @@ describe('tweek api - context', () => {
       const identityId = 'delete_context_user';
       const url = `/api/v2/context/${identityType}/${identityId}`;
 
-      await client
-        .post(url)
-        .send({ prop: 'value' })
-        .expect(200);
+      await client.post(url).send({ prop: 'value' }).expect(200);
 
       await client.delete(url).expect(200);
 

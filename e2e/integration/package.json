@@ -6,7 +6,7 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": ">=8.7.0"
+    "node": ">= 10.12.0"
   },
   "scripts": {
     "start": "yarn docker-compose up -d gateway",
@@ -22,13 +22,13 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^5.2.0",
-    "nconf": "^0.10.0",
-    "supertest": "^3.0.0"
+    "mocha": "^8.3.2",
+    "nconf": "^0.11.2",
+    "supertest": "^6.1.3"
   },
   "dependencies": {
-    "fast-json-patch": "^2.0.7",
+    "fast-json-patch": "^3.0.0-1",
     "minio": "^7.0.5",
-    "uuid": "^3.3.2"
+    "uuid": "^8.3.2"
   }
 }
