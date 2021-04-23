@@ -1,8 +1,8 @@
-@import (reference) "../../../../styles/core/icons.less";
-@import (reference) "../../../../styles/core/core.less";
+@import (reference) '../../../../styles/core/icons.less';
+@import (reference) '../../../../styles/core/core.less';
 @sidebarBgColor: #414b53;
 
-.hideLongLine(){
+.hideLongLine() {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -15,17 +15,17 @@
   flex-direction: column;
   background-color: transparent;
 
-  .search-results{
+  .search-results {
     display: flex;
     flex-direction: column;
   }
 
-  .view-selector{
+  .view-selector {
     display: flex;
     min-height: 30px;
-    button{
+    button {
       cursor: pointer;
-      flex: 1
+      flex: 1;
     }
   }
 
@@ -49,11 +49,11 @@
         border: none;
       }
     }
-    .clear{
+    .clear {
       position: absolute;
-      top:0;
+      top: 0;
       bottom: 0;
-      margin: 8px 0 ;
+      margin: 8px 0;
       right: 10px;
       cursor: pointer;
     }
@@ -84,9 +84,9 @@
         background-color: #686e74;
       }
       span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
@@ -96,7 +96,7 @@
     margin-top: -7px;
   }
 
-  .card-icon { 
+  .card-icon {
     margin: -5px;
   }
 
@@ -106,40 +106,40 @@
     height: 27px;
     background: rgba(215, 215, 215, 0) no-repeat center center;
     background-size: cover;
-    &[data-value-type=archived] {
+    &[data-value-type='archived'] {
       background-image: @archived_icon;
     }
-    &[data-value-type=alias] {
+    &[data-value-type='alias'] {
       background-image: @link_icon;
     }
-    &[data-value-type=key] {
+    &[data-value-type='key'] {
       background-image: @key_icon;
     }
-    &[data-value-type=boolean] {
+    &[data-value-type='boolean'] {
       background-image: @bool_icon;
     }
-    &[data-value-type=string] {
+    &[data-value-type='string'] {
       background-image: @string_icon;
       background-size: 50px;
     }
-    &[data-value-type=version] {
+    &[data-value-type='version'] {
       background-image: @version_icon;
     }
-    &[data-value-type=custom] {
+    &[data-value-type='custom'] {
       background-image: @custom_icon;
     }
-    &[data-value-type=array] {
+    &[data-value-type='array'] {
       background-image: @array_icon;
       background-size: 70% 70%;
     }
-    &[data-value-type=number] {
+    &[data-value-type='number'] {
       background-image: @number_icon;
     }
-    &[data-value-type=date] {
+    &[data-value-type='date'] {
       background-image: @calendar_icon;
       background-size: 40px;
     }
-    &[data-value-type=object]{
+    &[data-value-type='object'] {
       background-image: @object_icon;
       background-size: 55% 55%;
     }
@@ -147,7 +147,7 @@
   }
 }
 
-.keys-nav{
+.keys-nav {
   display: flex;
   overflow-y: auto;
   &::-webkit-scrollbar {
@@ -167,30 +167,30 @@
   min-width: 400px;
 }
 
-.search-results{
+.search-results {
   width: 100%;
-  .key-card{
+  .key-card {
     border-radius: 7px;
     border: 2px solid grey;
     box-sizing: border-box;
     padding: 10px;
     margin: 10px;
     background-color: white;
-    > a{
+    > a {
       display: block;
       min-height: 80px;
       max-height: 160px;
       text-decoration: none;
       color: #515c66;
-      font-size:12px;
+      font-size: 12px;
     }
-    .title{
-      font-size:16px;
+    .title {
+      font-size: 16px;
       display: inline-block;
       color: #515c66;
       .hideLongLine();
     }
-    .tag{
+    .tag {
       font-size: 10px;
       text-decoration: none;
       border-radius: 10px;
@@ -201,20 +201,19 @@
       color: white;
       vertical-align: middle;
     }
-    .path{
+    .path {
       margin-top: 4px;
       font-size: 10px;
       color: #a5a5a5;
       .hideLongLine();
     }
-    .description{
+    .description {
       margin-top: 4px;
     }
 
-    &.selected{ 
-      border-color:#363a3e;
-      background-color:#eee ;
+    &.selected {
+      border-color: #363a3e;
+      background-color: #eee;
     }
   }
 }
-

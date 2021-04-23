@@ -1,48 +1,48 @@
-@import (reference) "../../../../styles/core/core.less";
+@import (reference) '../../../../styles/core/core.less';
 .rule-item-container {
-    padding: 20px 25px;
-    margin: 0;
-    .add-rule-button {
-        .metro-button;
-    }
-    .add-default-value-button {
-        .transparent-metro-button;
-        margin-left: 20px;
-    }
-    .conditions-container {
-        margin-top: 15px;
-        position: relative;
-        box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
-        border: 1px solid lightgray;
-        margin-bottom: 16px;
-        .rule-control-wrapper {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            .rule-order-button {
-                margin-right: 3px;
-                font-size: 18px;
-                font-family: 'tweekIcons';
-                border: none;
-                color: darkgray;
-                background-color: transparent;
-                outline: none;
-                border: 1px solid transparent;
-                border-radius: 50%;
-                .transitioned();
-                &:hover {
-                    cursor: pointer;
-                    color: gray;
-                    border: 1px solid lightgray;
-                }
-                &:active {
-                    color: #676767;
-                    border: 1px solid gray;
-                }
-            }
-            .delete-rule-button {
-                .close-circle-button;
-            }
+  padding: 20px 25px;
+  margin: 0;
+  .add-rule-button {
+    .metro-button;
+  }
+  .add-default-value-button {
+    .transparent-metro-button;
+    margin-left: 20px;
+  }
+  .conditions-container {
+    margin-top: 15px;
+    position: relative;
+    box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
+    border: 1px solid lightgray;
+    margin-bottom: 16px;
+    .rule-control-wrapper {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      .rule-order-button {
+        margin-right: 3px;
+        font-size: 18px;
+        font-family: 'tweekIcons';
+        border: none;
+        color: darkgray;
+        background-color: transparent;
+        outline: none;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        .transitioned();
+        &:hover {
+          cursor: pointer;
+          color: gray;
+          border: 1px solid lightgray;
         }
+        &:active {
+          color: #676767;
+          border: 1px solid gray;
+        }
+      }
+      .delete-rule-button {
+        .close-circle-button;
+      }
     }
+  }
 }

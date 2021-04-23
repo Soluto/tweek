@@ -1,11 +1,12 @@
-@import (reference) "../../../styles/core/core.less";
+@import (reference) '../../../styles/core/core.less';
 
 @key-action-button-width: 125px;
 
 .save-button {
   .metro-button;
   width: @key-action-button-width;
-  &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
+  &[data-state-is-saving='true'],
+  &[data-state-is-saving='true']:disabled {
     background-color: green;
   }
 }
