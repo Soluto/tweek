@@ -1,7 +1,8 @@
+import cogoToast from 'cogo-toast';
 import React, { useState, useEffect, useContext } from 'react';
 import { useErrorNotifier, tweekManagementClient } from '../../../../utils';
 import { ReduxContext } from '../../../../store';
-import { showSuccess, showCustomAlert, showConfirm } from '../../../../store/ducks';
+import { showCustomAlert, showConfirm } from '../../../../store/ducks';
 import createAlert from './CreateExternalAppSecret';
 import './ExternalAppsPage.css';
 
@@ -175,7 +176,7 @@ const deleteExternalApp = async ({
     setDeletingState({ isDeleting: false, idBeingDeleted: null });
 
     setExternalApps(externalApps.filter((h) => h.id !== externalApp.id));
-    dispatch(showSuccess({ title: 'External App Deleted' }));
+    cogoToast.success('External App Deleted');
   } catch (err) {
     setDeletingState({ isDeleting: false, idBeingDeleted: null });
     setDeleteError(err);
@@ -265,7 +266,7 @@ const addExternalAppSecretKey = async ({
     const newSecret = { id: keyId, creationDate: new Date().toISOString() };
     externalApp.secretKeys = [...externalApp.secretKeys, newSecret];
     setSecrets(externalApp.secretKeys);
-    dispatch(showSuccess({ title: 'External App Secret Added' }));
+    cogoToast.success('External App Secret Added');
   } catch (err) {
     setAdditionState(false);
     setAdditionError(err);
@@ -294,7 +295,7 @@ const deleteExternalAppSecretKey = async ({
 
     externalApp.secretKeys = externalApp.secretKeys.filter((s) => s.id !== id);
     setSecrets(externalApp.secretKeys);
-    dispatch(showSuccess({ title: 'External App Secret Deleted' }));
+    cogoToast.success('External App Secret Deleted');
   } catch (err) {
     setDeletingState({ isDeleting: false, idBeingDeleted: null });
     setDeleteError(err);

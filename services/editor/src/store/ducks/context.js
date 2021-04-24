@@ -1,9 +1,9 @@
-/* global process Promise */
+import cogoToast from 'cogo-toast';
 import * as R from 'ramda';
 import { handleActions } from 'redux-actions';
 import { push } from 'connected-react-router';
 import { tweekManagementClient } from '../../utils/tweekClients';
-import { showError } from './notifications';
+import { formatError } from './notifications';
 
 const GET_CONTEXT = 'GET_CONTEXT';
 const CONTEXT_RECEIVED = 'CONTEXT_RECEIVED';
@@ -17,13 +17,13 @@ export const openContext = ({ identityType, identityId }) =>
   push(`/context/${identityType}/${identityId}`);
 
 export const getContext = ({ identityType, identityId }) =>
-  async function(dispatch) {
+  async function (dispatch) {
     dispatch({ type: GET_CONTEXT });
     try {
       const contextData = await tweekManagementClient.getContext(identityType, identityId);
       dispatch({ type: CONTEXT_RECEIVED, payload: contextData });
     } catch (error) {
-      dispatch(showError({ title: 'Failed to retrieve context', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to retrieve context' });
       dispatch({ type: CONTEXT_RECEIVED });
     }
   };
@@ -31,19 +31,12 @@ export const getContext = ({ identityType, identityId }) =>
 export const updateContext = (payload) => ({ type: UPDATE_CONTEXT, payload });
 
 export const saveContext = ({ identityType, identityId }) =>
-  async function(dispatch, getState) {
+  async function (dispatch, getState) {
     dispatch({ type: SAVE_CONTEXT });
     const context = getState().context;
 
-    const getDeletedKeys = R.pipe(
-      R.unapply(R.map(R.keys)),
-      R.apply(R.difference),
-    );
-    const getModifiedKeys = R.pipe(
-      R.unapply(R.map(R.toPairs)),
-      R.apply(R.difference),
-      R.pluck(0),
-    );
+    const getDeletedKeys = R.pipe(R.unapply(R.map(R.keys)), R.apply(R.difference));
+    const getModifiedKeys = R.pipe(R.unapply(R.map(R.toPairs)), R.apply(R.difference), R.pluck(0));
 
     const keysToDelete = getDeletedKeys(context.remote, context.local);
     const modifiedKeys = getModifiedKeys(context.local, context.remote);
@@ -65,7 +58,7 @@ export const saveContext = ({ identityType, identityId }) =>
 
       dispatch({ type: CONTEXT_SAVED, success: true });
     } catch (error) {
-      dispatch(showError({ title: 'Failed to update context', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to update context' });
       dispatch({ type: CONTEXT_SAVED, success: false });
     }
   };

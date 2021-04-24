@@ -1,9 +1,9 @@
-/* global process console */
-import { handleActions } from 'redux-actions';
+import cogoToast from 'cogo-toast';
 import { push } from 'connected-react-router';
-import { tweekManagementClient } from '../../utils/tweekClients';
+import { handleActions } from 'redux-actions';
 import { getTagLink } from '../../pages/keys/utils/search';
-import { showError } from './notifications';
+import { tweekManagementClient } from '../../utils/tweekClients';
+import { formatError } from './notifications';
 
 const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
 const TAGS_SAVED = 'TAGS_SAVED';
@@ -14,7 +14,7 @@ export function downloadTags() {
       const tags = await tweekManagementClient.getAllTags();
       return dispatch({ type: TAGS_DOWNLOADED, payload: tags });
     } catch (error) {
-      return dispatch(showError({ title: 'Failed to download tags', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to download tags' });
     }
   };
 }
@@ -26,7 +26,7 @@ export function navigateToTagResults(tag) {
 }
 
 export const saveNewTag = (tagToSave) =>
-  async function(dispatch, getState) {
+  async function (dispatch, getState) {
     const currentTags = getState().tags;
     if (currentTags[tagToSave.id]) {
       console.log('no new tags to save found');
@@ -38,7 +38,7 @@ export const saveNewTag = (tagToSave) =>
 
       dispatch({ type: TAGS_SAVED, payload: tagToSave });
     } catch (error) {
-      dispatch(showError({ title: 'Failed to save new tags', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to save new tags' });
     }
   };
 

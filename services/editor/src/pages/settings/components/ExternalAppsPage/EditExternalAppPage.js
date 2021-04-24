@@ -1,9 +1,10 @@
+import cogoToast from 'cogo-toast';
 import React, { useState, useMemo, useContext, useCallback } from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
 import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import { SaveButton } from '../../../../components/common';
 import { ReduxContext } from '../../../../store';
-import { showSuccess, showCustomAlert } from '../../../../store/ducks';
+import { showCustomAlert } from '../../../../store/ducks';
 import createAlert from './CreateExternalAppSecret';
 import './EditExternalAppPage.css';
 
@@ -102,7 +103,7 @@ const useSaveExternalAppCallback = ({
       }
 
       setIsSaving(false);
-      dispatch(showSuccess({ title: 'External App Saved' }));
+      cogoToast.success('External App Saved');
       history.goBack();
     } catch (err) {
       setIsSaving(false);

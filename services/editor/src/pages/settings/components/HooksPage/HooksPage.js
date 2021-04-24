@@ -1,8 +1,9 @@
+import cogoToast from 'cogo-toast';
 import React, { useState, useEffect, useContext } from 'react';
 import qs from 'query-string';
 import { debounce, useErrorNotifier, tweekManagementClient } from '../../../../utils';
 import { ReduxContext } from '../../../../store';
-import { showSuccess, showConfirm } from '../../../../store/ducks';
+import { showConfirm } from '../../../../store/ducks';
 import { hookLabelsByType } from './HookTypes';
 import './HooksPage.css';
 import { webhookLabelsByFormat } from './WebHookFormats';
@@ -98,7 +99,9 @@ const Hook = ({
       <DataField label="Keypath:" value={hook.keyPath} />
       <DataField label="Tags:" value={(hook.tags || []).join()} />
       <DataField label="Type:" value={hookLabelsByType[hook.type]} />
-      {hook.type === 'notification_webhook' && <DataField label="Format:" value={webhookLabelsByFormat[hook.format]} />}
+      {hook.type === 'notification_webhook' && (
+        <DataField label="Format:" value={webhookLabelsByFormat[hook.format]} />
+      )}
       <DataField label="Url:" value={hook.url} />
     </div>
   </li>
@@ -156,7 +159,7 @@ const deleteHook = async ({
     setDeletingState({ isDeleting: false, idBeingDeleted: null });
 
     setHooks(hooks.filter((h) => h.id !== hook.id));
-    dispatch(showSuccess({ title: 'Hook Deleted' }));
+    cogoToast.success('Hook Deleted');
   } catch (err) {
     setDeletingState({ isDeleting: false, idBeingDeleted: null });
     setDeleteError(err);
