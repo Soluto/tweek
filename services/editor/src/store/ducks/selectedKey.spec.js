@@ -1,5 +1,9 @@
-/* global jest, beforeEach, describe, it, afterEach, expect Promise process */
-/* eslint-disable import/first */
+import cogoToast from 'cogo-toast';
+import * as R from 'ramda';
+import { tweekManagementClient } from '../../utils/tweekClients';
+import { openKey, saveKey, changeKeyValueType, updateKeyPath } from './selectedKey';
+import { createBlankJPadKey, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
+import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 
 jest.mock('./alerts', () => {
   let result = true;
@@ -14,11 +18,7 @@ jest.mock('./alerts', () => {
 
 jest.mock('../../utils/tweekClients');
 
-import * as R from 'ramda';
-import { tweekManagementClient } from '../../utils/tweekClients';
-import { openKey, saveKey, changeKeyValueType, updateKeyPath } from './selectedKey';
-import { createBlankJPadKey, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
-import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
+jest.mock('cogo-toast');
 
 describe('selectedKey', () => {
   const KEY_OPENED = 'KEY_OPENED';
@@ -60,6 +60,8 @@ describe('selectedKey', () => {
       return action;
     });
     currentState = {};
+
+    jest.clearAllMocks();
 
     tweekManagementClient.saveKeyDefinition.mockResolvedValue();
     tweekManagementClient.getKeyDefinition.mockResolvedValue(serverKeyDefinition);
@@ -208,7 +210,7 @@ describe('selectedKey', () => {
         currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave, keyNameToSave);
 
         if (!shouldSaveSucceed) {
-          tweekManagementClient.saveKeyDefinition.mockRejectedValue(new Error());
+          tweekManagementClient.saveKeyDefinition.mockRejectedValue(new Error('error'));
         } else {
           tweekManagementClient.saveKeyDefinition.mockResolvedValue();
         }
@@ -228,11 +230,7 @@ describe('selectedKey', () => {
         });
 
         if (!shouldSaveSucceed) {
-          expect(dispatchMock).toHaveBeenCalledWith(
-            expect.objectContaining({
-              type: ADD_NOTIFICATION,
-            }),
-          );
+          expect(cogoToast.error).toHaveBeenCalledTimes(1);
         }
 
         expect(dispatchMock).toHaveBeenCalledWith({

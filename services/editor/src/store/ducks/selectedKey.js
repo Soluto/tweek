@@ -1,20 +1,20 @@
-/* global process */
-import { handleActions } from 'redux-actions';
-import * as R from 'ramda';
+import cogoToast from 'cogo-toast';
 import { push } from 'connected-react-router';
+import * as R from 'ramda';
+import { handleActions } from 'redux-actions';
 import * as ContextService from '../../services/context-service';
 import { tweekManagementClient } from '../../utils/tweekClients';
+import { showConfirm } from './alerts';
 import {
+  BLANK_KEY_NAME,
   createBlankJPadKey,
   createBlankKeyManifest,
-  BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
-import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { continueGuard } from './ducks-utils/guards';
-import { downloadTags } from './tags';
-import { showError } from './notifications';
-import { showConfirm } from './alerts';
+import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { addKeyToList, removeKeyFromList } from './keys';
+import { formatError } from './notifications';
+import { downloadTags } from './tags';
 
 const KEY_FORMAT_CHANGED = 'KEY_FORMAT_CHANGED';
 const KEY_PATH_CHANGE = 'KEY_PATH_CHANGE';
@@ -34,7 +34,7 @@ const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 const KEY_CLOSED = 'KEY_CLOSED';
 
 function updateRevisionHistory(keyName, since) {
-  return async function(dispatch) {
+  return async function (dispatch) {
     try {
       const revisionHistory = await tweekManagementClient.getKeyRevisionHistory(
         keyName,
@@ -42,23 +42,20 @@ function updateRevisionHistory(keyName, since) {
       );
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
-      dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to refresh revisionHistory' });
     }
   };
 }
 
 function updateKeyDependents(keyName) {
-  return async function(dispatch) {
+  return async function (dispatch) {
     let dependents = {};
     try {
       dependents = await tweekManagementClient.getKeyDependents(keyName);
     } catch (error) {
-      dispatch(
-        showError({
-          title: `Failed to enumerate key dependents on ${keyName}`,
-          error,
-        }),
-      );
+      cogoToast.error(formatError(error), {
+        heading: `Failed to enumerate key dependents on ${keyName}`,
+      });
     }
     dispatch({ type: KEY_DEPENDENTS, payload: { keyName, ...dependents } });
   };
@@ -80,7 +77,7 @@ function createImplementation({ manifest, implementation }) {
 }
 
 export function changeKeyFormat(newFormat) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: KEY_FORMAT_CHANGED, payload: newFormat });
   };
 }
@@ -103,7 +100,7 @@ export const addKey = (shouldShowConfirmationScreen, keyPath) =>
   });
 
 export function addKeyDetails() {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const currentState = getState();
     if (!currentState.selectedKey.validation.isValid) {
       dispatch({ type: SHOW_KEY_VALIDATIONS });
@@ -115,12 +112,12 @@ export function addKeyDetails() {
 }
 
 export function openKey(key, { revision, historySince } = {}) {
-  return async function(dispatch) {
+  return async function (dispatch) {
     dispatch(downloadTags());
     try {
       await ContextService.refreshSchema();
     } catch (error) {
-      dispatch(showError({ title: 'Failed to refresh schema', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to refresh schema' });
     }
 
     if (key === BLANK_KEY_NAME) {
@@ -183,7 +180,7 @@ async function performSave(dispatch, keyName, { manifest, implementation }) {
     isSaveSucceeded = true;
   } catch (error) {
     isSaveSucceeded = false;
-    dispatch(showError({ title: 'Failed to save key', error }));
+    cogoToast.error(formatError(error), { heading: 'Failed to save key' });
   }
 
   await dispatch({ type: KEY_SAVED, payload: { keyName, isSaveSucceeded } });
@@ -196,16 +193,19 @@ const confirmArchievAlert = {
 };
 
 export function archiveKey(archived, historySince) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const {
       selectedKey: { key, local, remote },
     } = getState();
 
-    if (!R.equals(local, remote) && !(await dispatch(showConfirm(confirmArchievAlert))).result)
+    if (!R.equals(local, remote) && !(await dispatch(showConfirm(confirmArchievAlert))).result) {
       return;
+    }
 
     const keyToSave = R.assocPath(['manifest', 'meta', 'archived'], archived, remote);
-    if (!(await performSave(dispatch, key, keyToSave))) return;
+    if (!(await performSave(dispatch, key, keyToSave))) {
+      return;
+    }
 
     dispatch({ type: KEY_OPENED, payload: { key, ...keyToSave } });
     if (archived) {
@@ -219,7 +219,7 @@ export function archiveKey(archived, historySince) {
 }
 
 export function changeKeyValidationState(newValidationState) {
-  return function(dispatch, getState) {
+  return function (dispatch, getState) {
     const currentValidationState = getState().selectedKey.validation;
     if (R.path(['const', 'isValid'], currentValidationState) !== newValidationState) {
       const payload = R.assocPath(['const', 'isValid'], newValidationState, currentValidationState);
@@ -229,7 +229,7 @@ export function changeKeyValidationState(newValidationState) {
 }
 
 export function changeKeyValueType(keyValueType) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
@@ -249,7 +249,7 @@ export function changeKeyValueType(keyValueType) {
 }
 
 export function updateKeyPath(newKeyPath, validation) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const currentValidationState = getState().selectedKey.validation;
     const newValidation = {
       ...currentValidationState,
@@ -267,7 +267,7 @@ export function updateKeyName(newKeyName) {
 }
 
 export function saveKey(historySince) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const currentState = getState();
     const {
       selectedKey: { local, key },
@@ -280,7 +280,9 @@ export function saveKey(historySince) {
       return;
     }
 
-    if (!(await performSave(dispatch, savedKey, local))) return;
+    if (!(await performSave(dispatch, savedKey, local))) {
+      return;
+    }
 
     dispatch(updateRevisionHistory(savedKey, historySince));
     dispatch(updateKeyDependents(savedKey));
@@ -300,12 +302,14 @@ const deleteKeyAlert = (key, aliases = []) => ({
 });
 
 export function deleteKey() {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const {
       selectedKey: { key, aliases },
     } = getState();
 
-    if (!(await dispatch(showConfirm(deleteKeyAlert(key, aliases)))).result) return;
+    if (!(await dispatch(showConfirm(deleteKeyAlert(key, aliases)))).result) {
+      return;
+    }
 
     dispatch(push('/keys'));
     try {
@@ -314,13 +318,13 @@ export function deleteKey() {
       dispatch(removeKeyFromList(key));
       aliases.forEach((alias) => dispatch(removeKeyFromList(alias)));
     } catch (error) {
-      dispatch(showError({ title: 'Failed to delete key!', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to delete key!' });
     }
   };
 }
 
 export function addAlias(alias) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const {
       selectedKey: { key },
     } = getState();
@@ -330,7 +334,7 @@ export function addAlias(alias) {
     try {
       await tweekManagementClient.saveKeyDefinition(alias, { manifest });
     } catch (error) {
-      dispatch(showError({ title: 'Failed to add alias', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to add alias' });
       return;
     }
 
@@ -347,8 +351,10 @@ export function addAlias(alias) {
 }
 
 export function deleteAlias(alias) {
-  return async function(dispatch, getState) {
-    if (!(await dispatch(showConfirm(deleteKeyAlert(alias)))).result) return;
+  return async function (dispatch, getState) {
+    if (!(await dispatch(showConfirm(deleteKeyAlert(alias)))).result) {
+      return;
+    }
 
     try {
       await tweekManagementClient.deleteKey(alias);
@@ -365,7 +371,7 @@ export function deleteAlias(alias) {
         });
       }
     } catch (error) {
-      dispatch(showError({ title: 'Failed to delete alias!', error }));
+      cogoToast.error(formatError(error), { heading: 'Failed to delete alias' });
     }
   };
 }
@@ -439,7 +445,9 @@ const handleKeySaved = (
   { local, remote, ...state },
   { payload: { keyName, isSaveSucceeded, revisionHistory } },
 ) => {
-  if (state.key !== BLANK_KEY_NAME && state.key !== keyName) return state;
+  if (state.key !== BLANK_KEY_NAME && state.key !== keyName) {
+    return state;
+  }
   return {
     ...state,
     isSaving: false,
@@ -503,7 +511,9 @@ const handleShowKeyValidations = ({ validation, ...state }) => {
 };
 
 const handleKeyRevisionHistory = (state, { payload: { keyName, revisionHistory } }) => {
-  if (state.key !== keyName) return state;
+  if (state.key !== keyName) {
+    return state;
+  }
   return {
     ...state,
     revisionHistory,
@@ -511,7 +521,9 @@ const handleKeyRevisionHistory = (state, { payload: { keyName, revisionHistory }
 };
 
 const handleKeyDependents = (state, { payload: { keyName, usedBy, aliases } }) => {
-  if (state.key !== keyName) return state;
+  if (state.key !== keyName) {
+    return state;
+  }
   return {
     ...state,
     usedBy,
@@ -545,10 +557,7 @@ const handleKeyAddingDetails = (state) => {
 };
 
 const handleKeyPathChange = (state, { payload }) =>
-  R.pipe(
-    R.assoc('key', payload),
-    R.assocPath(['local', 'manifest', 'key_path'], payload),
-  )(state);
+  R.pipe(R.assoc('key', payload), R.assocPath(['local', 'manifest', 'key_path'], payload))(state);
 
 const handleKeyFormatChange = (state, { payload }) =>
   R.assocPath(['local', 'manifest', 'implementation'], payload, state);

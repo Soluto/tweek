@@ -114,9 +114,8 @@ test('Attempt to save JWT policy, show error', async (t) => {
 
   await t
     .expect(
-      Selector('.notifications-br .notification-error .notification-title').withExactText(
-        'Error saving jwt-policy',
-      ).visible,
+      Selector('#ct-container .ct-toast .ct-heading').withExactText('Error saving jwt-policy')
+        .visible,
     )
     .ok();
 }).before(async (t) => {
