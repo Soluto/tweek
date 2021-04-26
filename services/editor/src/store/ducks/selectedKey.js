@@ -1,9 +1,8 @@
-import cogoToast from 'cogo-toast';
 import { push } from 'connected-react-router';
 import * as R from 'ramda';
 import { handleActions } from 'redux-actions';
 import * as ContextService from '../../services/context-service';
-import { tweekManagementClient } from '../../utils/tweekClients';
+import { showError, tweekManagementClient } from '../../utils';
 import { showConfirm } from './alerts';
 import {
   BLANK_KEY_NAME,
@@ -13,7 +12,6 @@ import {
 import { continueGuard } from './ducks-utils/guards';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { addKeyToList, removeKeyFromList } from './keys';
-import { formatError } from './notifications';
 import { downloadTags } from './tags';
 
 const KEY_FORMAT_CHANGED = 'KEY_FORMAT_CHANGED';
@@ -42,7 +40,7 @@ function updateRevisionHistory(keyName, since) {
       );
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
-      cogoToast.error(formatError(error), { heading: 'Failed to refresh revisionHistory' });
+      showError(error, 'Failed to refresh revisionHistory');
     }
   };
 }
@@ -53,9 +51,7 @@ function updateKeyDependents(keyName) {
     try {
       dependents = await tweekManagementClient.getKeyDependents(keyName);
     } catch (error) {
-      cogoToast.error(formatError(error), {
-        heading: `Failed to enumerate key dependents on ${keyName}`,
-      });
+      showError(error, `Failed to enumerate key dependents on ${keyName}`);
     }
     dispatch({ type: KEY_DEPENDENTS, payload: { keyName, ...dependents } });
   };
@@ -117,7 +113,7 @@ export function openKey(key, { revision, historySince } = {}) {
     try {
       await ContextService.refreshSchema();
     } catch (error) {
-      cogoToast.error(formatError(error), { heading: 'Failed to refresh schema' });
+      showError(error, 'Failed to refresh schema');
     }
 
     if (key === BLANK_KEY_NAME) {
@@ -180,7 +176,7 @@ async function performSave(dispatch, keyName, { manifest, implementation }) {
     isSaveSucceeded = true;
   } catch (error) {
     isSaveSucceeded = false;
-    cogoToast.error(formatError(error), { heading: 'Failed to save key' });
+    showError(error, 'Failed to save key');
   }
 
   await dispatch({ type: KEY_SAVED, payload: { keyName, isSaveSucceeded } });
@@ -318,7 +314,7 @@ export function deleteKey() {
       dispatch(removeKeyFromList(key));
       aliases.forEach((alias) => dispatch(removeKeyFromList(alias)));
     } catch (error) {
-      cogoToast.error(formatError(error), { heading: 'Failed to delete key!' });
+      showError(error, 'Failed to delete key!');
     }
   };
 }
@@ -334,7 +330,7 @@ export function addAlias(alias) {
     try {
       await tweekManagementClient.saveKeyDefinition(alias, { manifest });
     } catch (error) {
-      cogoToast.error(formatError(error), { heading: 'Failed to add alias' });
+      showError(error, 'Failed to add alias');
       return;
     }
 
@@ -371,7 +367,7 @@ export function deleteAlias(alias) {
         });
       }
     } catch (error) {
-      cogoToast.error(formatError(error), { heading: 'Failed to delete alias' });
+      showError(error, 'Failed to delete alias');
     }
   };
 }

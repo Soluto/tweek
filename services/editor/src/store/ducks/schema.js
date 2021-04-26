@@ -1,11 +1,9 @@
-import cogoToast from 'cogo-toast';
-import { handleActions } from 'redux-actions';
 import { push } from 'connected-react-router';
-import * as R from 'ramda';
 import jsonpatch from 'fast-json-patch';
+import * as R from 'ramda';
+import { handleActions } from 'redux-actions';
 import { getSchema, refreshSchema } from '../../services/context-service';
-import { tweekManagementClient } from '../../utils/tweekClients';
-import { formatError } from './notifications';
+import { showError, tweekManagementClient } from '../../utils';
 
 const SCHEMA_LOADED = 'SCHEMA_LOADED';
 const UPSERT_SCHEMA_PROPERTY = 'SCHEMA_UPSERT_PROPERTY';
@@ -21,7 +19,7 @@ function handleError(message, thunkFn) {
     try {
       return await thunkFn(dispatch, ...args);
     } catch (ex) {
-      cogoToast.error(formatError(ex), { heading: message });
+      showError(ex, message);
     }
   };
 }

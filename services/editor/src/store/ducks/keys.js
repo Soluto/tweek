@@ -1,8 +1,6 @@
-import cogoToast from 'cogo-toast';
-import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
-import { tweekManagementClient } from '../../utils/tweekClients';
-import { formatError } from './notifications';
+import { handleActions } from 'redux-actions';
+import { showError, tweekManagementClient } from '../../utils';
 
 const KEYS_UPDATED = 'KEYS_UPDATED';
 const KEY_ADDED = 'KEY_ADDED';
@@ -23,7 +21,7 @@ export function getKeys() {
       const payload = R.indexBy(R.prop('key_path'), manifests);
       dispatch({ type: KEYS_UPDATED, payload });
     } catch (error) {
-      cogoToast.error(formatError(error), { heading: 'Failed to retrieve keys!' });
+      showError(error, 'Failed to retrieve keys!');
     }
   };
 }
