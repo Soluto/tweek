@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { useRemoteState } from './hooks';
+import { useRemoteState } from './useRemoteState';
 
 describe('useRemoteState', () => {
   const render = (...args) =>

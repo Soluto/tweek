@@ -16,12 +16,12 @@ export const showError = (error: unknown, title = 'An error has occurred') => {
   cogoToast.error(formatError(error), { heading: title });
 };
 
-export default (error: unknown, title = 'An error has occurred') => {
+export const useErrorNotifier = (error: unknown, title = 'An error has occurred') => {
   useEffect(() => {
     if (!error) {
       return;
     }
 
     showError(error, title);
-  }, [error]);
+  }, [error]); //eslint-disable-line react-hooks/exhaustive-deps
 };
