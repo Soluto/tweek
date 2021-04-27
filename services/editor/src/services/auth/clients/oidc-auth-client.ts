@@ -1,5 +1,5 @@
 import { LocationDescriptor } from 'history';
-import Oidc from 'oidc-client';
+import Oidc, { User } from 'oidc-client';
 import { AuthProvider } from 'tweek-client';
 import { BaseAuthClient, isTokenValid } from './base-auth-client';
 import storage from './storage';
@@ -43,6 +43,15 @@ export class OidcAuthClient extends BaseAuthClient {
     return this.client.revokeAccessToken();
   }
 
+  async processRedirect() {
+    const user = await this.client.signinRedirectCallback();
+    return user.state;
+  }
+
+  processSilentRedirect() {
+    return this.client.signinSilentCallback();
+  }
+
   protected async retrieveToken() {
     let user = await this.client.getUser();
 
@@ -51,18 +60,25 @@ export class OidcAuthClient extends BaseAuthClient {
     }
 
     if (!isTokenValid(user.id_token)) {
-      user = await this.client.signinSilent();
+      const isSilentEnabled = await this.isSilentSigninEnabled(user);
+      if (isSilentEnabled) {
+        user = await this.client.signinSilent();
+      }
     }
 
     return user?.id_token;
   }
 
-  async processRedirect() {
-    const user = await this.client.signinRedirectCallback();
-    return user.state;
-  }
+  private async isSilentSigninEnabled(user: User) {
+    if (user.refresh_token) {
+      return true;
+    }
 
-  processSilentRedirect() {
-    return this.client.signinSilentCallback();
+    try {
+      return Boolean(await this.client.metadataService.getCheckSessionIframe());
+    } catch (err) {
+      console.warn('failed to retrieve oidc metadata', err);
+      return false;
+    }
   }
 }

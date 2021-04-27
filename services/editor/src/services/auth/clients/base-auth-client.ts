@@ -44,7 +44,7 @@ export abstract class BaseAuthClient {
     return storage.getItem(this.tokenKey);
   }
 
-  setAuthToken(token: string) {
+  protected setAuthToken(token: string) {
     storage.setItem(this.tokenKey, token);
   }
 }
