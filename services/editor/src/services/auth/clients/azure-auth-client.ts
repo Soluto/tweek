@@ -1,5 +1,4 @@
 import adal from 'adal-angular';
-import { LocationDescriptor } from 'history';
 import { AuthProvider } from 'tweek-client';
 import { BaseAuthClient, isTokenValid, RedirectState } from './base-auth-client';
 import storage from './storage';

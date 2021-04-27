@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { LocationDescriptor } from 'history';
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { AuthProvider } from 'tweek-client';

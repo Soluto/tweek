@@ -2,7 +2,6 @@ import { LocationDescriptor } from 'history';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
 import { AuthProvider } from 'tweek-client';
-import browserHistory from '../../../store/browserHistory';
 import storage from './storage';
 
 export const isTokenValid = (token: string) => {
