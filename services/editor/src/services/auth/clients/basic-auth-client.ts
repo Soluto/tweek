@@ -1,9 +1,8 @@
-import { LocationDescriptor } from 'history';
 import { getGatewayBaseUrl } from '../../../utils';
-import { BaseAuthClient } from './base-auth-client';
+import { BaseAuthClient, RedirectState } from './base-auth-client';
 
 export class BasicAuthClient extends BaseAuthClient {
-  signIn(state: LocationDescriptor) {
+  signIn(state?: RedirectState) {
     window.location.href = `${getGatewayBaseUrl()}/auth/basic?redirect_url=${
       window.location.origin
     }/auth-result/basic&state=${JSON.stringify(state)}`;
@@ -21,7 +20,7 @@ export class BasicAuthClient extends BaseAuthClient {
     const state = params.get('state');
 
     try {
-      return JSON.parse(state!);
+      return JSON.parse(state!) as RedirectState;
     } catch {
       return undefined;
     }

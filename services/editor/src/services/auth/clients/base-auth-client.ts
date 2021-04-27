@@ -15,6 +15,8 @@ export const isTokenValid = (token: string) => {
   }
 };
 
+export type RedirectState = { redirect?: LocationDescriptor };
+
 export abstract class BaseAuthClient {
   readonly tokenKey: string;
 
@@ -22,18 +24,22 @@ export abstract class BaseAuthClient {
     this.tokenKey = `@tweek:auth-${provider.login_info.login_type}-token`;
   }
 
-  abstract signIn(state: LocationDescriptor): void;
+  abstract signIn(state?: RedirectState): void;
 
-  abstract processRedirect(): Promise<{ redirect?: LocationDescriptor } | undefined>;
+  abstract processRedirect(): Promise<RedirectState | undefined>;
 
   signOut() {
-    storage.removeItem(this.tokenKey);
+    this.removeToken();
   }
 
-  async getAuthToken(location = browserHistory.location): Promise<string | undefined | null> {
+  async getAuthToken(state?: RedirectState): Promise<string | undefined> {
     const token = await this.retrieveToken();
+
     if (!token || !isTokenValid(token)) {
-      this.signIn(location);
+      this.removeToken();
+      if (state) {
+        this.signIn(state);
+      }
       return undefined;
     }
 
@@ -46,5 +52,9 @@ export abstract class BaseAuthClient {
 
   protected setAuthToken(token: string) {
     storage.setItem(this.tokenKey, token);
+  }
+
+  protected removeToken() {
+    storage.removeItem(this.tokenKey);
   }
 }
