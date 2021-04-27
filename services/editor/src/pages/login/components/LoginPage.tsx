@@ -6,7 +6,8 @@ import { AuthProvider } from 'tweek-client';
 import Loader from '../../../components/Loader';
 import logoSrc from '../../../components/resources/logo.svg';
 import { basicAuthProvider, signIn } from '../../../services/auth-service';
-import { tweekManagementClient } from '../../../utils';
+import { RedirectState } from '../../../services/auth/clients/base-auth-client';
+import { showError, tweekManagementClient } from '../../../utils';
 
 const MainComponent = styled.div`
   display: flex;
@@ -79,7 +80,7 @@ const LoginButton = styled.div`
 type Provider = {
   id: string;
   name: string;
-  action: (state: LocationDescriptor) => void;
+  action: (state: RedirectState) => void;
 };
 
 const LoginPage = ({ location: { state = '/' } }: RouteComponentProps) => {
@@ -106,7 +107,7 @@ const LoginPage = ({ location: { state = '/' } }: RouteComponentProps) => {
       setAuthProviders(providers);
     };
 
-    run();
+    run().catch((err) => showError(err, 'Something went wrong'));
   }, []);
   return (
     <MainComponent>
@@ -120,7 +121,7 @@ const LoginPage = ({ location: { state = '/' } }: RouteComponentProps) => {
           authProviders.map((ap) => (
             <LoginButton
               key={ap.id}
-              onClick={() => ap.action(state as LocationDescriptor)}
+              onClick={() => ap.action(state as RedirectState)}
               data-comp={ap.id}
             >
               {ap.name}

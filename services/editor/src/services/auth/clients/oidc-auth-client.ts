@@ -1,7 +1,6 @@
-import { LocationDescriptor } from 'history';
 import Oidc, { User } from 'oidc-client';
 import { AuthProvider } from 'tweek-client';
-import { BaseAuthClient, isTokenValid } from './base-auth-client';
+import { BaseAuthClient, isTokenValid, RedirectState } from './base-auth-client';
 import storage from './storage';
 
 const basicOidcConfig = {
@@ -35,7 +34,7 @@ export class OidcAuthClient extends BaseAuthClient {
     );
   }
 
-  signIn(state: LocationDescriptor) {
+  signIn(state?: RedirectState) {
     return this.client.signinRedirect({ state });
   }
 
@@ -45,7 +44,7 @@ export class OidcAuthClient extends BaseAuthClient {
 
   async processRedirect() {
     const user = await this.client.signinRedirectCallback();
-    return user.state;
+    return user.state as RedirectState;
   }
 
   processSilentRedirect() {

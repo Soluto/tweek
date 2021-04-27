@@ -58,7 +58,7 @@ const PrivateRoutes = ({ history, location }: RouteComponentProps) => {
       });
     }
 
-    client.getAuthToken(location).then((token) => {
+    client.getAuthToken({ redirect: location }).then((token) => {
       if (token) {
         setLoading(false);
       }

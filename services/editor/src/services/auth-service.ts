@@ -1,10 +1,10 @@
-import { LocationDescriptor } from 'history';
 import { AuthProvider } from 'tweek-client';
 import { clearProvider, getAuthClient, storeProvider } from './auth/clients/auth-client';
+import { RedirectState } from './auth/clients/base-auth-client';
 
 let authClient = getAuthClient();
 
-export const signIn = (provider: AuthProvider, state: LocationDescriptor) => {
+export const signIn = (provider: AuthProvider, state: RedirectState) => {
   storeProvider(provider);
 
   authClient = getAuthClient(provider);

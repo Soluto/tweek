@@ -1,7 +1,7 @@
 import adal from 'adal-angular';
 import { LocationDescriptor } from 'history';
 import { AuthProvider } from 'tweek-client';
-import { BaseAuthClient, isTokenValid } from './base-auth-client';
+import { BaseAuthClient, isTokenValid, RedirectState } from './base-auth-client';
 import storage from './storage';
 
 const STATE_KEY = '@tweek:azure-state';
@@ -26,7 +26,7 @@ export class AzureAuthClient extends BaseAuthClient {
     };
   }
 
-  signIn(state: LocationDescriptor) {
+  signIn(state?: RedirectState) {
     storage.setItem(STATE_KEY, JSON.stringify(state));
     const context = new adal(this.config);
     return context.login();
@@ -61,7 +61,7 @@ export class AzureAuthClient extends BaseAuthClient {
       return undefined;
     }
     try {
-      return JSON.parse(state);
+      return JSON.parse(state) as RedirectState;
     } catch (err) {
       console.warn('failed to parse azure state', err);
       return undefined;
