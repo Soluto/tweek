@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { compose, pure, lifecycle, mapProps, withState } from 'recompose';
 import * as R from 'ramda';
-import Mutator from '../../utils/mutator';
+import React from 'react';
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { compose, lifecycle, mapProps, pure, withState } from 'recompose';
 import * as TypesService from '../../services/types-service';
-import * as RulesService from './rules-utils';
+import Mutator from '../../utils/mutator';
 import ErrorHandler from '../common/ErrorHandler';
-import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
+import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
+import * as RulesService from './rules-utils';
 import './JPadFullEditor.css';
 
 const confirmUnsavedAlert = {
@@ -23,6 +23,7 @@ const MutatorFor = (propName) => (Comp) =>
         mutator: Mutator.stateless(() => this.props[propName], this.props.onMutation),
       };
     }
+
     render() {
       const { [propName]: _, ...otherProps } = this.props;
       return <Comp mutate={this.state.mutator} {...otherProps} />;
@@ -51,8 +52,9 @@ const KeyRulesEditor = ({
           lastIndex === 1 &&
           hasUnsavedChanges &&
           !(await alerter.showConfirm(confirmUnsavedAlert)).result
-        )
+        ) {
           return true;
+        }
         setHasUnsavedChanges(false);
         onTabSelected(index);
       }}
@@ -153,7 +155,9 @@ const JPadFullEditor = compose(
     componentWillReceiveProps({ valueType, mutate }) {
       const currentValueType = mutate.in('valueType').getValue();
       const valueTypeName = valueType.name;
-      if (valueTypeName === currentValueType) return;
+      if (valueTypeName === currentValueType) {
+        return;
+      }
 
       const currentDefaultValue = mutate.in('defaultValue').getValue();
 

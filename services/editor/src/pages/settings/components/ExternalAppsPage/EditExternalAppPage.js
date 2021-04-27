@@ -1,5 +1,5 @@
 import cogoToast from 'cogo-toast';
-import React, { useState, useMemo, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
 import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import { SaveButton } from '../../../../components/common';
@@ -19,11 +19,8 @@ export default ({ location, history }) => {
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const isValid = useMemo(() => validateInput({ name, permissions }), [name, permissions]);
-  const hasChanges = useMemo(() => checkForChanges({ initialExternalAppData, name, permissions }), [
-    name,
-    permissions,
-  ]);
+  const isValid = validateInput({ name, permissions });
+  const hasChanges = checkForChanges({ initialExternalAppData, name, permissions });
 
   useErrorNotifier(saveError, 'Failed to save external app');
 
@@ -109,7 +106,7 @@ const useSaveExternalAppCallback = ({
       setIsSaving(false);
       setSaveError(err);
     }
-  }, [id, name, permissions]);
+  }, [id, name, permissions]); //eslint-disable-line react-hooks/exhaustive-deps
 
 const validateInput = ({ name, permissions }) =>
   Boolean(name && permissions && Array.isArray(permissions));

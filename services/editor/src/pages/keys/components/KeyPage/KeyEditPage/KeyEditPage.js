@@ -1,16 +1,16 @@
-import React, { Component, useCallback, useMemo } from 'react';
-import { compose, pure } from 'recompose';
 import classNames from 'classnames';
+import React, { Component, useMemo } from 'react';
+import { compose, pure } from 'recompose';
+import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
+import ConstEditor from '../../../../../components/ConstEditor';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
-import ConstEditor from '../../../../../components/ConstEditor';
-import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
+import { types } from '../../../../../services/types-service';
+import { Aliases, DependsOn, UsedBy } from './DependencyIndicator/DependencyIndicator';
+import HeaderMainInput from './HeaderMainInput';
+import KeyPageActions from './KeyPageActions/KeyPageActions';
 import KeyTags from './KeyTags/KeyTags';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
-import KeyPageActions from './KeyPageActions/KeyPageActions';
-import HeaderMainInput from './HeaderMainInput';
-import { UsedBy, DependsOn, Aliases } from './DependencyIndicator/DependencyIndicator';
-import { types } from '../../../../../services/types-service';
 import './KeyEditPage.css';
 
 const Editor = ({
@@ -171,10 +171,7 @@ class KeyEditPage extends Component {
   }
 }
 
-export default compose(
-  stickyHeaderIdentifier('key-edit-page', 150),
-  pure,
-)(KeyEditPage);
+export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
 
 const KeyStickyHeader = (props) => {
   const { isReadonly, isHistoricRevision } = props;

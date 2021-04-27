@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { prepareKey, TweekProvider as OriginalTweekProvider } from 'react-tweek';
 import { TweekRepository } from 'tweek-local-cache';
 import { equals } from 'ramda';
-import { tweekClient } from '../utils/tweekClients';
+import { tweekClient } from '../utils';
 import { useCurrentUser } from './CurrentUser';
 
 prepareKey('@tweek/editor/_');
@@ -36,7 +36,7 @@ export const TweekProvider = ({ children }) => {
         }),
       );
     }
-  }, [user]);
+  }, [user]); //eslint-disable-line react-hooks/exhaustive-deps
 
   return <OriginalTweekProvider value={tweekRepository}>{children}</OriginalTweekProvider>;
 };

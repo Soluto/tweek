@@ -1,11 +1,11 @@
 import cogoToast from 'cogo-toast';
-import React, { useState, useEffect, useContext } from 'react';
 import qs from 'query-string';
-import { debounce, useErrorNotifier, tweekManagementClient } from '../../../../utils';
+import React, { useContext, useEffect, useState } from 'react';
 import { ReduxContext } from '../../../../store';
 import { showConfirm } from '../../../../store/ducks';
-import { hookLabelsByType } from './HookTypes';
+import { tweekManagementClient, useDebounceValue, useErrorNotifier } from '../../../../utils';
 import './HooksPage.css';
+import { hookLabelsByType } from './HookTypes';
 import { webhookLabelsByFormat } from './WebHookFormats';
 
 export default ({ location, history }) => {
@@ -16,7 +16,7 @@ export default ({ location, history }) => {
   const [deleteError, setDeleteError] = useState(null);
   const [deletingState, setDeletingState] = useState({ isDeleting: false, idBeingDeleted: null });
   const [filter, setFilter] = useState(queryFilter || '');
-  const debouncedFilter = debounce(filter, 500);
+  const debouncedFilter = useDebounceValue(filter, 500);
 
   useEffect(() => {
     (async () => setHooks(await tweekManagementClient.getHooks(debouncedFilter)))();
@@ -152,7 +152,9 @@ const deleteHook = async ({
       message: 'Are you sure you want to delete this hook?',
     };
     const deleteConfirmation = await dispatch(showConfirm(alertDetails));
-    if (!deleteConfirmation.result) return;
+    if (!deleteConfirmation.result) {
+      return;
+    }
 
     setDeletingState({ isDeleting: true, idBeingDeleted: hook.id });
     await tweekManagementClient.deleteHook(hook);

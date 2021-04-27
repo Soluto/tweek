@@ -31,7 +31,8 @@ const InputWithHint = ({ className, value, showHint, hint, autofocus, placeholde
     if (inputRef.current && autofocus) {
       inputRef.current.focus();
     }
-  }, []);
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className={`${className}-container`} style={style.container} tabIndex={-1}>
       <input

@@ -1,6 +1,5 @@
-/* global process */
 import * as R from 'ramda';
-import { tweekManagementClient } from '../utils/tweekClients';
+import { tweekManagementClient } from '../utils';
 import * as TypesService from './types-service';
 
 export const KEYS_IDENTITY = 'keys.';

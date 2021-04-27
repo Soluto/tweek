@@ -1,9 +1,7 @@
-import cogoToast from 'cogo-toast';
+import { push } from 'connected-react-router';
 import * as R from 'ramda';
 import { handleActions } from 'redux-actions';
-import { push } from 'connected-react-router';
-import { tweekManagementClient } from '../../utils/tweekClients';
-import { formatError } from './notifications';
+import { showError, tweekManagementClient } from '../../utils';
 
 const GET_CONTEXT = 'GET_CONTEXT';
 const CONTEXT_RECEIVED = 'CONTEXT_RECEIVED';
@@ -23,7 +21,7 @@ export const getContext = ({ identityType, identityId }) =>
       const contextData = await tweekManagementClient.getContext(identityType, identityId);
       dispatch({ type: CONTEXT_RECEIVED, payload: contextData });
     } catch (error) {
-      cogoToast.error(formatError(error), { heading: 'Failed to retrieve context' });
+      showError(error, 'Failed to retrieve context');
       dispatch({ type: CONTEXT_RECEIVED });
     }
   };
@@ -58,7 +56,7 @@ export const saveContext = ({ identityType, identityId }) =>
 
       dispatch({ type: CONTEXT_SAVED, success: true });
     } catch (error) {
-      cogoToast.error(formatError(error), { heading: 'Failed to update context' });
+      showError(error, 'Failed to update context');
       dispatch({ type: CONTEXT_SAVED, success: false });
     }
   };

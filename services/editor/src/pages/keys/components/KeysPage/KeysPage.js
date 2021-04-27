@@ -17,10 +17,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { push } from 'connected-react-router';
 
 export default compose(
-  connect(
-    (state) => state,
-    { ...keysActions, addKey, downloadTags, push },
-  ),
+  connect((state) => state, { ...keysActions, addKey, downloadTags, push }),
   withLoading(
     () => null,
     (error) => <ErrorPage error={error} />,
@@ -34,7 +31,8 @@ export default compose(
     if (!tags || tags.length === 0) {
       downloadTags();
     }
-  }, []);
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     setNavOpen(false);
   }, [router.location.pathname, router.location.search]);
