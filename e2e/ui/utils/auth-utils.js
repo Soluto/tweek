@@ -26,7 +26,7 @@ export const login = async (t, credentials) => {
   } else if (oidcCredentials) {
     await oidcLogin(t, { username, password });
   } else {
-    await t.click(dataComp('Basic Auth Login'));
+    await t.click(dataComp('@@tweek-basic-auth'));
   }
 
   await t.expect(getLocation()).match(new RegExp(`^${editorUrl}(?!\/login)`));

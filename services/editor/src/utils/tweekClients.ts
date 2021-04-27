@@ -1,11 +1,15 @@
 import { createTweekClient, createTweekManagementClient } from 'tweek-client';
-import { retrieveToken } from '../services/auth-service';
+import { getClient } from '../services/auth-service';
 
 export const getGatewayBaseUrl = (): string => (window as any).GATEWAY_URL || '';
 
 const config = {
   baseServiceUrl: getGatewayBaseUrl(),
-  getAuthenticationToken: retrieveToken,
+  getAuthenticationToken: async (): Promise<string> => {
+    const client = getClient();
+    const token = await client?.getAuthToken();
+    return token || '';
+  },
 };
 
 export const tweekManagementClient = createTweekManagementClient({

@@ -4,7 +4,7 @@ import { dataComp } from '../../utils/selector-utils';
 import { getLocation } from '../../utils/location-utils';
 
 const tweekLogo = Selector(dataComp('tweek-logo'));
-const basicAuthLink = Selector(dataComp('Basic Auth Login'));
+const basicAuthLink = Selector(dataComp('@@tweek-basic-auth'));
 
 fixture`Login Page`.page`${editorUrl}`;
 
