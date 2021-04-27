@@ -1,5 +1,4 @@
-/* global process */
-import { tweekClient, tweekManagementClient } from '../utils/tweekClients';
+import { tweekClient, tweekManagementClient } from '../utils';
 
 export const types = {
   string: {

@@ -1,5 +1,5 @@
 import cogoToast from 'cogo-toast';
-import React, { useState, useMemo, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import qs from 'query-string';
 import { WithContext as ReactTags } from 'react-tag-input';
 import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
@@ -24,16 +24,8 @@ export default ({ location, history }) => {
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const isValid = useMemo(() => validateInput({ keyPath, type, url, format }), [
-    keyPath,
-    type,
-    url,
-    format,
-  ]);
-  const hasChanges = useMemo(
-    () => checkForChanges({ initialHookData, keyPath, type, url, format, tags }),
-    [keyPath, type, url, format, tags],
-  );
+  const isValid = validateInput({ keyPath, type, url, format });
+  const hasChanges = checkForChanges({ initialHookData, keyPath, type, url, format, tags });
 
   useErrorNotifier(saveError, 'Failed to save hook');
 
@@ -147,7 +139,6 @@ const useSaveHookCallback = ({
   setIsSaving,
   history,
   setSaveError,
-  dispatch,
 }) =>
   useCallback(async () => {
     try {
@@ -163,7 +154,7 @@ const useSaveHookCallback = ({
       setIsSaving(false);
       setSaveError(err);
     }
-  }, [id, keyPath, type, url, format, tags]);
+  }, [id, keyPath, type, url, format, tags]); //eslint-disable-line react-hooks/exhaustive-deps
 
 const validateInput = ({ keyPath, type, url, format }) =>
   Boolean(keyPath && type && url && (type === 'notification_webhook' ? format : true));

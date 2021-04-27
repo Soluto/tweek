@@ -1,4 +1,3 @@
-/* global document window console */
 import React from 'react';
 import PropTypes from 'prop-types';
 import gtmParts from 'react-google-tag-manager';

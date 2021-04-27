@@ -7,10 +7,7 @@ import * as tagActions from '../../../../../../store/ducks/tags';
 import './KeyTags.css';
 
 export default compose(
-  connect(
-    (state) => ({ globalTags: state.tags }),
-    tagActions,
-  ),
+  connect((state) => ({ globalTags: state.tags }), tagActions),
   pure,
   mapProps(({ globalTags, tags, ...props }) => ({
     ...props,
@@ -54,7 +51,6 @@ export default compose(
             handleTagClick={(i) => navigateToTagResults(tags[i].text)}
             autofocus={false}
             allowDeleteFromEmptyInput
-            allowDragDrop={false}
             minQueryLength={1}
             classNames={{
               tags: 'tags-container',
