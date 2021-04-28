@@ -1,26 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { compose, mapProps, withContext, getContext } from 'recompose';
 import * as changeCase from 'change-case';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
+import { compose, mapProps } from 'recompose';
+import { getTypesService } from '../../../contexts/TypesService';
+import { showCustomAlert } from '../../../store/ducks';
 import ComboBox from '../ComboBox/ComboBox';
-import { showCustomAlert } from '../../../store/ducks/alerts';
-import Input from './Input';
+import DateInput from './DateInput';
 import { withJsonEditor } from './EditJSON';
+import Input from './Input';
 import ListTypedValue from './ListTypedValue';
 import './TypedInput.css';
-import DateInput from './DateInput';
-
-export const typesServiceContextType = {
-  types: PropTypes.object.isRequired,
-  safeConvertValue: PropTypes.func.isRequired,
-  isAllowedValue: PropTypes.func.isRequired,
-};
-
-export const withTypesService = ({ safeConvertValue, types, isAllowedValue }) =>
-  withContext(typesServiceContextType, () => ({ safeConvertValue, types, isAllowedValue }));
-
-export const getTypesService = getContext(typesServiceContextType);
 
 const valueToItem = (value) =>
   value === undefined || value === ''
@@ -119,12 +109,9 @@ const InputWithIcon = ({ hideIcon, valueTypeName, ...props }) => {
 };
 
 const TypedInput = compose(
-  connect(
-    null,
-    {
-      showCustomAlert,
-    },
-  ),
+  connect(null, {
+    showCustomAlert,
+  }),
   getTypesService,
   mapProps(
     ({

@@ -1,17 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { compose, mapProps, getContext, withHandlers, withProps } from 'recompose';
-import { WithContext as ReactTags } from 'react-tag-input';
-import * as R from 'ramda';
 import classes from 'classnames';
-
-export const typesServiceContextType = {
-  types: PropTypes.object.isRequired,
-  safeConvertValue: PropTypes.func.isRequired,
-  isAllowedValue: PropTypes.func.isRequired,
-};
-
-export const getTypesService = getContext(typesServiceContextType);
+import * as R from 'ramda';
+import React from 'react';
+import { WithContext as ReactTags } from 'react-tag-input';
+import { compose, mapProps, withHandlers, withProps } from 'recompose';
+import { getTypesService } from '../../../contexts/TypesService';
 
 const convertToArray = (value) => (value && (Array.isArray(value) ? value : [value])) || [];
 

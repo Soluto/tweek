@@ -11,7 +11,6 @@ import AppHeader from './AppHeader';
 import AppPage from './AppPage';
 import ErrorPage from './ErrorPage';
 import GoogleTagManager from './googleTagManager';
-import { withTypesService } from './common/Input/TypedInput';
 import '../styles/core/fonts/fonts.css';
 import './App.css';
 
@@ -35,9 +34,6 @@ const preload = async () => await Promise.all([TypesService.refreshTypes(), refr
 
 const errorRenderer = (error) => <ErrorPage error={error} />;
 
-const enhance = compose(
-  withLoading(() => null, errorRenderer, preload),
-  withTypesService(TypesService),
-);
+const enhance = compose(withLoading(() => null, errorRenderer, preload));
 
 export default enhance(App);
