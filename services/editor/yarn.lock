@@ -1787,6 +1787,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-tag-input@^6.1.2":
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/@types/react-tag-input/-/react-tag-input-6.1.2.tgz#5aea6abba6ad258ae0bdeed431e093f8ebda8991"
+  integrity sha512-XKKC9wftmjWiAsZ0GxDItyDbisfCqQZMGeoreg4axNTdTWWZ+BzO7eDv+Jua68d6noOqO/dM0/MsTA7LPCj58g==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-test-renderer@*":
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/@types/react-test-renderer/-/react-test-renderer-17.0.1.tgz#3120f7d1c157fba9df0118dae20cb0297ee0e06b"
