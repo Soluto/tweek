@@ -1,4 +1,3 @@
-/* global Promise */
 import React from 'react';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig, compose } from 'recompose';

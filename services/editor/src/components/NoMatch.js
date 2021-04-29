@@ -1,3 +1,5 @@
 import React from 'react';
 
-export default (props) => <div>404</div>;
+const NoMatch = () => <div>404</div>;
+
+export default NoMatch;

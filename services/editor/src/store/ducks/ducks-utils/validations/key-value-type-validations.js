@@ -1,6 +1,6 @@
 import * as TypesService from '../../../../services/types-service';
 
-export default function(keyValueType) {
+export default function keyValueTypeValidations(keyValueType) {
   if (!keyValueType) {
     return { isValid: false, hint: 'Empty key value type' };
   }
