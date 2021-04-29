@@ -1,17 +1,17 @@
-import React from 'react';
-import {
-  compose,
-  setDisplayName,
-  defaultProps,
-  mapProps,
-  withState,
-  withHandlers,
-  setPropTypes,
-} from 'recompose';
+import MonacoEditor from '@monaco-editor/react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
-import MonacoEditor from 'react-monaco-editor';
+import React from 'react';
 import { AutoSizer } from 'react-virtualized';
+import {
+  compose,
+  defaultProps,
+  mapProps,
+  setDisplayName,
+  setPropTypes,
+  withHandlers,
+  withState,
+} from 'recompose';
 import './JPadTextEditor.css';
 
 const monacoOptions = {

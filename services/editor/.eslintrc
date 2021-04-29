@@ -16,7 +16,7 @@
     "default-case": "off",
     "import/first": "error",
     "import/no-duplicates": "error",
-    "import/no-unresolved": ["error", { "ignore": [ "^react-monaco-editor$" ]}],
+    "import/no-unresolved": "error",
     "import/order": "warn",
     "indent": ["error", 2],
     "jsx-a11y/alt-text": "off",
