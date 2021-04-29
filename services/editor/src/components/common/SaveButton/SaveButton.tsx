@@ -2,7 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './SaveButton.css';
 
-const SaveButton = ({ isSaving, hasChanges, isValid, ...props }) => (
+export type SaveButtonProps = {
+  isSaving: boolean;
+  hasChanges?: boolean;
+  isValid?: boolean;
+  className?: string;
+};
+
+const SaveButton = ({ isSaving, hasChanges, isValid, ...props }: SaveButtonProps) => (
   <button
     disabled={!hasChanges || !isValid || isSaving}
     data-state-has-changes={hasChanges}

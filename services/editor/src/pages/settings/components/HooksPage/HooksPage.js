@@ -8,7 +8,7 @@ import './HooksPage.css';
 import { hookLabelsByType } from './HookTypes';
 import { webhookLabelsByFormat } from './WebHookFormats';
 
-export default ({ location, history }) => {
+const HooksPage = ({ location, history }) => {
   const { dispatch } = useContext(ReduxContext);
   const queryFilter = qs.parse(location.search).keyPathFilter;
 
@@ -49,6 +49,8 @@ export default ({ location, history }) => {
     </div>
   );
 };
+
+export default HooksPage;
 
 const ActionBar = ({ filter, setFilter, history }) => (
   <div className="action-bar">

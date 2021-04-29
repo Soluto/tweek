@@ -9,7 +9,7 @@ import { hookTypes, hookLabelsByType } from './HookTypes';
 import './EditHookPage.css';
 import { webhookFormats, webhookLabelsByFormat } from './WebHookFormats';
 
-export default ({ location, history }) => {
+const EditHookPage = ({ location, history }) => {
   const { dispatch } = useContext(ReduxContext);
   const initialHookData = (location.state && location.state.hook) || {};
   const id = initialHookData.id;
@@ -62,6 +62,8 @@ export default ({ location, history }) => {
     </div>
   );
 };
+
+export default EditHookPage;
 
 const TextField = ({ label, value, setter, placeholder }) => (
   <div className="field-input-wrapper">

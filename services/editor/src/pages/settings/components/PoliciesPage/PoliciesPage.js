@@ -9,7 +9,7 @@ const Title = styled.h3`
   text-transform: capitalize;
 `;
 
-export default () => (
+const PoliciesPage = () => (
   <div className="policies-page">
     <Title>Policies</Title>
     <Tabs>
@@ -26,3 +26,5 @@ export default () => (
     </Tabs>
   </div>
 );
+
+export default PoliciesPage;

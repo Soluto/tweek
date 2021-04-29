@@ -30,7 +30,7 @@ const invalidCharactersValidation = {
   hint: 'Key name cannot include special characters',
 };
 
-let keyNameValidations = [
+const validations = [
   lengthValidation,
   blankNameValidation,
   existingKeyValidation,
@@ -39,7 +39,7 @@ let keyNameValidations = [
   invalidCharactersValidation,
 ];
 
-export default function(keyName, keysList) {
-  let failedRule = keyNameValidations.find((x) => !x.rule({ value: keyName, keysList }));
+export default function keyNameValidations(keyName, keysList) {
+  const failedRule = validations.find((x) => !x.rule({ value: keyName, keysList }));
   return { isValid: !failedRule, hint: failedRule && failedRule.hint };
 }

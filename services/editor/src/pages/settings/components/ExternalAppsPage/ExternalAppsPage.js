@@ -6,7 +6,7 @@ import { showCustomAlert, showConfirm } from '../../../../store/ducks';
 import createAlert from './CreateExternalAppSecret';
 import './ExternalAppsPage.css';
 
-export default ({ history }) => {
+const ExternalAppsPage = ({ history }) => {
   const { dispatch } = useContext(ReduxContext);
 
   const [externalApps, setExternalApps] = useState([]);
@@ -43,6 +43,8 @@ export default ({ history }) => {
     </div>
   );
 };
+
+export default ExternalAppsPage;
 
 const ActionBar = ({ history }) => (
   <div className="action-bar">

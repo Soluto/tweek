@@ -23,7 +23,7 @@ export default function ACLEditor() {
       writer={(policies) => tweekManagementClient.savePolicies(JSON.parse(policies))}
       validate={isValidJson}
       monacoProps={{
-        editorWillMount: (monaco) => {
+        beforeMount: (monaco) => {
           monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [

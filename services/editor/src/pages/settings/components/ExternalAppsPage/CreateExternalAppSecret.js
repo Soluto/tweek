@@ -18,8 +18,10 @@ const Component = ({ appId, appSecret }) => (
   </div>
 );
 
-export default (appId, appSecret) => ({
+const createExternalAppSecret = (appId, appSecret) => ({
   title: 'Important!',
   component: () => <Component appId={appId} appSecret={appSecret} />,
   buttons: [buttons.OK],
 });
+
+export default createExternalAppSecret;

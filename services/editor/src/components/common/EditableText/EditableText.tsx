@@ -1,26 +1,34 @@
-import React from 'react';
 import classNames from 'classnames';
-import { withState } from 'recompose';
-import wrapComponentWithClass from '../../../hoc/wrap-component-with-class';
+import React, { useState } from 'react';
 import './EditableText.css';
 
-const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
-  ({
-    value,
-    placeHolder,
-    maxLength,
-    classNames: classes = {},
-    isInEditMode,
-    setIsInEditMode,
-    onTextChanged = () => {},
-    isReadonly,
-    ...props
-  }) => (
-    <div
-      className={classNames('editable-text-container', classes.container)}
-      data-comp="editable-text"
-      {...props}
-    >
+export type EditableTextProps = {
+  value: string;
+  placeHolder?: string;
+  maxLength?: number;
+  onTextChanged?: (text: string) => void;
+  isReadonly?: boolean;
+  classNames?: {
+    container?: string;
+    form?: string;
+    input?: string;
+    text?: string;
+  };
+  'data-comp'?: string;
+};
+
+const EditableText = ({
+  value,
+  placeHolder,
+  maxLength,
+  classNames: classes = {},
+  onTextChanged = () => {},
+  isReadonly,
+  'data-comp': dataComp = 'editable-text',
+}: EditableTextProps) => {
+  const [isInEditMode, setIsInEditMode] = useState(false);
+  return (
+    <div className={classNames('editable-text-container', classes.container)} data-comp={dataComp}>
       {isInEditMode ? (
         <form
           data-field="form"
@@ -52,7 +60,7 @@ const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
         </div>
       )}
     </div>
-  ),
-);
+  );
+};
 
-export default wrapComponentWithClass(EditableText);
+export default EditableText;

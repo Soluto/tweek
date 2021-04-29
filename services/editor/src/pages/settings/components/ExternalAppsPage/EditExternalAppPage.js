@@ -8,7 +8,7 @@ import { showCustomAlert } from '../../../../store/ducks';
 import createAlert from './CreateExternalAppSecret';
 import './EditExternalAppPage.css';
 
-export default ({ location, history }) => {
+const EditExternalAppPage = ({ location, history }) => {
   const { dispatch } = useContext(ReduxContext);
   const initialExternalAppData = (location.state && location.state.externalApp) || {};
   const id = initialExternalAppData.id;
@@ -46,6 +46,8 @@ export default ({ location, history }) => {
     </div>
   );
 };
+
+export default EditExternalAppPage;
 
 const TextField = ({ label, value, setter, placeholder }) => (
   <div className="field-input-wrapper">

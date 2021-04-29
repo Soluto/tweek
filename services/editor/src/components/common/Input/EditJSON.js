@@ -1,10 +1,10 @@
+import MonacoEditor from '@monaco-editor/react';
 import React from 'react';
-import { compose, mapProps } from 'recompose';
 import { connect } from 'react-redux';
-import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
-import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
+import { compose, mapProps } from 'recompose';
 import { isStringValidJson } from '../../../services/types-service';
+import { buttons, showCustomAlert } from '../../../store/ducks/alerts';
 
 const monacoOptions = {
   autoIndent: true,
@@ -29,12 +29,9 @@ const getEmptyValue = (valueType) => {
 };
 
 export const withJsonEditor = compose(
-  connect(
-    null,
-    {
-      showCustomAlert,
-    },
-  ),
+  connect(null, {
+    showCustomAlert,
+  }),
   mapProps(({ onChange, showCustomAlert, ...props }) => {
     const editJson = async (currentSource, valueType) => {
       const saveButton = {
@@ -62,7 +59,7 @@ export const withJsonEditor = compose(
                   }
                   options={{ ...monacoOptions, readOnly: false }}
                   onChange={(newSource) => onChange(newSource)}
-                  editorDidMount={(editor) => {
+                  onMount={(editor) => {
                     setTimeout(() => {
                       if (editor.viewModel) {
                         const lineCount = editor.viewModel.lines.getViewLineCount();

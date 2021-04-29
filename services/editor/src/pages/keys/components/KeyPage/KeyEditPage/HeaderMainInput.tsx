@@ -1,15 +1,20 @@
 import React from 'react';
+import { KeyManifest } from 'tweek-client';
 import EditableText from '../../../../../components/common/EditableText/EditableText';
 
+export type HeaderMainInputProps = {
+  onDisplayNameChanged: (text: string) => void;
+  keyManifest: KeyManifest;
+  isReadonly?: boolean;
+};
+
 const HeaderMainInput = ({
-  onKeyNameChanged,
   onDisplayNameChanged,
   keyManifest: {
     meta: { name: displayName, archived },
-    valueType,
   },
   isReadonly,
-}) => (
+}: HeaderMainInputProps) => (
   <div className="key-main-input">
     <EditableText
       data-comp="display-name"

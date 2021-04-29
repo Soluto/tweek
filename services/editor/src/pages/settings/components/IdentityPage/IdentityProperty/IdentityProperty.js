@@ -63,7 +63,7 @@ const ArrayTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => {
         onUpdate={(type) => onUpdate(type)}
       />
       <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
-        <Label text="Generic Type" />
+        <Label>Generic Type</Label>
         <TypeCombobox
           type={type.ofType.base}
           allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), identityPropertyTypes)}
@@ -87,7 +87,7 @@ const AllowedValuesSelector = ({ onUpdate, type, allowedValues }) => (
     data-comp="editable-list"
     style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
   >
-    <Label text="Allowed Values" />
+    <Label>Allowed Values</Label>
     <TypedInput
       data-comp="property-value"
       hideIcon
@@ -118,7 +118,7 @@ const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
 export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) => (
   <div data-comp="property-item" data-property-name={name}>
     <button data-comp="remove" onClick={onRemove} />
-    <Label text={name} />
+    <Label>{name}</Label>
     <PropertyTypeSelector
       data-field="property-type"
       type={def.type}

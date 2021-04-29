@@ -14,9 +14,7 @@ const resetPartitionsAlert = {
 
 const autoPartitionAlert = (testAutoPartition) => ({
   title: 'Warning',
-  message: `Auto-partition can move ${testAutoPartition.match} rules to matching partitions, and ${
-    testAutoPartition.default
-  } rules to default partition/s.\n
+  message: `Auto-partition can move ${testAutoPartition.match} rules to matching partitions, and ${testAutoPartition.default} rules to default partition/s.\n
           This can cause some side effects related to rule ordering.\n
           Do you want to use auto-partition, or prefer to delete all rules?`,
   buttons: [
@@ -52,7 +50,7 @@ function isEmptyRules(rules) {
   return isEmptyRules(rules['*']);
 }
 
-export default ({ valueType, mutate, alerter, keyPath }) => {
+const JPadVisualEditor = ({ valueType, mutate, alerter, keyPath }) => {
   const partitions = mutate.in('partitions').getValue();
   const defaultValueMutate = mutate.in('defaultValue');
 
@@ -145,3 +143,5 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
     </div>
   );
 };
+
+export default JPadVisualEditor;

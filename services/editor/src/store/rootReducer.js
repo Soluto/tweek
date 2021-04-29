@@ -7,7 +7,7 @@ import alertsReducer from './ducks/alerts';
 import schemaReducer from './ducks/schema';
 import contextReducer from './ducks/context';
 
-export default (history) =>
+const createRootReducer = (history) =>
   combineReducers({
     keys: keysReducer,
     selectedKey: selectedKeyReducer,
@@ -17,3 +17,5 @@ export default (history) =>
     context: contextReducer,
     schema: schemaReducer,
   });
+
+export default createRootReducer;

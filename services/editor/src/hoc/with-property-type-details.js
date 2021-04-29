@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import * as ContextService from '../services/context-service';
 import * as TypesService from '../services/types-service';
 
-export default (propName = 'propertyTypeDetails') =>
+const withPropertyTypeDetails = (propName = 'propertyTypeDetails') =>
   mapPropsStream((props$) => {
     const typeDetails$ = props$
       .map((x) => x.property)
@@ -23,3 +23,5 @@ export default (propName = 'propertyTypeDetails') =>
       [propName]: propertyTypeDetails,
     }));
   });
+
+export default withPropertyTypeDetails;
