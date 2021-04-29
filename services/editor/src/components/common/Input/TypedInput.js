@@ -7,7 +7,7 @@ import { getTypesService } from '../../../contexts/TypesService';
 import { showCustomAlert } from '../../../store/ducks';
 import ComboBox from '../ComboBox/ComboBox';
 import DateInput from './DateInput';
-import { withJsonEditor } from './EditJSON';
+import CodeEditor from './CodeEditor';
 import Input from './Input';
 import ListTypedValue from './ListTypedValue';
 import './TypedInput.css';
@@ -16,25 +16,6 @@ const valueToItem = (value) =>
   value === undefined || value === ''
     ? undefined
     : { label: changeCase.pascalCase(value.toString()), value };
-
-const CodeEditor = withJsonEditor(
-  ({ editJson, onChange, value, valueType, 'data-comp': dataComp, ...props }) => (
-    <div data-comp={dataComp}>
-      <Input
-        onDoubleClick={() => editJson(value, valueType)}
-        readOnly
-        {...props}
-        onChange={onChange}
-        value={value ? JSON.stringify(value) : value}
-      />
-      <button
-        className="text-input object-type-expander"
-        data-comp="object-editor"
-        onClick={() => editJson(value, valueType)}
-      />
-    </div>
-  ),
-);
 
 const InputComponent = ({
   value,
