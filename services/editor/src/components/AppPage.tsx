@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import Alerts from './alerts/Alerts';
 import '../styles/core/fonts/fonts.css';
 import './App.css';
 
-const AppPage = ({ children }) => (
+const AppPage: FunctionComponent = ({ children }) => (
   <div className={'page'}>
     {children}
     <Alerts />
