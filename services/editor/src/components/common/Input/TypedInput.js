@@ -1,13 +1,10 @@
 import * as changeCase from 'change-case';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
-import { compose, mapProps } from 'recompose';
-import { getTypesService } from '../../../contexts/TypesService';
-import { showCustomAlert } from '../../../store/ducks';
+import { useTypesService } from '../../../contexts/TypesService';
 import ComboBox from '../ComboBox/ComboBox';
-import DateInput from './DateInput';
 import CodeEditor from './CodeEditor';
+import DateInput from './DateInput';
 import Input from './Input';
 import ListTypedValue from './ListTypedValue';
 import './TypedInput.css';
@@ -70,15 +67,28 @@ const InputComponent = ({
   return <Input {...props} onChange={onChange} value={value} />;
 };
 
-const InputWithIcon = ({ hideIcon, valueTypeName, ...props }) => {
+const TypedInput = ({ hideIcon, valueType, onChange, ...props }) => {
+  const { safeConvertValue, types } = useTypesService();
+
+  valueType = (typeof valueType === 'string' ? types[valueType] : valueType) || {
+    name: 'unknown',
+  };
+
+  const valueTypeName = valueType.name || valueType.base;
+
   const renderedInput = (
     <InputComponent
       data-comp="typed-input"
       data-value-type={valueTypeName}
       valueTypeName={valueTypeName}
+      allowedValues={valueType.allowedValues}
+      onChange={(newValue) => onChange && onChange(safeConvertValue(newValue, valueType))}
+      valueType={valueType}
+      types={types}
       {...props}
     />
   );
+
   return hideIcon ? (
     renderedInput
   ) : (
@@ -88,39 +98,6 @@ const InputWithIcon = ({ hideIcon, valueTypeName, ...props }) => {
     </div>
   );
 };
-
-const TypedInput = compose(
-  connect(null, {
-    showCustomAlert,
-  }),
-  getTypesService,
-  mapProps(
-    ({
-      safeConvertValue,
-      types,
-      isAllowedValue,
-      valueType,
-      onChange,
-      showCustomAlert,
-      ...props
-    }) => {
-      valueType = (typeof valueType === 'string' ? types[valueType] : valueType) || {
-        name: 'unknown',
-      };
-      const onChangeConvert = (newValue) =>
-        onChange && onChange(safeConvertValue(newValue, valueType));
-      const valueTypeName = valueType.name || valueType.base;
-      return {
-        allowedValues: valueType.allowedValues,
-        onChange: onChangeConvert,
-        valueType,
-        valueTypeName,
-        types,
-        ...props,
-      };
-    },
-  ),
-)(InputWithIcon);
 
 TypedInput.propTypes = {
   placeholder: PropTypes.string,
