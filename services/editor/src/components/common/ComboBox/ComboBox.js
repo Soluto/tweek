@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import * as R from 'ramda';
 import { compose, pure, mapPropsStream, createEventHandler } from 'recompose';
 import classnames from 'classnames';
+import Input from '../Input/Input';
 import ClickOutside from './ClickOutside';
-import InputWithHint from './InputWithHint';
 import Suggestions from './Suggestions';
 import './ComboBox.css';
 
@@ -48,26 +48,6 @@ class ComboBoxComponent extends Component {
     const { suggestions } = this.props;
     return suggestions[Math.max(0, index)];
   };
-
-  get hint() {
-    const { value, hasFocus, highlightedSuggestion, suggestions, getLabel, matchCase } = this.props;
-    if (!hasFocus) return '';
-    const caseValue = createCase(matchCase, value);
-    let suggestion;
-
-    if (highlightedSuggestion === -1) {
-      if (value === '') return '';
-      suggestion = suggestions
-        .map(getLabel)
-        .find((x) => createCase(matchCase, x).startsWith(caseValue));
-    } else {
-      suggestion = suggestions[highlightedSuggestion];
-    }
-    suggestion = suggestion && getLabel(suggestion);
-    const caseSuggestion = createCase(matchCase, suggestion);
-    if (!suggestion || !caseSuggestion.startsWith(caseValue)) return '';
-    return value + suggestion.substring(value.length);
-  }
 
   handleKeyDown = (e) => {
     const {
@@ -135,8 +115,6 @@ class ComboBoxComponent extends Component {
       ...props
     } = this.props;
 
-    const hint = this.hint;
-
     return (
       <ClickOutside
         className={classnames('combo-box-default-wrapper-theme-class', className)}
@@ -144,13 +122,12 @@ class ComboBoxComponent extends Component {
         onClickOutside={() => setFocus(false)}
       >
         <div data-comp="ComboBox" className="bootstrap-typeahead">
-          <InputWithHint
+          <Input
+            className="bootstrap-typeahead-input"
             {...props}
             value={value}
             disabled={disabled}
-            onChange={(e) => this.onInputChange(e.target.value)}
-            showHint={hasFocus && (hint.length > 0 || value.length > 0)}
-            hint={hint}
+            onChange={this.onInputChange}
             onKeyDown={this.handleKeyDown}
           />
           {hasFocus && !disabled ? (
@@ -186,11 +163,7 @@ const ComboBox = compose(
       onInputChanged$,
     );
 
-    const focus$ = onFocus$
-      .startWith(false)
-      .distinctUntilChanged()
-      .publishReplay(1)
-      .refCount();
+    const focus$ = onFocus$.startWith(false).distinctUntilChanged().publishReplay(1).refCount();
 
     const propsWithValue$ = Observable.combineLatest(props$, value$)
       .map(([props, value]) => ({ ...props, value }))

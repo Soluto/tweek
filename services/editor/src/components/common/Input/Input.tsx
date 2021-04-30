@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import React, { ComponentProps, KeyboardEvent } from 'react';
+import React, { ComponentProps, KeyboardEvent, useEffect, useRef } from 'react';
 import './Input.css';
 
 const isEnterKeyPressed = (event: KeyboardEvent) => event.key === 'Enter';
@@ -18,22 +18,32 @@ const Input = ({
   autofocus,
   className,
   ...props
-}: InputProps) => (
-  <input
-    className={classnames('text-input', className)}
-    onKeyPress={(e) => {
-      if (onEnterKeyPress && isEnterKeyPressed(e)) {
-        onEnterKeyPress();
-        e.preventDefault();
-      } else if (onKeyPress) {
-        onKeyPress(e);
-      }
-    }}
-    onChange={(e) => onChange && onChange(e.target.value)}
-    ref={(e) => autofocus && e?.focus()}
-    {...props}
-  />
-);
+}: InputProps) => {
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autofocus) {
+      ref.current?.focus();
+    }
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <input
+      className={classnames('text-input', className)}
+      onKeyPress={(e) => {
+        if (onEnterKeyPress && isEnterKeyPressed(e)) {
+          onEnterKeyPress();
+          e.preventDefault();
+        } else if (onKeyPress) {
+          onKeyPress(e);
+        }
+      }}
+      onChange={(e) => onChange && onChange(e.target.value)}
+      ref={ref}
+      {...props}
+    />
+  );
+};
 
 Input.defaultProps = {
   type: 'text',
