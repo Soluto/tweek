@@ -1,13 +1,14 @@
+import styled from '@emotion/styled';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from '@emotion/styled';
-
+import { FetchError } from 'tweek-client';
 import logoSrc from './resources/logo.svg';
 
-const getErrorText = (error) => {
-  if (error.statusText) {
+const getErrorText = (error: unknown) => {
+  if (error instanceof Response) {
     return error.statusText;
-  } else if (error.response && error.response.statusText) {
+  }
+  if (error instanceof FetchError) {
     return error.response.statusText;
   }
   return 'Unknown Error';
@@ -52,7 +53,11 @@ const ErrorMessage = styled.div`
   color: red;
 `;
 
-const ErrorPage = ({ error }) => (
+export type ErrorPageProps = {
+  error: unknown;
+};
+
+const ErrorPage = ({ error }: ErrorPageProps) => (
   <Main>
     <Header>
       <Link to="/" replace>
