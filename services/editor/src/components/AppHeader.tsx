@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -7,7 +7,11 @@ import '../styles/core/fonts/fonts.css';
 import './App.css';
 import UserBar from './UserBar';
 
-const ListItemLink = ({ to, ...rest }) => (
+type ListItemLinkProps = {
+  to: string;
+};
+
+const ListItemLink: FunctionComponent<ListItemLinkProps> = ({ to, ...rest }) => (
   <Route
     path={to}
     children={({ match }) => (
