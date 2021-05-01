@@ -1,11 +1,10 @@
 import React from 'react';
-import { compose, mapProps } from 'recompose';
 import DocumentTitle from 'react-document-title';
+import { compose, mapProps } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
-import SearchBox from './SearchBox/SearchBox';
 import './ContextPage.css';
-import ErrorPage from '../../../../components/ErrorPage';
+import SearchBox from './SearchBox/SearchBox';
 
 const ContextPage = ({ children, isExact, ...props }) => (
   <DocumentTitle title="Tweek - Context">
@@ -20,6 +19,6 @@ const ContextPage = ({ children, isExact, ...props }) => (
 );
 
 export default compose(
-  withLoading(() => null, (error) => <ErrorPage error={error} />, refreshSchema),
+  withLoading(refreshSchema),
   mapProps(({ params, ...rest }) => ({ ...params, ...rest })),
 )(ContextPage);

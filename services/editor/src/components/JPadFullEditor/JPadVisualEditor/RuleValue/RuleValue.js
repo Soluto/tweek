@@ -2,8 +2,8 @@ import React from 'react';
 import * as R from 'ramda';
 import Chance from 'chance';
 import CustomSlider from '../../../../components/common/CustomSlider/CustomSlider';
-import TypedInput from '../../../../components/common/Input/TypedInput';
-import ComboBox from '../../../../components/common/ComboBox/ComboBox';
+import TypedInput from '../../../common/Input/TypedInput';
+import ComboBox from '../../../common/ComboBox/ComboBox';
 import * as TypesService from '../../../../services/types-service';
 import { convertWeightedArgsToArray } from '../../rules-utils';
 import './RuleValue.css';
@@ -175,11 +175,7 @@ const MultiVariantValue = ({
   ownerType,
   valueType,
 }) => {
-  const updateOwnerType = (identity) =>
-    mutate
-      .up()
-      .in('OwnerType')
-      .updateValue(identity);
+  const updateOwnerType = (identity) => mutate.up().in('OwnerType').updateValue(identity);
   const wrapperProps = {
     'data-type': type,
     'data-comp': 'multi-variant-value',

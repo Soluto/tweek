@@ -1,5 +1,5 @@
 import React from 'react';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
+import ComboBox from '../../../../common/ComboBox/ComboBox';
 import './styles.css';
 
 const Operator = ({ selectedOperator, onUpdate, supportedOperators }) => (

@@ -1,4 +1,4 @@
-import React, { ComponentType, createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import { isAllowedValue, safeConvertValue, types } from '../services/types-service';
 
 export type ValueType = {
@@ -7,7 +7,7 @@ export type ValueType = {
   allowedValues?: any[];
   comparer?: string;
   emptyValue?: any;
-  ofType?: string;
+  ofType?: ValueType;
 };
 
 export type TypesService = {
@@ -23,11 +23,3 @@ export const TypesServiceContext = createContext<TypesService>({
 });
 
 export const useTypesService = () => useContext(TypesServiceContext);
-
-export const getTypesService = <T extends TypesService>(Component: ComponentType<T>) => (
-  props: Omit<T, keyof TypesService>,
-) => {
-  const typesService = useTypesService();
-  // @ts-ignore
-  return <Component {...props} {...typesService} />;
-};

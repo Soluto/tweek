@@ -4,11 +4,9 @@
   .override-typeahead {
     .override-input {
       flex-grow: 1;
-      .bootstrap-typeahead-input-container {
-        .bootstrap-typeahead-input {
-          .metro-textbox(@font-size);
-          width: @input-width;
-        }
+      .bootstrap-typeahead-input {
+        .metro-textbox(@font-size);
+        width: @input-width;
       }
     }
     .override-dropdown {
@@ -38,7 +36,8 @@
           &:active {
             background-color: #d1d1d1;
           }
-          a {
+          a,
+          button {
             text-decoration: none;
             color: gray;
             font-size: @dropdown-font-size;
@@ -48,6 +47,8 @@
             flex-grow: 1;
             flex-direction: column;
             justify-content: center;
+            background: none;
+            border: none;
             &:first-child {
               padding: 10px;
               padding-right: 30px;

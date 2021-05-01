@@ -1,23 +1,22 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
+import { setObservableConfig } from 'recompose';
 import { Observable } from 'rxjs/Rx';
-import { setObservableConfig, compose } from 'recompose';
-import { TweekProvider } from '../contexts/Tweek';
 import { CurrentUserProvider } from '../contexts/CurrentUser';
+import { TweekProvider } from '../contexts/Tweek';
 import withLoading from '../hoc/with-loading';
 import { refreshSchema } from '../services/context-service';
 import * as TypesService from '../services/types-service';
-import AppHeader from './AppHeader';
-import AppPage from './AppPage';
-import ErrorPage from './ErrorPage';
-import GoogleTagManager from './googleTagManager';
 import '../styles/core/fonts/fonts.css';
 import './App.css';
+import AppHeader from './AppHeader';
+import AppPage from './AppPage';
+import GoogleTagManager from './googleTagManager';
 
 setObservableConfig({
   fromESObservable: Observable.from,
 });
 
-const App = ({ children }) => (
+const AppComponent: FunctionComponent = ({ children }) => (
   <CurrentUserProvider>
     <TweekProvider>
       <div className={'app'}>
@@ -29,10 +28,10 @@ const App = ({ children }) => (
   </CurrentUserProvider>
 );
 
-const preload = async () => await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
+const preload = () => Promise.all([TypesService.refreshTypes(), refreshSchema()]);
 
-const errorRenderer = (error) => <ErrorPage error={error} />;
+const enhance = withLoading(preload);
 
-const enhance = compose(withLoading(() => null, errorRenderer, preload));
+const App = enhance(AppComponent);
 
-export default enhance(App);
+export default App;
