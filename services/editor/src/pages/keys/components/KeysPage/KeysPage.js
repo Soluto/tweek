@@ -1,28 +1,23 @@
+import { push } from 'connected-react-router';
 import React, { useEffect, useState } from 'react';
+import DocumentTitle from 'react-document-title';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import DocumentTitle from 'react-document-title';
+import withLoading from '../../../../hoc/with-loading';
+import { refreshSchema } from '../../../../services/context-service';
+import { refreshTypes } from '../../../../services/types-service';
 import * as keysActions from '../../../../store/ducks/keys';
 import { addKey } from '../../../../store/ducks/selectedKey';
-import KeysList from '../KeysList/KeysList';
-import withLoading from '../../../../hoc/with-loading';
-import { refreshTypes } from '../../../../services/types-service';
-import { refreshSchema } from '../../../../services/context-service';
-import hasUnsavedChanges from '../utils/hasUnsavedChanges';
-import ErrorPage from '../../../../components/ErrorPage';
-import QuickNavigation from '../QuickNavigation/QuickNavigation';
-import './KeysPage.css';
 import { downloadTags } from '../../../../store/ducks/tags';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { push } from 'connected-react-router';
+import KeysList from '../KeysList/KeysList';
+import QuickNavigation from '../QuickNavigation/QuickNavigation';
+import hasUnsavedChanges from '../utils/hasUnsavedChanges';
+import './KeysPage.css';
 
 export default compose(
   connect((state) => state, { ...keysActions, addKey, downloadTags, push }),
-  withLoading(
-    () => null,
-    (error) => <ErrorPage error={error} />,
-    () => Promise.all([refreshTypes(), refreshSchema()]),
-  ),
+  withLoading(() => Promise.all([refreshTypes(), refreshSchema()])),
 )(({ keys, addKey, children, selectedKey, getKeys, tags, push, downloadTags, router }) => {
   useEffect(() => {
     if (!keys || keys.length === 0) {
