@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { setObservableConfig } from 'recompose';
 import { Observable } from 'rxjs/Rx';
 import { CurrentUserProvider } from '../contexts/CurrentUser';
@@ -16,7 +16,7 @@ setObservableConfig({
   fromESObservable: Observable.from,
 });
 
-const App = ({ children }) => (
+const AppComponent: FunctionComponent = ({ children }) => (
   <CurrentUserProvider>
     <TweekProvider>
       <div className={'app'}>
@@ -28,8 +28,10 @@ const App = ({ children }) => (
   </CurrentUserProvider>
 );
 
-const preload = async () => await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
+const preload = () => Promise.all([TypesService.refreshTypes(), refreshSchema()]);
 
 const enhance = withLoading(preload);
 
-export default enhance(App);
+const App = enhance(AppComponent);
+
+export default App;

@@ -1,4 +1,4 @@
-import React, { ComponentType, useEffect, useState } from 'react';
+import React, { ComponentType, FunctionComponent, useEffect, useState } from 'react';
 import ErrorPage from '../components/ErrorPage';
 import Loader from '../components/Loader';
 
@@ -7,9 +7,9 @@ type State = {
   error?: unknown;
 };
 
-const withLoading = (loadingPromiseFactory: () => Promise<void>) => <T,>(
+const withLoading = (loadingPromiseFactory: () => Promise<any>) => <T,>(
   Comp: ComponentType<T>,
-) => (props: T) => {
+): FunctionComponent<T> => (props) => {
   const [{ loading, error }, setState] = useState<State>({ loading: true });
 
   useEffect(() => {
