@@ -1,5 +1,5 @@
 import React from 'react';
-import TypedInput from '../../../../../components/common/Input/TypedInput';
+import TypedInput from '../../../../common/Input/TypedInput';
 import { inOp, within } from '../../../../../services/operators-provider';
 import { types } from '../../../../../services/types-service';
 import './styles.css';

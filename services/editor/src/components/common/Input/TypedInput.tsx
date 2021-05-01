@@ -1,7 +1,7 @@
 import * as changeCase from 'change-case';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useTypesService } from '../../../contexts/TypesService';
+import { useTypesService, ValueType } from '../../../contexts/TypesService';
 import ComboBox from '../ComboBox/ComboBox';
 import CodeEditor from './CodeEditor';
 import DateInput from './DateInput';
@@ -9,20 +9,27 @@ import Input from './Input';
 import ListTypedValue from './ListTypedValue';
 import './TypedInput.css';
 
-const valueToItem = (value) =>
+const valueToItem = (value: any) =>
   value === undefined || value === ''
     ? undefined
     : { label: changeCase.pascalCase(value.toString()), value };
+
+type InputComponentProps = {
+  value: any;
+  onChange: (value: any) => void;
+  valueType: ValueType;
+  valueTypeName: string;
+  types: Record<string, ValueType>;
+};
 
 const InputComponent = ({
   value,
   valueType,
   valueTypeName,
-  allowedValues,
   onChange,
   types,
   ...props
-}) => {
+}: InputComponentProps) => {
   if (
     valueTypeName === types.object.name ||
     (valueTypeName === types.array.name && !valueType.ofType)
@@ -30,23 +37,26 @@ const InputComponent = ({
     return (
       <CodeEditor
         valueType={valueType}
-        onChange={(x) => onChange(JSON.parse(x))}
+        onChange={(x: string) => onChange(JSON.parse(x))}
         value={value}
         {...props}
       />
     );
   }
+
   if (valueTypeName === types.array.name) {
     return (
       <ListTypedValue
         data-comp="property-value"
         value={value || valueType.emptyValue}
-        valueType={valueType.ofType || { base: 'string' }}
+        valueType={valueType.ofType || types.string}
         onChange={onChange}
         {...props}
       />
     );
   }
+
+  const allowedValues = valueType.allowedValues;
   if (allowedValues && allowedValues.length > 0) {
     return (
       <ComboBox
@@ -67,12 +77,24 @@ const InputComponent = ({
   return <Input {...props} onChange={onChange} value={value} />;
 };
 
-const TypedInput = ({ hideIcon, valueType, onChange, ...props }) => {
+export type TypedInputProps = {
+  value: any;
+  onChange?: (value: any) => void;
+  hideIcon?: boolean;
+  valueType: string | ValueType;
+};
+
+const TypedInput = ({
+  hideIcon,
+  valueType: originalValueType,
+  onChange,
+  ...props
+}: TypedInputProps) => {
   const { safeConvertValue, types } = useTypesService();
 
-  valueType = (typeof valueType === 'string' ? types[valueType] : valueType) || {
-    name: 'unknown',
-  };
+  const valueType: ValueType = (typeof originalValueType === 'string'
+    ? types[originalValueType]
+    : originalValueType) || { name: 'unknown' };
 
   const valueTypeName = valueType.name || valueType.base;
 
@@ -80,8 +102,7 @@ const TypedInput = ({ hideIcon, valueType, onChange, ...props }) => {
     <InputComponent
       data-comp="typed-input"
       data-value-type={valueTypeName}
-      valueTypeName={valueTypeName}
-      allowedValues={valueType.allowedValues}
+      valueTypeName={valueTypeName!}
       onChange={(newValue) => onChange && onChange(safeConvertValue(newValue, valueType))}
       valueType={valueType}
       types={types}

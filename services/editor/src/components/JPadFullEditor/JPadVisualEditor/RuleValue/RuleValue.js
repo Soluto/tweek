@@ -2,7 +2,7 @@ import React from 'react';
 import * as R from 'ramda';
 import Chance from 'chance';
 import CustomSlider from '../../../../components/common/CustomSlider/CustomSlider';
-import TypedInput from '../../../../components/common/Input/TypedInput';
+import TypedInput from '../../../common/Input/TypedInput';
 import ComboBox from '../../../common/ComboBox/ComboBox';
 import * as TypesService from '../../../../services/types-service';
 import { convertWeightedArgsToArray } from '../../rules-utils';

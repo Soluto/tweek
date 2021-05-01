@@ -7,7 +7,7 @@ export type ValueType = {
   allowedValues?: any[];
   comparer?: string;
   emptyValue?: any;
-  ofType?: string;
+  ofType?: ValueType;
 };
 
 export type TypesService = {
