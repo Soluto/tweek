@@ -1,19 +1,12 @@
-import React, { ComponentProps, FunctionComponent, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 const events = ['mousedown', 'touchstart'] as const;
 
-function clickedScrollbar(evt: MouseEvent) {
-  return (
-    document.documentElement.clientWidth <= evt.clientX ||
-    document.documentElement.clientHeight <= evt.clientY
-  );
-}
+const clickedScrollbar = (evt: MouseEvent) =>
+  document.documentElement.clientWidth <= evt.clientX ||
+  document.documentElement.clientHeight <= evt.clientY;
 
-export type ClickOutsideProps = ComponentProps<'div'> & {
-  onClickOutside: () => void;
-};
-
-const ClickOutside: FunctionComponent<ClickOutsideProps> = ({ onClickOutside, ...props }) => {
+export const useClickOutside = (onClickOutside: () => void) => {
   const ref = useRef<HTMLDivElement>(null);
   const fnRef = useRef(onClickOutside);
   fnRef.current = onClickOutside;
@@ -36,7 +29,5 @@ const ClickOutside: FunctionComponent<ClickOutsideProps> = ({ onClickOutside, ..
     };
   }, []);
 
-  return <div ref={ref} {...props} />;
+  return ref;
 };
-
-export default ClickOutside;
