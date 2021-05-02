@@ -2021,6 +2021,11 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-gtm-module@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-gtm-module/-/react-gtm-module-2.0.0.tgz#25a118bbcadd518f376ee52626ab0829cb824874"
+  integrity sha512-2d7TUhOQBG6cSVSSSWaoSu+Ds84VQFTuVKLeGNc2GtfA7JDr+z3ujl4n/rezaRRNEhjn+9SllwHy1iNxxP8jDg==
+
 "@types/react-highlight-words@^0.16.2":
   version "0.16.2"
   resolved "https://registry.yarnpkg.com/@types/react-highlight-words/-/react-highlight-words-0.16.2.tgz#c196d1016db7519c607997699f51cb262789fc90"
@@ -10348,10 +10353,10 @@ react-error-overlay@^6.0.9:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
   integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
 
-react-google-tag-manager@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/react-google-tag-manager/-/react-google-tag-manager-2.2.1.tgz#b0659c7b19d9263c7cb45d3c019f506529af9077"
-  integrity sha512-8yPbEE3r2z0OWRvJYg1HegKQktH2fIJ2hHCFzAk7+GeOHIK7Vcq+dA0wo2Wf81oHSPMHiOY7nhXIviSVJFV64w==
+react-gtm-module@^2.0.11:
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/react-gtm-module/-/react-gtm-module-2.0.11.tgz#14484dac8257acd93614e347c32da9c5ac524206"
+  integrity sha512-8gyj4TTxeP7eEyc2QKawEuQoAZdjKvMY4pgWfycGmqGByhs17fR+zEBs0JUDq4US/l+vbTl+6zvUIx27iDo/Vw==
 
 react-highlight-words@^0.17.0:
   version "0.17.0"

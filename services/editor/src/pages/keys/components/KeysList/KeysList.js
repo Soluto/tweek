@@ -1,51 +1,48 @@
-import React from 'react';
-import * as R from 'ramda';
 import classNames from 'classnames';
+import * as R from 'ramda';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Observable } from 'rxjs';
-import {
-  componentFromStream,
-  compose,
-  createEventHandler,
-  setDisplayName,
-  withState,
-} from 'recompose';
 import { withTweekValues } from 'react-tweek';
+import { componentFromStream, compose, createEventHandler, setDisplayName } from 'recompose';
+import { Observable } from 'rxjs';
 import * as SearchService from '../../../../services/search-service';
-import DirectoryTreeView from './TreeView/DirectoryTreeView';
+import { getTagLink } from '../../utils/search';
 import CardView from './CardView';
 import './KeysList.css';
-import { getTagLink } from '../../utils/search';
+import DirectoryTreeView from './TreeView/DirectoryTreeView';
 
-const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFilter, filter }) => (
-  <div className="search-input-wrapper">
-    <div style={{ position: 'relative' }}>
-      <input
-        data-comp="search-key-input"
-        type="text"
-        className="search-input"
-        placeholder="Search..."
-        value={filter}
-        onChange={(e) => {
-          setFilter(e.target.value);
-          onFilterChange(e.target.value);
-        }}
-      />
-      {filter !== '' && (
-        <button
-          className="clear"
-          onClick={(e) => {
-            setFilter('');
-            onFilterChange('');
+const KeysFilter = ({ onFilterChange }) => {
+  const [filter, setFilter] = useState('');
+  return (
+    <div className="search-input-wrapper">
+      <div style={{ position: 'relative' }}>
+        <input
+          data-comp="search-key-input"
+          type="text"
+          className="search-input"
+          placeholder="Search..."
+          value={filter}
+          onChange={(e) => {
+            setFilter(e.target.value);
+            onFilterChange(e.target.value);
           }}
-        >
-          X
-        </button>
-      )}
+        />
+        {filter !== '' && (
+          <button
+            className="clear"
+            onClick={(e) => {
+              setFilter('');
+              onFilterChange('');
+            }}
+          >
+            X
+          </button>
+        )}
+      </div>
     </div>
-  </div>
-));
+  );
+};
 
 const getDataValueType = (archived, keyType, valueType) => {
   if (archived) {

@@ -1,7 +1,6 @@
-import { Link } from 'react-router-dom';
-import React from 'react';
-import { compose, lifecycle, withPropsOnChange } from 'recompose';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { loadSchema } from '../../../../store/ducks/schema';
 import AddIdentity from './AddIdentity';
 
@@ -13,35 +12,30 @@ const IdentityLinkItem = ({ type }) => (
   </li>
 );
 
-const enhanceIdentities = compose(
-  connect(
-    (state) => ({ schema: state.schema }),
-    { loadSchema },
-  ),
-  lifecycle({
-    componentWillMount() {
-      this.props.loadSchema();
-    },
-  }),
-  withPropsOnChange(['schema'], ({ schema }) => ({
-    identities: Object.entries(schema)
-      .filter(([_, { remote }]) => remote !== null)
-      .map(([type]) => type),
-  })),
-);
+const enhanceIdentities = connect((state) => ({ schema: state.schema }), { loadSchema });
 
-const IdentitiesMenu = ({ identities }) => (
-  <li>
-    <div data-comp="group">Identities</div>
-    <ul>
-      {identities.map((identity) => (
-        <IdentityLinkItem key={identity} type={identity} />
-      ))}
-      <li>
-        <AddIdentity />
-      </li>
-    </ul>
-  </li>
-);
+const IdentitiesMenu = ({ schema, loadSchema }) => {
+  useEffect(() => {
+    loadSchema();
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+
+  const identities = Object.entries(schema)
+    .filter(([_, { remote }]) => remote !== null)
+    .map(([type]) => type);
+
+  return (
+    <li>
+      <div data-comp="group">Identities</div>
+      <ul>
+        {identities.map((identity) => (
+          <IdentityLinkItem key={identity} type={identity} />
+        ))}
+        <li>
+          <AddIdentity />
+        </li>
+      </ul>
+    </li>
+  );
+};
 
 export default enhanceIdentities(IdentitiesMenu);

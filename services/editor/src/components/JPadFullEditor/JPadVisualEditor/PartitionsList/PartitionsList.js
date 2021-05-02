@@ -1,13 +1,12 @@
-import React from 'react';
 import * as R from 'ramda';
+import React from 'react';
 import { Accordion, AccordionItem } from 'react-sanfona';
-import { mapProps } from 'recompose';
-import RulesList from '../RulesList/RulesList';
-import TypedInput from '../../../common/Input/TypedInput';
 import * as ContextService from '../../../../services/context-service';
+import '../../../../styles/core/core.css';
+import TypedInput from '../../../common/Input/TypedInput';
+import RulesList from '../RulesList/RulesList';
 import { InputValue } from '../RuleValue/RuleValue';
 import './PartitionsList.css';
-import '../../../../styles/core/core.css';
 
 const extractPartitionToObject = (mutate, partitions) => {
   if (partitions.length === 0) {
@@ -26,29 +25,17 @@ const extractPartitionToObject = (mutate, partitions) => {
 };
 
 const sortPartitions = (partitions) =>
-  R.sortWith(
-    partitions.map((_, i) =>
-      R.descend(
-        R.pipe(
-          R.prop('partitionsValues'),
-          R.prop(i),
-        ),
-      ),
-    ),
-  );
+  R.sortWith(partitions.map((_, i) => R.descend(R.pipe(R.prop('partitionsValues'), R.prop(i)))));
 
-const NewPartitionPropertyValue = mapProps(
-  ({ value, onUpdate: onChange, name, identity, id: property }) => {
-    const propertyTypeDetails = ContextService.getPropertyTypeDetails(property);
-    return {
-      value,
-      onChange,
-      placeholder: `${name} (${identity})`,
-      valueType: propertyTypeDetails,
-      'data-field': `${identity}.${name}`,
-    };
-  },
-)(TypedInput);
+const NewPartitionPropertyValue = ({ value, onUpdate, name, identity, id: property }) => (
+  <TypedInput
+    value={value}
+    onChange={onUpdate}
+    placeholder={`${name} (${identity})`}
+    valueType={ContextService.getPropertyTypeDetails(property)}
+    data-field={`${identity}.${name}`}
+  />
+);
 
 class NewPartition extends React.Component {
   state = { partition: {}, defaultValue: '' };
@@ -59,7 +46,9 @@ class NewPartition extends React.Component {
 
   addPartition() {
     const { handlePartitionAddition } = this.props;
-    if (handlePartitionAddition) handlePartitionAddition(this.state);
+    if (handlePartitionAddition) {
+      handlePartitionAddition(this.state);
+    }
     this.replaceState({ partition: {}, defaultValue: '' });
   }
 
@@ -117,7 +106,9 @@ export default class PartitionsList extends React.Component {
     const { partitions, mutate, valueType, alerter, keyPath } = this.props;
 
     const rulesByPartitions = mutate.getValue();
-    if (!rulesByPartitions) return <div />;
+    if (!rulesByPartitions) {
+      return <div />;
+    }
 
     let partitionsData = extractPartitionToObject(mutate, partitions);
 

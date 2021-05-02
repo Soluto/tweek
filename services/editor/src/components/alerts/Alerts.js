@@ -1,15 +1,9 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { withState, setDisplayName, compose } from 'recompose';
 import Rodal from 'rodal';
 import './Alerts.css';
 import './Rodal.css';
-
-const addState = compose(
-  setDisplayName('Alert'),
-  withState('componentData', 'setComponentData'),
-);
 
 const reactify = (Content, props) =>
   typeof Content === 'string' ? (
@@ -22,18 +16,17 @@ const reactify = (Content, props) =>
     <Content {...props} />
   );
 
-const Alert = addState(
-  ({
-    title,
-    message,
-    component: Component,
-    buttons,
-    onClose,
-    showCloseButton = false,
-    componentData,
-    resizable = false,
-    setComponentData,
-  }) => (
+const Alert = ({
+  title,
+  message,
+  component: Component,
+  buttons,
+  onClose,
+  showCloseButton = false,
+  resizable = false,
+}) => {
+  const [componentData, setComponentData] = useState();
+  return (
     <Rodal
       closeOnEsc={true}
       visible
@@ -57,8 +50,8 @@ const Alert = addState(
         ))}
       </div>
     </Rodal>
-  ),
-);
+  );
+};
 
 export default connect((state) => state)(({ alerts }) => (
   <div id="alerts">

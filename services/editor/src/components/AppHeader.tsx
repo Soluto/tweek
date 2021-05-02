@@ -6,6 +6,9 @@ import logoSrc from './resources/logo.svg';
 import '../styles/core/fonts/fonts.css';
 import './App.css';
 import UserBar from './UserBar';
+import keysIcon from './resources/keys.svg';
+import contextIcon from './resources/context.svg';
+import settingsIcon from './resources/settings.svg';
 
 type ListItemLinkProps = {
   to: string;
@@ -37,15 +40,15 @@ const AppHeader = () => (
     <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1 }}>
       <ul className={'menu'}>
         <ListItemLink to="/keys">
-          <img src={require('./resources/keys.svg')} alt={''} />
+          <img src={keysIcon} alt={''} />
           <span>Keys</span>
         </ListItemLink>
         <ListItemLink to="/context">
-          <img src={require('./resources/context.svg')} alt={''} />
+          <img src={contextIcon} alt={''} />
           <span>Context</span>
         </ListItemLink>
         <ListItemLink to="/settings">
-          <img src={require('./resources/settings.svg')} alt={''} />
+          <img src={settingsIcon} alt={''} />
           <span>Settings</span>
         </ListItemLink>
       </ul>
