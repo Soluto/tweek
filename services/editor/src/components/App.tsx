@@ -10,20 +10,27 @@ import '../styles/core/fonts/fonts.css';
 import './App.css';
 import AppHeader from './AppHeader';
 import AppPage from './AppPage';
-import GoogleTagManager from './googleTagManager';
+import { useGoogleTagManager } from './GoogleTagManager';
 
 setObservableConfig({
   fromESObservable: Observable.from,
 });
 
-const AppComponent: FunctionComponent = ({ children }) => (
+const AppContainer: FunctionComponent = ({ children }) => {
+  useGoogleTagManager();
+
+  return (
+    <div className="app">
+      <AppHeader />
+      <AppPage>{children}</AppPage>
+    </div>
+  );
+};
+
+const AppWithProviders: FunctionComponent = ({ children }) => (
   <CurrentUserProvider>
     <TweekProvider>
-      <div className={'app'}>
-        <GoogleTagManager />
-        <AppHeader />
-        <AppPage children={children} />
-      </div>
+      <AppContainer>{children}</AppContainer>
     </TweekProvider>
   </CurrentUserProvider>
 );
@@ -32,6 +39,6 @@ const preload = () => Promise.all([TypesService.refreshTypes(), refreshSchema()]
 
 const enhance = withLoading(preload);
 
-const App = enhance(AppComponent);
+const App = enhance(AppWithProviders);
 
 export default App;
