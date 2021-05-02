@@ -18,8 +18,7 @@ require (
 	github.com/nats-io/nats.go v1.10.0
 	github.com/nats-io/nkeys v0.2.0 // indirect
 	github.com/open-policy-agent/opa v0.23.0
-	github.com/prometheus/client_golang v1.7.1
-	github.com/prometheus/common v0.13.0 // indirect
+	github.com/prometheus/client_golang v1.10.0
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
 	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.6.0
