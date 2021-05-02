@@ -44,7 +44,7 @@
     "passport-jwt": "^4.0.0",
     "passport-strategy": "^1.0.0",
     "ramda": "^0.27.1",
-    "rxjs": "^6.6.2",
+    "rxjs": "^7.0.0",
     "shortid": "^2.2.15",
     "simple-git": "^2.20.1",
     "sshpk": "^1.16.1",
