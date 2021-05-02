@@ -3,7 +3,6 @@ module tweek-gateway
 go 1.14
 
 require (
-	github.com/OneOfOne/xxhash v1.2.8 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-ini/ini v1.57.0 // indirect
 	github.com/gorilla/mux v1.8.0
@@ -17,9 +16,8 @@ require (
 	github.com/nats-io/jwt v1.0.1 // indirect
 	github.com/nats-io/nats.go v1.10.0
 	github.com/nats-io/nkeys v0.2.0 // indirect
-	github.com/open-policy-agent/opa v0.23.0
+	github.com/open-policy-agent/opa v0.28.0
 	github.com/prometheus/client_golang v1.10.0
-	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
 	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/urfave/negroni v1.0.0
