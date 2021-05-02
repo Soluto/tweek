@@ -1,6 +1,5 @@
-import React from 'react';
-import { compose, withState, withHandlers } from 'recompose';
 import * as R from 'ramda';
+import React, { useState } from 'react';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
 import TypedInput from '../../../../../components/common/Input/TypedInput';
@@ -99,7 +98,7 @@ const AllowedValuesSelector = ({ onUpdate, type, allowedValues }) => (
 );
 
 const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
-  const identityPropertyTypes = [...Object.keys(TypesServices.types)];
+  const identityPropertyTypes = Object.keys(TypesServices.types);
 
   let TypeSelector = SimpleTypeSelector;
   if (typeof type === 'object') {
@@ -127,27 +126,31 @@ export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) => (
   </div>
 );
 
-const createUpdater = (propName, updateFn) => (x) => updateFn(R.assoc(propName, x));
 const EMPTY_PROPERTY = { propName: '', def: { type: 'string' } };
-export const NewIdentityProperty = compose(
-  withState('state', 'setState', EMPTY_PROPERTY),
-  withHandlers({
-    updatePropName: ({ setState }) => createUpdater('propName', setState),
-    updateDef: ({ setState }) => createUpdater('def', setState),
-    clear: ({ setState }) => () => setState(() => EMPTY_PROPERTY),
-  }),
-)(({ state, updateDef, updatePropName, onCreate, clear }) => {
-  let applyChange = () => {
+
+export const NewIdentityProperty = ({ onCreate }) => {
+  const [state, setState] = useState(EMPTY_PROPERTY);
+
+  const updatePropName = (propName) => setState((s) => ({ ...s, propName }));
+  const updateDef = (def) => setState((s) => ({ ...s, def }));
+  const applyChange = () => {
     onCreate(state.propName, state.def);
-    clear();
+    setState(EMPTY_PROPERTY);
   };
+
   return (
     <div
       data-comp="new-property-item"
       onKeyUpCapture={(e) => {
-        if (e.keyCode !== 13) return;
-        if (state.propName === '') return;
-        if (typeof state.def.type === 'object') return;
+        if (e.keyCode !== 13) {
+          return;
+        }
+        if (state.propName === '') {
+          return;
+        }
+        if (typeof state.def.type === 'object') {
+          return;
+        }
         applyChange();
       }}
     >
@@ -165,4 +168,4 @@ export const NewIdentityProperty = compose(
       <button data-comp="add" onClick={applyChange} />
     </div>
   );
-});
+};

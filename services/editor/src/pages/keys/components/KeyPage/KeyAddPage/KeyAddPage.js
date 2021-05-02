@@ -1,42 +1,34 @@
-import React from 'react';
-import { compose, setDisplayName, setPropTypes } from 'recompose';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
 import {
   addKeyDetails,
-  updateKeyPath,
   changeKeyFormat,
+  updateKeyPath,
 } from '../../../../../store/ducks/selectedKey';
+import './KeyAddPage.css';
+import KeyFormatSelector from './KeyFormatSelector';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import NewKeyInput from './NewKeyInput';
-import KeyFormatSelector from './KeyFormatSelector';
-import './KeyAddPage.css';
 
-const KeyAddPage = compose(
-  connect(
-    ({
-      selectedKey: {
-        local: { manifest },
-        validation: { key: keyValidation },
-      },
-    }) => ({
-      manifest,
-      keyValidation,
-    }),
-    {
-      addKeyDetails,
-      updateKeyPath,
-      changeKeyFormat,
+const enhance = connect(
+  ({
+    selectedKey: {
+      local: { manifest },
+      validation: { key: keyValidation },
     },
-  ),
-  setDisplayName('KeyAddPage'),
-  setPropTypes({
-    updateKeyPath: PropTypes.func.isRequired,
-    addKeyDetails: PropTypes.func.isRequired,
-    changeKeyFormat: PropTypes.func.isRequired,
-    manifest: PropTypes.object.isRequired,
+  }) => ({
+    manifest,
+    keyValidation,
   }),
-)(({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat, keyValidation }) => {
+  {
+    addKeyDetails,
+    updateKeyPath,
+    changeKeyFormat,
+  },
+);
+
+const KeyAddPage = ({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat, keyValidation }) => {
   const valueType = manifest.valueType;
   const displayName = manifest.meta.name;
   return (
@@ -63,6 +55,13 @@ const KeyAddPage = compose(
       </div>
     </div>
   );
-});
+};
 
-export default KeyAddPage;
+KeyAddPage.propTypes = {
+  updateKeyPath: PropTypes.func.isRequired,
+  addKeyDetails: PropTypes.func.isRequired,
+  changeKeyFormat: PropTypes.func.isRequired,
+  manifest: PropTypes.object.isRequired,
+};
+
+export default enhance(KeyAddPage);

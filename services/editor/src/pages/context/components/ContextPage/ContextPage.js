@@ -1,6 +1,5 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import { compose, mapProps } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
 import './ContextPage.css';
@@ -18,7 +17,4 @@ const ContextPage = ({ children, isExact, ...props }) => (
   </DocumentTitle>
 );
 
-export default compose(
-  withLoading(refreshSchema),
-  mapProps(({ params, ...rest }) => ({ ...params, ...rest })),
-)(ContextPage);
+export default withLoading(refreshSchema)(ContextPage);

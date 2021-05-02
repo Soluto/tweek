@@ -1,7 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import AnimakitExpander from 'animakit-expander';
-import { withState } from 'recompose';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import trashIcon from '../../../../../../resources/trash-icon.svg';
 import './DependencyIndicator.css';
 
@@ -15,18 +14,20 @@ const ExpanderToggle = ({ toggled, onToggle }) => (
   </span>
 );
 
-const withToggleState = withState('toggled', 'onToggle', false);
+const Expander = ({ title, children, ...props }) => {
+  const [toggled, onToggle] = useState(false);
 
-const Expander = withToggleState(({ title, toggled, onToggle, children, ...props }) => (
-  <div {...props}>
-    <ExpanderToggle toggled={toggled} onToggle={onToggle} />
-    {title}
-    <br />
-    <AnimakitExpander expanded={toggled} align="bottom">
-      {children}
-    </AnimakitExpander>
-  </div>
-));
+  return (
+    <div {...props}>
+      <ExpanderToggle toggled={toggled} onToggle={onToggle} />
+      {title}
+      <br />
+      <AnimakitExpander expanded={toggled} align="bottom">
+        {children}
+      </AnimakitExpander>
+    </div>
+  );
+};
 
 const renderLink = (dep) => <Link to={`/keys/${dep}`}>{dep}</Link>;
 const renderText = (dep, { deleteAlias }) => (

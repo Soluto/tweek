@@ -29,8 +29,8 @@ const renderKeyRoutes = ({ match: { path } }: RouteComponentProps) => (
   </KeysPage>
 );
 
-const renderContextRoutes = ({ match }: RouteComponentProps) => (
-  <ContextPage {...match}>
+const renderContextRoutes = ({ match: { params, ...match } }: RouteComponentProps) => (
+  <ContextPage {...params} {...match}>
     <Route path={`${match.path}/:identityType/:identityId`} component={IdentityDetails} />
   </ContextPage>
 );
