@@ -1,5 +1,5 @@
 # ------- BASE -------
-FROM node:14.7 as base
+FROM node:14.16.1 as base
 WORKDIR /opt/app
 
 # ------- DEPS -------

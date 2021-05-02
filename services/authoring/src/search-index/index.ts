@@ -14,20 +14,16 @@ let index;
 async function refreshIndex(repoDir) {
   const indexFile = './searchIndex.json';
 
-  await new Promise((resolve, reject) => {
-    execFile(
-      'node',
-      [path.join(__dirname, 'build/cli.js'), repoDir, indexFile],
-      (error, stdout, stderr) => {
-        logger.info({ stdout, stderr }, 'finished indexing');
+  await new Promise<void>((resolve, reject) => {
+    execFile('node', [path.join(__dirname, 'build/cli.js'), repoDir, indexFile], (error, stdout, stderr) => {
+      logger.info({ stdout, stderr }, 'finished indexing');
 
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      },
-    );
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
   });
 
   const stringIndex = await fs.readFile(indexFile);
@@ -45,22 +41,15 @@ function createDependencyIndexes(manifests) {
 
   const getKey = (key) => (key in aliases ? getKey(aliases[key]) : key);
 
-  const createAliasIndex = R.pipe(
-    R.map(getKey),
-    R.invert,
-  );
+  const createAliasIndex = R.pipe(R.map(getKey), R.invert);
 
   const aliasIndex = createAliasIndex(aliases);
 
   const indexDependencies = R.pipe(
-    R.filter(
-      (manifest: any) => !!manifest.dependencies && manifest.implementation.type !== 'alias',
-    ),
+    R.filter((manifest: any) => !!manifest.dependencies && manifest.implementation.type !== 'alias'),
     R.chain(
-      R.pipe(
-        R.props(['key_path', 'dependencies']),
-        ([keyPath, dependencies]: any[]) =>
-          dependencies.map((dependency) => ({ dependency: getKey(dependency), keyPath })),
+      R.pipe(R.props(['key_path', 'dependencies']), ([keyPath, dependencies]: any[]) =>
+        dependencies.map((dependency) => ({ dependency: getKey(dependency), keyPath })),
       ),
     ),
     R.groupBy(R.prop('dependency')),
