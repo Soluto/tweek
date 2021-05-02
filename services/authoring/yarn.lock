@@ -264,10 +264,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.43.tgz#26bcbb0595b305400e8ceaf9a127a7f905ae49c8"
   integrity sha512-3pwDJjp1PWacPTpH0LcfhgjvurQvrZFBrC6xxjaUEZ7ifUtT32jtjPxEMMblpqd2Mvx+k8haqQJLQxolyGN/cQ==
 
-"@types/nodegit@0.26.7":
-  version "0.26.7"
-  resolved "https://registry.yarnpkg.com/@types/nodegit/-/nodegit-0.26.7.tgz#3fc8f5108dcabddd6238509748c0e812ba02b9b7"
-  integrity sha512-qVwQupq4To/wkRtUnaiwbNhuRiVJShOG9CYIWiGdKQRkvWijtHmEnrC1KJHOVrzK04sMdHRClyecrfmN17VMFQ==
+"@types/nodegit@0.27.1":
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/@types/nodegit/-/nodegit-0.27.1.tgz#42a677f1c4cde89dd5d8699e75576b8d9ff317c6"
+  integrity sha512-uGyZ6A/72Zn5HRme1OKUT7FcK4nQVQMyjS3Uo9tTV/383A7GdDOFBEfcZ1TTPcyD0k85EAQkzZfjfPKU45fnoA==
   dependencies:
     "@types/node" "*"
 
