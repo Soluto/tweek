@@ -1,9 +1,8 @@
-import React from 'react';
 import Chance from 'chance';
-import { compose, mapProps } from 'recompose';
+import React, { useRef } from 'react';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
-import withPropertyTypeDetails from '../../../../../hoc/with-property-type-details';
+import { usePropertyTypeDetails } from '../../../../../hoc/with-property-type-details';
 import Avatar from './Avatar';
 import './styles.css';
 
@@ -41,45 +40,42 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) => (
   </div>
 );
 
-const PropertySuggestion = compose(
-  mapProps(({ suggestion, ...props }) => {
-    const property = suggestion.value;
-    const [identity, propName] = suggestion.value.split('.');
-    const tooltipId = chance.guid();
+const PropertySuggestion = ({ suggestion, textToMark }) => {
+  const property = suggestion.value;
+  const [identity, propName] = suggestion.value.split('.');
+  const tooltipId = useRef(chance.guid());
 
-    return { ...props, property, identity, propName, tooltipId };
-  }),
-  withPropertyTypeDetails('typeDetails'),
-)(({ identity, propName, tooltipId, typeDetails, textToMark }) => (
-  <div
-    data-comp="property-suggestion"
-    data-value={`${identity}.${propName}`}
-    className="property-suggestion-wrapper"
-    data-tip
-    data-for={tooltipId}
-    data-place="right"
-    data-effect="solid"
-    data-delay-show={1000}
-    data-delay-hide={1000}
-  >
-    <Avatar identity={identity} />
-    <Highlighter
-      highlightClassName="suggestion-label"
-      highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
-      searchWords={[textToMark]}
-      textToHighlight={propName}
-    />
-    <ReactTooltip id={tooltipId}>
-      <PropertyTooltip
-        propName={propName}
-        identityType={identity}
-        propType={typeDetails.name}
-        description={typeDetails.description || ''}
+  const typeDetails = usePropertyTypeDetails(property);
+
+  return (
+    <div
+      data-comp="property-suggestion"
+      data-value={`${identity}.${propName}`}
+      className="property-suggestion-wrapper"
+      data-tip
+      data-for={tooltipId.current}
+      data-place="right"
+      data-effect="solid"
+      data-delay-show={1000}
+      data-delay-hide={1000}
+    >
+      <Avatar identity={identity} />
+      <Highlighter
+        highlightClassName="suggestion-label"
+        highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
+        searchWords={[textToMark]}
+        textToHighlight={propName}
       />
-    </ReactTooltip>
-  </div>
-));
-
-PropertySuggestion.displayName = 'PropertySuggestion';
+      <ReactTooltip id={tooltipId.current}>
+        <PropertyTooltip
+          propName={propName}
+          identityType={identity}
+          propType={typeDetails.name}
+          description={typeDetails.description || ''}
+        />
+      </ReactTooltip>
+    </div>
+  );
+};
 
 export default PropertySuggestion;

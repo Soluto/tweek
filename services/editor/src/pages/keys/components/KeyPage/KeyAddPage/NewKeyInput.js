@@ -1,9 +1,9 @@
 import * as R from 'ramda';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useTweekValue } from 'react-tweek';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import ValidationIcon from '../../../../../components/common/ValidationIcon';
+import { useShowInternalKeys } from '../../../../../hoc/with-search-config';
 import * as SearchService from '../../../../../services/search-service';
 import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
@@ -30,7 +30,7 @@ const NewKeyInput = ({
   onChange,
   displayName,
 }) => {
-  const showInternalKeys = useTweekValue('@tweek/editor/show_internal_keys', false);
+  const showInternalKeys = useShowInternalKeys();
   const keysNames = Object.keys(keys);
 
   useEffect(() => {

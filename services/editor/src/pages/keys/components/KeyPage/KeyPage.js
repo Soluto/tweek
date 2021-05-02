@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, lifecycle } from 'recompose';
+import { compose, lifecycle, pure } from 'recompose';
 import { withTweekValues } from 'react-tweek';
 import querystring from 'query-string';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
@@ -58,16 +58,14 @@ const mapStateToProps = (state, { match, location }) => {
 };
 
 const enhance = compose(
-  connect(
-    mapStateToProps,
-    { ...selectedKeyActions, ...alertActions },
-  ),
+  connect(mapStateToProps, { ...selectedKeyActions, ...alertActions }),
   routeLeaveHook(
     hasUnsavedChanges,
     'You have unsaved changes, are you sure you want to leave this page?',
     { className: 'key-page-wrapper' },
   ),
   withTweekValues({ historySince: '@tweek/editor/history/since' }, { defaultValues: {} }),
+  pure,
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey, revision, historySince } = this.props;

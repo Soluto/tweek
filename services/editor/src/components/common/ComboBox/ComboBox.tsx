@@ -49,6 +49,7 @@ type BaseComboBoxProps<T> = {
   matchCase?: boolean;
   renderSuggestion?: (item: T, value: string) => ReactElement;
   suggestionsContainer?: ComponentType;
+  onFocus?: (focused: boolean) => void;
   className?: string;
 };
 
@@ -69,6 +70,7 @@ const ComboBox = <T,>({
   suggestionsContainer,
   renderSuggestion,
 
+  onFocus,
   onKeyDown,
   ...props
 }: ComboBoxProps<T>) => {
@@ -79,6 +81,11 @@ const ComboBox = <T,>({
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
+
+  const updateFocus = (focus: boolean) => {
+    setFocus(focus);
+    onFocus && onFocus(focus);
+  };
 
   const filterSuggestions = () => {
     const getCaseLabel = createCase(matchCase, getLabel);
@@ -118,7 +125,7 @@ const ComboBox = <T,>({
   const onSuggestionSelected = (index: number) => {
     const selected = getSuggestion(index);
     onChange(getLabel(selected), selected);
-    setFocus(false);
+    updateFocus(false);
   };
 
   const onInputChange = (input: string) => {
@@ -126,7 +133,7 @@ const ComboBox = <T,>({
     const getLabelWithCase = createCase(matchCase, getLabel);
     const selected = suggestions.find((s) => getLabelWithCase(s) === caseInput);
     onChange(input, selected);
-    setFocus(true);
+    updateFocus(true);
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -140,7 +147,7 @@ const ComboBox = <T,>({
             break;
           }
         }
-        setFocus(false);
+        updateFocus(false);
         break;
       case keyCode.RIGHT:
       case keyCode.ENTER:
@@ -173,12 +180,12 @@ const ComboBox = <T,>({
     }
   };
 
-  const ref = useClickOutside(() => setFocus(false));
+  const ref = useClickOutside(() => updateFocus(false));
 
   return (
     <div
       className={classnames('combo-box-default-wrapper-theme-class', className)}
-      onFocus={() => setFocus(true)}
+      onFocus={() => updateFocus(true)}
       ref={ref}
     >
       <div data-comp="ComboBox" className="bootstrap-typeahead">

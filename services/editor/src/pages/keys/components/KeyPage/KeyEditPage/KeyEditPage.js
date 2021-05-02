@@ -171,7 +171,7 @@ class KeyEditPage extends Component {
   }
 }
 
-export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
+export default compose(pure, stickyHeaderIdentifier('key-edit-page', 150))(KeyEditPage);
 
 const KeyStickyHeader = (props) => {
   const { isReadonly, isHistoricRevision } = props;

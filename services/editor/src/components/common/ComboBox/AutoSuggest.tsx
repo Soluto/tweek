@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useTweekValue } from 'react-tweek';
+import { useMaxSearchResults, useShowInternalKeys } from '../../../hoc/with-search-config';
 import ComboBox, { ComboBoxProps } from './ComboBox';
 
 export type SearchConfig = {
@@ -14,14 +14,8 @@ export type AutoSuggestProps<T> = Omit<ComboBoxProps<T>, 'suggestions'> & {
 const AutoSuggest = <T,>({ getSuggestions, onChange, ...props }: AutoSuggestProps<T>) => {
   const [suggestions, setSuggestions] = useState<T[]>([]);
   const [search, setSearch] = useState(props.value);
-  const maxSearchResults = useTweekValue<number | undefined>(
-    '@tweek/editor/search/max_results',
-    undefined,
-  );
-  const showInternalKeys = useTweekValue<boolean | undefined>(
-    '@tweek/editor/show_internal_keys',
-    undefined,
-  );
+  const maxSearchResults = useMaxSearchResults();
+  const showInternalKeys = useShowInternalKeys();
 
   useEffect(() => {
     setSearch(props.value);

@@ -1,4 +1,4 @@
-import { withTweekValues } from 'react-tweek';
+import { useTweekValue, withTweekValues } from 'react-tweek';
 
 export default withTweekValues(
   {
@@ -9,3 +9,6 @@ export default withTweekValues(
     defaultValues: {},
   },
 );
+
+export const useMaxSearchResults = useTweekValue.create('@tweek/editor/search/max_results', 25);
+export const useShowInternalKeys = useTweekValue.create('@tweek/editor/show_internal_keys', false);
