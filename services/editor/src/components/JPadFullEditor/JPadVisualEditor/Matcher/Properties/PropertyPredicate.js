@@ -11,7 +11,7 @@ const PropertyPredicate = ({ property, predicate, mutate }) => {
   let predicateValue;
   let selectedOperator;
   if (typeof predicate !== 'object') {
-    selectedOperator = supportedOperators.indexOf(equal) >= 0 ? equal : supportedOperators[0];
+    selectedOperator = supportedOperators.includes(equal) ? equal : supportedOperators[0];
     predicateValue = predicate;
   } else {
     selectedOperator = supportedOperators.find((x) =>
