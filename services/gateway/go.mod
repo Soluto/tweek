@@ -21,7 +21,7 @@ require (
 	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/urfave/negroni v1.0.0
-	github.com/vulcand/oxy v1.1.0
+	github.com/vulcand/oxy v1.3.0
 	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/h2non/gock.v1 v1.0.16
