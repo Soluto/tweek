@@ -106,7 +106,7 @@ const WeightedValues = ({ onUpdate, variants, valueType }) => (
   <CustomSlider
     data={convertWeightedArgsToArray(variants, valueType)}
     onUpdate={onUpdate}
-    displaySliderDragger={false}
+    displayLegend
     sliderColors={multiVariantSliderColors}
     valueType={valueType}
   />
@@ -141,14 +141,14 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
     </div>
     <div className="bernoulli-trial-slider-wrapper">
       <CustomSlider
-        displayLegend={false}
+        displaySliderDragger
         sliderColors={bernouliTrialSliderColors}
         data={[
-          { value: true, weight: (1000 * ratio) / 10 },
-          { value: false, weight: 100 - (1000 * ratio) / 10 },
+          { value: true, weight: 100 * ratio },
+          { value: false, weight: 100 - 100 * ratio },
         ]}
         onUpdate={(x) => onUpdate(x[0].weight / 100)}
-        valueType={TypesService.types['boolean']}
+        valueType={TypesService.types.boolean}
       />
     </div>
   </div>

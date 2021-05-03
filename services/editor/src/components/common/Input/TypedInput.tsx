@@ -82,6 +82,7 @@ export type TypedInputProps = {
   onChange?: (value: any) => void;
   hideIcon?: boolean;
   valueType: string | ValueType;
+  className?: string;
 };
 
 const TypedInput = ({
