@@ -1,6 +1,19 @@
 import { tweekClient, tweekManagementClient } from '../utils';
 
-export const types = {
+export type ValueType = {
+  name: string;
+  base?: string;
+  allowedValues?: any[];
+  comparer?: string;
+  emptyValue?: any;
+  ofType?: ValueType;
+};
+
+export type KnownTypes = 'string' | 'number' | 'boolean' | 'date' | 'object' | 'array';
+
+export type ValueTypes = Record<KnownTypes | string, ValueType>;
+
+export const types: ValueTypes = {
   string: {
     name: 'string',
   },
@@ -25,14 +38,14 @@ export const types = {
 };
 
 export async function refreshTypes() {
-  const loadedTypes = await tweekClient.getValues('@tweek/custom_types/_');
+  const loadedTypes = await tweekClient.getValues<Record<string, object>>('@tweek/custom_types/_');
 
   for (const type of Object.keys(loadedTypes)) {
-    types[type] = Object.assign({ name: type }, loadedTypes[type]);
+    types[type] = { name: type, ...loadedTypes[type] };
   }
 }
 
-export function convertValue(value, targetType) {
+export function convertValue(value: string, targetType: string | ValueType): any {
   const type = typeof targetType === 'string' ? types[targetType] : targetType;
   if (!type) {
     throw new Error(`Unknown type ${targetType}`);
@@ -44,7 +57,7 @@ export function convertValue(value, targetType) {
     case 'number':
       return safeConvertToBaseType(value, 'number');
     case 'array':
-      return convertCheckArray(value, type.ofType ? (x) => convertValue(x, type.ofType) : (x) => x);
+      return type.ofType ? convertCheckArray(value, (x) => convertValue(x, type.ofType!)) : value;
     case 'object':
       if (typeof value === types.object.name) {
         return value;
@@ -55,10 +68,10 @@ export function convertValue(value, targetType) {
   }
 }
 
-const convertCheckArray = (value, converter) =>
-  Array.isArray(value) ? [...value.map(converter)] : converter(value);
+const convertCheckArray = <T, U = T>(value: T, converter: (x: T) => U) =>
+  Array.isArray(value) ? value.map(converter) : converter(value);
 
-export function isAllowedValue(valueType, value) {
+export function isAllowedValue(valueType: ValueType | undefined, value: any) {
   return (
     valueType &&
     (!valueType.allowedValues ||
@@ -67,7 +80,7 @@ export function isAllowedValue(valueType, value) {
   );
 }
 
-export function safeConvertValue(value, targetType) {
+export function safeConvertValue(value: string, targetType: ValueType) {
   try {
     return convertValue(value, targetType);
   } catch (err) {
@@ -80,7 +93,7 @@ export function safeConvertValue(value, targetType) {
   }
 }
 
-function safeConvertToBaseType(value, type) {
+function safeConvertToBaseType(value: string, type: string) {
   const jsonValue = JSON.parse(value);
 
   if (typeof jsonValue !== type) {
@@ -90,26 +103,23 @@ function safeConvertToBaseType(value, type) {
   return jsonValue;
 }
 
-export function isStringValidJson(str, targetType) {
+export function isStringValidJson(str: string, targetType?: ValueType) {
   try {
     const result = JSON.parse(str);
     const resultType = Array.isArray(result) ? 'array' : typeof result;
-    if (targetType && resultType !== targetType.name && resultType !== targetType.base) {
-      return false;
-    }
-    return true;
+    return !targetType || resultType === targetType.name || resultType === targetType.base;
   } catch (e) {
     return false;
   }
 }
 
-export async function getValueTypeDefinition(key) {
-  if (!key || key.length === 0) return types.string;
+export async function getValueTypeDefinition(keyPath: string): Promise<ValueType> {
+  if (!keyPath) return types.string;
   try {
-    const manifest = await tweekManagementClient.getKeyManifest(key);
+    const manifest = await tweekManagementClient.getKeyManifest(keyPath);
 
     if (manifest.implementation.type === 'alias') {
-      return getValueTypeDefinition(manifest.implementation.key);
+      return getValueTypeDefinition(manifest.implementation.key as string);
     }
 
     return types[manifest.valueType] || types.string;

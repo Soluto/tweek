@@ -2,7 +2,8 @@ import classes from 'classnames';
 import * as R from 'ramda';
 import React from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
-import { useTypesService, ValueType } from '../../../contexts/TypesService';
+import { useTypesService } from '../../../contexts/TypesService';
+import { ValueType } from '../../../services/types-service';
 
 const convertToArray = (value: any): any[] =>
   (value && (Array.isArray(value) ? value : [value])) || [];

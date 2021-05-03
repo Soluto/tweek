@@ -1,7 +1,7 @@
 import React from 'react';
 import { DraggableCore } from 'react-draggable';
 import * as R from 'ramda';
-import { ValueType } from '../../../contexts/TypesService';
+import { ValueType } from '../../../services/types-service';
 import Mutator from '../../../utils/mutator';
 import TypedInput from '../Input/TypedInput';
 import Input from '../Input/Input';

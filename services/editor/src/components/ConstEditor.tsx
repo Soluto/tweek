@@ -1,5 +1,5 @@
 import React from 'react';
-import { ValueType } from '../contexts/TypesService';
+import { ValueType } from '../services/types-service';
 import { TypedInput } from './common';
 
 export type ConstEditorProps = {
