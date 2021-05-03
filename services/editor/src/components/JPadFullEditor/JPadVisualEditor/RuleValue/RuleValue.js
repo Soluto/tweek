@@ -1,10 +1,8 @@
-import React from 'react';
-import * as R from 'ramda';
 import Chance from 'chance';
-import CustomSlider from '../../../../components/common/CustomSlider/CustomSlider';
-import TypedInput from '../../../common/Input/TypedInput';
-import ComboBox from '../../../common/ComboBox/ComboBox';
+import * as R from 'ramda';
+import React from 'react';
 import * as TypesService from '../../../../services/types-service';
+import { ComboBox, CustomSlider, TypedInput } from '../../../common';
 import { convertWeightedArgsToArray } from '../../rules-utils';
 import './RuleValue.css';
 
@@ -13,6 +11,7 @@ const chance = new Chance();
 function replaceNaN(fallbackValue) {
   return isNaN(this) ? fallbackValue : this;
 }
+
 const parseNumericInput = (inputValue) => (inputValue === '' ? 0 : parseInt(inputValue, 10));
 const wrapWithClass = (propToClassNameFn) => (Comp) => (props) => (
   <div className={propToClassNameFn(props)}>

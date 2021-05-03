@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import Input from '../../../../components/common/Input/Input';
+import { Input } from '../../../../components/common';
 import { addNewIdentity } from '../../../../store/ducks/schema';
 
 const enhance = connect(null, { addNewIdentity });

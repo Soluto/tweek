@@ -4,11 +4,11 @@ import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import { compose, lifecycle, mapProps, pure, withState } from 'recompose';
 import * as TypesService from '../../services/types-service';
 import Mutator from '../../utils/mutator';
-import ErrorHandler from '../common/ErrorHandler';
+import { ErrorHandler } from '../common';
+import './JPadFullEditor.css';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import * as RulesService from './rules-utils';
-import './JPadFullEditor.css';
 
 const confirmUnsavedAlert = {
   title: 'Warning',

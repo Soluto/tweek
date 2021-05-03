@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { titleCase } from 'title-case';
-import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
-import ValidationIcon from '../../../../../../components/common/ValidationIcon';
+import { ComboBox, ValidationIcon } from '../../../../../../components/common';
 import * as TypesServices from '../../../../../../services/types-service';
 import { changeKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import './KeyValueTypeSelector.css';

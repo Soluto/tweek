@@ -1,8 +1,7 @@
 import * as R from 'ramda';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
-import ValidationIcon from '../../../../../components/common/ValidationIcon';
+import { ComboBox, ValidationIcon } from '../../../../../components/common';
 import { useShowInternalKeys } from '../../../../../hoc/with-search-config';
 import * as SearchService from '../../../../../services/search-service';
 import keyNameValidations from './key-name-validations';

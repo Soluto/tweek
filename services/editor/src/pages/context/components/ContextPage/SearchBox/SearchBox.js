@@ -1,10 +1,9 @@
+import * as changeCase from 'change-case';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as changeCase from 'change-case';
+import { ComboBox, Input } from '../../../../../components/common';
 import { getIdentities } from '../../../../../services/context-service';
 import { openContext } from '../../../../../store/ducks/context';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
-import Input from '../../../../../components/common/Input/Input';
 import './SearchBox.css';
 
 class SearchBox extends Component {
@@ -84,7 +83,4 @@ class SearchBox extends Component {
   }
 }
 
-export default connect(
-  () => ({}),
-  { openContext },
-)(SearchBox);
+export default connect(null, { openContext })(SearchBox);

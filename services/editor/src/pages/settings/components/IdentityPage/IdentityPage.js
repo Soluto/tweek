@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import * as R from 'ramda';
-import SaveButton from '../../../../components/common/SaveButton/SaveButton';
+import { SaveButton } from '../../../../components/common';
 import * as schemaActions from '../../../../store/ducks/schema';
 import { IdentityPropertyItem, NewIdentityProperty } from './IdentityProperty/IdentityProperty';
 import './IdentityPage.css';

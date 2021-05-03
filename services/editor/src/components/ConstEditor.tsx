@@ -1,6 +1,6 @@
 import React from 'react';
 import { ValueType } from '../contexts/TypesService';
-import TypedInput from './common/Input/TypedInput';
+import { TypedInput } from './common';
 
 export type ConstEditorProps = {
   value: any;

@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import React from 'react';
 import { connect } from 'react-redux';
 import { useTweekValue } from 'react-tweek';
-import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
+import { SaveButton } from '../../../../../../components/common';
 import archiveIcon from '../../../../../../resources/archive-icon.svg';
 import linkIcon from '../../../../../../resources/link-icon.svg';
 import restoreIcon from '../../../../../../resources/restore-icon.svg';

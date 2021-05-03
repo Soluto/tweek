@@ -1,5 +1,5 @@
 import React from 'react';
-import ComboBox from '../../../../common/ComboBox/ComboBox';
+import { ComboBox } from '../../../../common';
 import './styles.css';
 
 const Operator = ({ selectedOperator, onUpdate, supportedOperators }) => (
@@ -8,7 +8,9 @@ const Operator = ({ selectedOperator, onUpdate, supportedOperators }) => (
     suggestions={supportedOperators.map((op) => ({ value: op.operatorValue, label: op.label }))}
     filterBy={() => true}
     onChange={(_, selected) => {
-      if (!selected || selected.value === '') return;
+      if (!selected || selected.value === '') {
+        return;
+      }
       onUpdate(supportedOperators.find((x) => x.operatorValue === selected.value));
     }}
     value={selectedOperator && selectedOperator.label}

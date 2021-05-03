@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import * as R from 'ramda';
-import TypedInput from '../../../../components/common/Input/TypedInput';
+import { TypedInput } from '../../../../components/common';
 import { getPropertyTypeDetails } from '../../../../services/context-service';
 import './IdentityProperties.css';
 

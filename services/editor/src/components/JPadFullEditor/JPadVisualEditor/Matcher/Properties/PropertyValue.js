@@ -1,7 +1,7 @@
 import React from 'react';
-import TypedInput from '../../../../common/Input/TypedInput';
 import { inOp, within } from '../../../../../services/operators-provider';
 import { types } from '../../../../../services/types-service';
+import { TypedInput } from '../../../../common';
 import './styles.css';
 
 const chooseValueTypeByOperator = (operator, valueType) => {
