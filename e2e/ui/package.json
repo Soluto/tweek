@@ -15,7 +15,7 @@
     "chai": "^4.2.0",
     "nconf": "^0.11.2",
     "ramda": "^0.27.1",
-    "tweek-client": "^3.0.0",
+    "tweek-client": "^3.1.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

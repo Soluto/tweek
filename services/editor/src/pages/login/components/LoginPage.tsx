@@ -89,7 +89,7 @@ const LoginPage = ({ location: { state = '/' } }: RouteComponentProps) => {
     const run = async () => {
       const res = await tweekManagementClient.getAuthProviders();
       const combinedProviders: Record<string, AuthProvider> = {
-        ...(res as any),
+        ...res,
         '@@tweek-basic-auth': basicAuthProvider,
       };
 

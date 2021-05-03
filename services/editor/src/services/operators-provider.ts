@@ -1,4 +1,4 @@
-import { ValueType } from './types-service';
+import { ValueType } from 'tweek-client';
 
 type OpTemplate = `$${string}`;
 

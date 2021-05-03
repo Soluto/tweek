@@ -1,13 +1,5 @@
+import { ValueType } from 'tweek-client';
 import { tweekClient, tweekManagementClient } from '../utils';
-
-export type ValueType = {
-  name: string;
-  base?: string;
-  allowedValues?: any[];
-  comparer?: string;
-  emptyValue?: any;
-  ofType?: ValueType;
-};
 
 export type KnownTypes = 'string' | 'number' | 'boolean' | 'date' | 'object' | 'array';
 

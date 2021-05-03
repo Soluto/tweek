@@ -1,5 +1,5 @@
 import React from 'react';
-import { ValueType } from '../services/types-service';
+import { ValueType } from 'tweek-client';
 import { TypedInput } from './common';
 
 export type ConstEditorProps = {

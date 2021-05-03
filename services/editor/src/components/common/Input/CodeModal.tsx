@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { AutoSizer } from 'react-virtualized';
 // @ts-ignore
 import Rodal from 'rodal';
-import { isStringValidJson, ValueType } from '../../../services/types-service';
+import { ValueType } from 'tweek-client';
+import { isStringValidJson } from '../../../services/types-service';
 
 const monacoOptions = {
   autoIndent: 'full' as const,

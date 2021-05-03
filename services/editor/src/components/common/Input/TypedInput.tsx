@@ -1,8 +1,8 @@
 import * as changeCase from 'change-case';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { ValueType } from 'tweek-client';
 import { useTypesService } from '../../../contexts/TypesService';
-import { ValueType } from '../../../services/types-service';
 import ComboBox from '../ComboBox/ComboBox';
 import CodeEditor from './CodeEditor';
 import DateInput from './DateInput';
