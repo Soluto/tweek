@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ValueType } from 'tweek-client';
-import * as ContextService from '../services/context-service';
-import * as TypesService from '../services/types-service';
+import * as ContextService from '../../../../../services/context-service';
+import * as TypesService from '../../../../../services/types-service';
 
 export const usePropertyTypeDetails = (property: string) => {
   const [details, setDetails] = useState<ValueType>({ name: 'empty' });

@@ -2,9 +2,9 @@ import Chance from 'chance';
 import React, { useRef } from 'react';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
-import { usePropertyTypeDetails } from '../../../../../hoc/with-property-type-details';
 import Avatar from './Avatar';
 import './styles.css';
+import { usePropertyTypeDetails } from './usePropertyTypeDetails';
 
 const chance = new Chance();
 

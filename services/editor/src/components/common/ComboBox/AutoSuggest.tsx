@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useMaxSearchResults, useShowInternalKeys } from '../../../hoc/with-search-config';
+import { useMaxSearchResults, useShowInternalKeys } from '../../../utils';
 import ComboBox, { ComboBoxProps } from './ComboBox';
 
 export type SearchConfig = {

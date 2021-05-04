@@ -1,7 +1,7 @@
 import React from 'react';
-import { useMaxSearchResults, useShowInternalKeys } from '../../../../../hoc/with-search-config';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
+import { useMaxSearchResults, useShowInternalKeys } from '../../../../../utils';
 import { MultiSourceComboBox, ValidationIcon } from '../../../../common';
 import Avatar from './Avatar';
 import PropertySuggestion from './PropertySuggestion';

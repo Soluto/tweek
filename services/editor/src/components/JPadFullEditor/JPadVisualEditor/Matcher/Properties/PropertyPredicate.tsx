@@ -1,5 +1,4 @@
 import React from 'react';
-import { usePropertyTypeDetails } from '../../../../../hoc/with-property-type-details';
 import {
   ComplexValue,
   equal,
@@ -8,6 +7,7 @@ import {
 } from '../../../../../services/operators-provider';
 import Operator from './Operator';
 import PropertyValue from './PropertyValue';
+import { usePropertyTypeDetails } from './usePropertyTypeDetails';
 
 const getSelectedOperator = (
   property: string,

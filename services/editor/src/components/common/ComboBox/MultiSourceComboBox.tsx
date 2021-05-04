@@ -8,8 +8,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useMaxSearchResults, useShowInternalKeys } from '../../../hoc/with-search-config';
-import { useDebounceValue } from '../../../utils';
+import { useDebounceValue, useMaxSearchResults, useShowInternalKeys } from '../../../utils';
 import { SearchConfig } from './AutoSuggest';
 import ComboBox, { ComboBoxProps } from './ComboBox';
 import './MultiSourceComboBox.css';
