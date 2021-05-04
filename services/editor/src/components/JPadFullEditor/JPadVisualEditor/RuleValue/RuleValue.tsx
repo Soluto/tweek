@@ -33,7 +33,7 @@ export type MultiVariantConverterProps = {
   value: any;
   valueType: ValueType;
   identities: string[];
-  mutate: AnyMutator<Rule, ['Value']>;
+  mutate: AnyMutator<Rule[], [number, 'Value']>;
 };
 
 const MultiVariantConverter = ({
@@ -214,7 +214,7 @@ const IdentitySelection = ({ identities, onChange, ownerType }: IdentitySelectio
 
 type MultiVariantValueProps = {
   ValueDistribution: ValueDistribution;
-  mutate: AnyMutator<Rule, ['ValueDistribution']>;
+  mutate: AnyMutator<Rule[], [number, 'ValueDistribution']>;
   identities: string[];
   ownerType: string;
   valueType: ValueType;
@@ -339,7 +339,7 @@ const MultiVariantValue = ({
 
 export type RuleValueProps = {
   rule: Rule;
-  mutate: AnyMutator<Rule, []>;
+  mutate: AnyMutator<Rule[], [number]>;
   valueType: ValueType;
   identities: string[];
 };

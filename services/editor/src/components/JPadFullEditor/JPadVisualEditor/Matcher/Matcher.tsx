@@ -13,7 +13,7 @@ import PropertyPredicate from './Properties/PropertyPredicate';
 type ConditionProps = {
   property: string;
   predicate: ComplexValue<string> | unknown;
-  mutate: AnyMutator<Rule, ['Matcher', string]>;
+  mutate: AnyMutator<Rule[], [number, 'Matcher', string]>;
   suggestedValues: Suggestion[];
   canBeClosed?: boolean;
   autofocus?: boolean;
@@ -50,7 +50,7 @@ const Condition = ({
 );
 
 export type MatcherProps = {
-  mutate: AnyMutator<Rule, ['Matcher']>;
+  mutate: AnyMutator<Rule[], [number, 'Matcher']>;
   autofocus?: boolean;
   matcher: MatcherType;
 };

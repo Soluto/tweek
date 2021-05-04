@@ -11,7 +11,7 @@ const ensureKeysIdentity = (property: string) =>
 export type PropertyNameProps = {
   property: string;
   suggestedValues: Suggestion[];
-  mutate: AnyMutator<Rule, ['Matcher', string]>;
+  mutate: AnyMutator<Rule[], [number, 'Matcher', string]>;
   autofocus?: boolean;
 };
 

@@ -26,8 +26,12 @@ export type AlertData<T = unknown> = {
   resizable?: boolean;
 };
 
+export type AlertResult = {
+  result?: any;
+};
+
 export type Alerter = {
-  showCustomAlert: (alert: AlertData) => void;
-  showAlert: (alert: Omit<AlertData, 'buttons' | 'showCloseButton'>) => void;
-  showConfirm: (alert: Omit<AlertData, 'buttons'>) => void;
+  showCustomAlert: (alert: AlertData) => Promise<AlertResult>;
+  showAlert: (alert: Omit<AlertData, 'buttons' | 'showCloseButton'>) => Promise<AlertResult>;
+  showConfirm: (alert: Omit<AlertData, 'buttons'>) => Promise<AlertResult>;
 };

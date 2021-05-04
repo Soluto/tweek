@@ -12,7 +12,7 @@ import './Rule.css';
 export type RuleProps = {
   rule: RuleType;
   valueType: ValueType;
-  mutate: AnyMutator<RuleType, []>;
+  mutate: AnyMutator<RuleType[], [number]>;
   autofocus?: boolean;
 };
 
