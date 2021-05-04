@@ -1,10 +1,8 @@
-import React from 'react';
-import * as R from 'ramda';
 import Chance from 'chance';
-import CustomSlider from '../../../../components/common/CustomSlider/CustomSlider';
-import TypedInput from '../../../common/Input/TypedInput';
-import ComboBox from '../../../common/ComboBox/ComboBox';
+import * as R from 'ramda';
+import React from 'react';
 import * as TypesService from '../../../../services/types-service';
+import { ComboBox, CustomSlider, TypedInput } from '../../../common';
 import { convertWeightedArgsToArray } from '../../rules-utils';
 import './RuleValue.css';
 
@@ -13,6 +11,7 @@ const chance = new Chance();
 function replaceNaN(fallbackValue) {
   return isNaN(this) ? fallbackValue : this;
 }
+
 const parseNumericInput = (inputValue) => (inputValue === '' ? 0 : parseInt(inputValue, 10));
 const wrapWithClass = (propToClassNameFn) => (Comp) => (props) => (
   <div className={propToClassNameFn(props)}>
@@ -107,7 +106,7 @@ const WeightedValues = ({ onUpdate, variants, valueType }) => (
   <CustomSlider
     data={convertWeightedArgsToArray(variants, valueType)}
     onUpdate={onUpdate}
-    displaySliderDragger={false}
+    displayLegend
     sliderColors={multiVariantSliderColors}
     valueType={valueType}
   />
@@ -142,14 +141,14 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
     </div>
     <div className="bernoulli-trial-slider-wrapper">
       <CustomSlider
-        displayLegend={false}
+        displaySliderDragger
         sliderColors={bernouliTrialSliderColors}
         data={[
-          { value: true, weight: (1000 * ratio) / 10 },
-          { value: false, weight: 100 - (1000 * ratio) / 10 },
+          { value: true, weight: 100 * ratio },
+          { value: false, weight: 100 - 100 * ratio },
         ]}
         onUpdate={(x) => onUpdate(x[0].weight / 100)}
-        valueType={TypesService.types['boolean']}
+        valueType={TypesService.types.boolean}
       />
     </div>
   </div>

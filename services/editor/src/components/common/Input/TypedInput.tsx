@@ -1,7 +1,8 @@
 import * as changeCase from 'change-case';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useTypesService, ValueType } from '../../../contexts/TypesService';
+import { ValueType } from 'tweek-client';
+import { useTypesService } from '../../../contexts/TypesService';
 import ComboBox from '../ComboBox/ComboBox';
 import CodeEditor from './CodeEditor';
 import DateInput from './DateInput';
@@ -82,6 +83,7 @@ export type TypedInputProps = {
   onChange?: (value: any) => void;
   hideIcon?: boolean;
   valueType: string | ValueType;
+  className?: string;
 };
 
 const TypedInput = ({

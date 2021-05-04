@@ -1,9 +1,6 @@
 import * as R from 'ramda';
 import React, { useState } from 'react';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
-import Input from '../../../../../components/common/Input/Input';
-import TypedInput from '../../../../../components/common/Input/TypedInput';
-import Label from '../../../../../components/common/Label/Label';
+import { ComboBox, Input, Label, TypedInput } from '../../../../../components/common';
 import * as TypesServices from '../../../../../services/types-service';
 import './IdentityProperty.css';
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ValueType } from '../../../contexts/TypesService';
+import { ValueType } from 'tweek-client';
 import CodeModal from './CodeModal';
 import Input, { InputProps } from './Input';
 

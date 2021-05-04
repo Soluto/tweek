@@ -1,26 +1,40 @@
 import React from 'react';
-import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox';
-import ValidationIcon from '../../../../common/ValidationIcon';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
-import withSearchConfig from '../../../../../hoc/with-search-config';
+import { useMaxSearchResults, useShowInternalKeys } from '../../../../../utils';
+import { MultiSourceComboBox, ValidationIcon } from '../../../../common';
 import Avatar from './Avatar';
 import PropertySuggestion from './PropertySuggestion';
 import './styles.css';
 
-const getProperty = (suggestedValues, property) => {
+export type Suggestion = {
+  value: string;
+  label: string;
+  defaultValue?: string;
+};
+
+const getProperty = (suggestedValues: Suggestion[], property: string) => {
   const result = suggestedValues.find((x) => x.value === property);
   return result ? result.label : property;
+};
+
+export type PropertyComboBoxProps = {
+  property: string;
+  suggestedValues: Suggestion[];
+  warning: boolean;
+  onFocus?: (focused: boolean) => void;
+  onChange: (input: string, selected?: Suggestion) => void;
 };
 
 const PropertyComboBox = ({
   property,
   suggestedValues,
   warning,
-  maxSearchResults,
-  showInternalKeys,
   ...props
-}) => {
+}: PropertyComboBoxProps) => {
+  const maxSearchResults = useMaxSearchResults();
+  const showInternalKeys = useShowInternalKeys();
+
   property = property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
   const [identity] = property.split('.');
 
@@ -62,4 +76,4 @@ const PropertyComboBox = ({
   );
 };
 
-export default withSearchConfig(PropertyComboBox);
+export default PropertyComboBox;

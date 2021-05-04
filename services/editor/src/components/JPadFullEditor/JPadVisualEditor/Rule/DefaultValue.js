@@ -1,5 +1,5 @@
 import React from 'react';
-import TypedInput from '../../../common/Input/TypedInput';
+import { TypedInput } from '../../../common';
 import './DefaultValue.css';
 
 const DefaultValue = (props) => (

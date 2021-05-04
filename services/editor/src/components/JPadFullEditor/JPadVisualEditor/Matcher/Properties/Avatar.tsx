@@ -1,9 +1,9 @@
-import React from 'react';
 import classnames from 'classnames';
-import * as ContextService from '../../../../../services/context-service';
+import React from 'react';
 import keyIcon from '../../../../../resources/key-icon.svg';
+import * as ContextService from '../../../../../services/context-service';
 
-function getAvatarText(identity) {
+function getAvatarText(identity: string) {
   const identities = ContextService.getIdentities();
   const index = identities.indexOf(identity);
   if (index >= 0) {
@@ -17,16 +17,22 @@ function getAvatarText(identity) {
     const result = identity.substring(0, i).toLowerCase();
     if (!lowerNames.some((n) => n.startsWith(result))) {
       if (result.length > 1) {
-        return result.slice(0,1).concat(result.slice(-1));
+        return result.slice(0, 1).concat(result.slice(-1));
+      } else {
+        return result;
       }
-      else return result;
     }
     i++;
   }
   return identity;
 }
 
-const Avatar = ({ identity, className, ...props }) => (
+export type AvatarProps = {
+  identity: string;
+  className?: string;
+};
+
+const Avatar = ({ identity, className, ...props }: AvatarProps) => (
   <div className={classnames('avatar-container', className)} title={identity} {...props}>
     {identity === 'keys' ? <img src={keyIcon} alt={''} /> : getAvatarText(identity)}
   </div>

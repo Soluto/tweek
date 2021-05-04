@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import AutoSuggest from '../../../../../../components/common/ComboBox/AutoSuggest';
-import TypedInput from '../../../../../../components/common/Input/TypedInput';
+import { AutoSuggest, TypedInput } from '../../../../../../components/common';
 import * as SearchService from '../../../../../../services/search-service';
 import * as TypesService from '../../../../../../services/types-service';
 import { useDebounceValue } from '../../../../../../utils';

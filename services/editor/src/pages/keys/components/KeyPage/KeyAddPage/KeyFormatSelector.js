@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
+import { ComboBox } from '../../../../../components/common';
 import { getManifestImplementationByFormat, validKeyFormats } from '../../utils/keyFormatHelpers';
 
 const formatSuggestions = validKeyFormats.map((x) => ({ label: x, value: x }));

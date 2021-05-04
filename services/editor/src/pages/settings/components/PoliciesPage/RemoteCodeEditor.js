@@ -2,7 +2,7 @@ import MonacoEditor from '@monaco-editor/react';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { FetchError } from 'tweek-client';
-import SaveButton from '../../../../components/common/SaveButton/SaveButton';
+import { SaveButton } from '../../../../components/common';
 import { useErrorNotifier, useRemoteState } from '../../../../utils';
 
 const monacoOptions = {

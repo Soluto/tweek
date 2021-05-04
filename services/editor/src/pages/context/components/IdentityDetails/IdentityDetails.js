@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import React, { useEffect } from 'react';
 import DocumentTitle from 'react-document-title';
 import { connect } from 'react-redux';
-import SaveButton from '../../../../components/common/SaveButton/SaveButton';
+import { SaveButton } from '../../../../components/common';
 import {
   FIXED_PREFIX,
   getContextProperties,

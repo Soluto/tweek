@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { AutoSizer } from 'react-virtualized';
 // @ts-ignore
 import Rodal from 'rodal';
-import { ValueType } from '../../../contexts/TypesService';
+import { ValueType } from 'tweek-client';
 import { isStringValidJson } from '../../../services/types-service';
 
 const monacoOptions = {

@@ -1,5 +1,24 @@
-const _createOperator = (label, operatorValue, isArray) => {
-  let getValue;
+import { ValueType } from 'tweek-client';
+
+export type ComplexValue<Op extends string> = Record<Op, unknown> & { $compare?: string };
+
+export type GetOperatorValue = <Op extends string>(
+  propertyValue: any,
+  propertyTypeDetails: ValueType,
+) => ComplexValue<Op> | any;
+
+export type Operator<Op extends string> = {
+  label: string;
+  operatorValue: Op;
+  getValue: GetOperatorValue;
+};
+
+const _createOperator = <Op extends string>(
+  label: string,
+  operatorValue: Op,
+  isArray?: boolean,
+): Operator<Op> => {
+  let getValue: GetOperatorValue;
 
   if (isArray) {
     getValue = (propertyValue, propertyTypeDetails) =>
@@ -21,23 +40,32 @@ const _createOperator = (label, operatorValue, isArray) => {
     getValue,
   };
 };
-const propertyTypeDetailsToComparer = ({ comparer: $compare }) => ($compare ? { $compare } : {});
-const _toArrayValue = (operatorValue, propertyValue, propertyTypeDetails) => {
-  if (!propertyValue) {
-    return _toComplexValue(operatorValue, [], propertyTypeDetails);
-  }
+const propertyTypeDetailsToComparer = ({ comparer: $compare }: ValueType) =>
+  $compare ? { $compare } : {};
+
+const _toArrayValue = <Op extends string>(
+  operatorValue: Op,
+  propertyValue: any,
+  propertyTypeDetails: ValueType,
+): ComplexValue<Op> => {
   if (Array.isArray(propertyValue)) {
     return _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
   }
-  return _toComplexValue(operatorValue, [propertyValue], propertyTypeDetails);
+
+  return _toComplexValue(operatorValue, propertyValue ? [propertyValue] : [], propertyTypeDetails);
 };
 
-const _toComplexValue = (operatorValue, propertyValue, propertyTypeDetails) => ({
-  [operatorValue]: propertyValue,
-  ...propertyTypeDetailsToComparer(propertyTypeDetails),
-});
+const _toComplexValue = <Op extends string>(
+  operatorValue: Op,
+  propertyValue: any,
+  propertyTypeDetails: ValueType,
+) =>
+  ({
+    [operatorValue]: propertyValue,
+    ...propertyTypeDetailsToComparer(propertyTypeDetails),
+  } as ComplexValue<Op>);
 
-const _toValue = (propertyValue) =>
+const _toValue = <T>(propertyValue: T): T extends Array<infer Item> ? Item : T =>
   Array.isArray(propertyValue) && propertyValue.length > 0 ? propertyValue[0] : propertyValue;
 
 export const equal = _createOperator('=', '$eq');
@@ -68,7 +96,7 @@ export const allOperators = [
   containsArray,
 ];
 
-export const getPropertySupportedOperators = (propertyTypeDetails) => {
+export const getPropertySupportedOperators = (propertyTypeDetails: ValueType) => {
   const type = propertyTypeDetails.name || propertyTypeDetails.base;
 
   if (type === 'empty') {
@@ -93,7 +121,7 @@ export const getPropertySupportedOperators = (propertyTypeDetails) => {
     return [containsArray];
   }
 
-  let operators = [];
+  let operators: Operator<string>[] = [];
   if (type === 'boolean' || type === 'string' || type === 'version' || type === 'number') {
     operators = operators.concat([equal, notEqual]);
   }

@@ -1,17 +1,17 @@
 import classNames from 'classnames';
 import React, { Component, useMemo } from 'react';
 import { compose, pure } from 'recompose';
-import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
+import { EditableTextArea } from '../../../../../components/common';
 import ConstEditor from '../../../../../components/ConstEditor';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import { types } from '../../../../../services/types-service';
 import { Aliases, DependsOn, UsedBy } from './DependencyIndicator/DependencyIndicator';
 import HeaderMainInput from './HeaderMainInput';
+import './KeyEditPage.css';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import KeyTags from './KeyTags/KeyTags';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
-import './KeyEditPage.css';
 
 const Editor = ({
   keyPath,
@@ -171,7 +171,7 @@ class KeyEditPage extends Component {
   }
 }
 
-export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
+export default compose(pure, stickyHeaderIdentifier('key-edit-page', 150))(KeyEditPage);
 
 const KeyStickyHeader = (props) => {
   const { isReadonly, isHistoricRevision } = props;

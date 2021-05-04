@@ -2973,10 +2973,10 @@ qrcode-terminal@^0.10.0:
   resolved "https://registry.yarnpkg.com/qrcode-terminal/-/qrcode-terminal-0.10.0.tgz#a76a48e2610a18f97fa3a2bd532b682acff86c53"
   integrity sha1-p2pI4mEKGPl/o6K9UytoKs/4bFM=
 
-query-string@^6.2.0:
-  version "6.14.1"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.14.1.tgz#7ac2dca46da7f309449ba0f86b1fd28255b0c86a"
-  integrity sha512-XDxAeVmpfu1/6IjyT/gXHOl+S0vQ9owggJ30hhWKdHAsNPOcasn5o9BW0eejZqL2e4vMjhAxoW3jVHcD6mbcYw==
+query-string@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-7.0.0.tgz#aaad2c8d5c6a6d0c6afada877fecbd56af79e609"
+  integrity sha512-Iy7moLybliR5ZgrK/1R3vjrXq03S13Vz4Rbm5Jg3EFq1LUmQppto0qtXz4vqZ386MSRjZgnTSZ9QC+NZOSd/XA==
   dependencies:
     decode-uri-component "^0.2.0"
     filter-obj "^1.1.0"
@@ -3723,15 +3723,15 @@ tunnel-agent@0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tweek-client@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-3.0.0.tgz#a7ff68fc13094538eecd052d757f788825502772"
-  integrity sha512-H6v34qdIKSlcmcNLYhmZ3Rf8D0bUIToG/q/tbafRAtsEohvgd65WQfgcvZn410hvxx/mDY6/ar+9Q5L4a7m0ag==
+tweek-client@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-3.1.1.tgz#0c2e20a84f396abca66b23dc1d27ce84bee80566"
+  integrity sha512-Ugl2BcREXVKkhTKKDgNm/X7xcFUxNwFpz5tOWs/IBLTVfvtbExdapGpAufuWON3Ce9VSWYWuL0zsFA3AtY5sYQ==
   dependencies:
     change-emitter "^0.1.6"
     cross-fetch "^3.0.1"
     lodash.chunk "^4.2.0"
-    query-string "^6.2.0"
+    query-string "^7.0.0"
     zen-observable "^0.8.13"
   optionalDependencies:
     fast-json-patch "^3.0.0-1"

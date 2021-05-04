@@ -53,7 +53,7 @@ const Alert = ({
   );
 };
 
-export default connect((state) => state)(({ alerts }) => (
+export default connect((state) => ({ alerts: state.alerts }))(({ alerts }) => (
   <div id="alerts">
     {alerts.map(({ id: key, ...alert }) => (
       <Alert key={key} {...alert} />

@@ -3,7 +3,7 @@ import React from 'react';
 import { Accordion, AccordionItem } from 'react-sanfona';
 import * as ContextService from '../../../../services/context-service';
 import '../../../../styles/core/core.css';
-import TypedInput from '../../../common/Input/TypedInput';
+import { TypedInput } from '../../../common';
 import RulesList from '../RulesList/RulesList';
 import { InputValue } from '../RuleValue/RuleValue';
 import './PartitionsList.css';
