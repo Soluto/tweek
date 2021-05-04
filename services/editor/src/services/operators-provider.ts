@@ -1,21 +1,19 @@
 import { ValueType } from 'tweek-client';
 
-type OpTemplate = `$${string}`;
+export type ComplexValue<Op extends string> = Record<Op, unknown> & { $compare?: string };
 
-export type ComplexValue<Op extends OpTemplate> = Record<Op, unknown> & { $compare?: string };
-
-export type GetOperatorValue = <Op extends OpTemplate>(
+export type GetOperatorValue = <Op extends string>(
   propertyValue: any,
   propertyTypeDetails: ValueType,
 ) => ComplexValue<Op> | unknown;
 
-export type Operator<Op extends OpTemplate> = {
+export type Operator<Op extends string> = {
   label: string;
   operatorValue: Op;
   getValue: GetOperatorValue;
 };
 
-const _createOperator = <Op extends OpTemplate>(
+const _createOperator = <Op extends string>(
   label: string,
   operatorValue: Op,
   isArray?: boolean,
@@ -45,7 +43,7 @@ const _createOperator = <Op extends OpTemplate>(
 const propertyTypeDetailsToComparer = ({ comparer: $compare }: ValueType) =>
   $compare ? { $compare } : {};
 
-const _toArrayValue = <Op extends OpTemplate>(
+const _toArrayValue = <Op extends string>(
   operatorValue: Op,
   propertyValue: any,
   propertyTypeDetails: ValueType,
@@ -57,7 +55,7 @@ const _toArrayValue = <Op extends OpTemplate>(
   return _toComplexValue(operatorValue, propertyValue ? [propertyValue] : [], propertyTypeDetails);
 };
 
-const _toComplexValue = <Op extends OpTemplate>(
+const _toComplexValue = <Op extends string>(
   operatorValue: Op,
   propertyValue: any,
   propertyTypeDetails: ValueType,
@@ -123,7 +121,7 @@ export const getPropertySupportedOperators = (propertyTypeDetails: ValueType) =>
     return [containsArray];
   }
 
-  let operators: Operator<OpTemplate>[] = [];
+  let operators: Operator<string>[] = [];
   if (type === 'boolean' || type === 'string' || type === 'version' || type === 'number') {
     operators = operators.concat([equal, notEqual]);
   }
