@@ -83,6 +83,7 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/react-hooks": "^5.1.2",
     "@types/adal-angular": "^1.0.1",
+    "@types/chance": "^1.1.1",
     "@types/jest": "^26.0.9",
     "@types/md5": "^2.3.0",
     "@types/node": "^15.0.1",

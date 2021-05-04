@@ -2,6 +2,7 @@ import * as R from 'ramda';
 import { ValueType } from 'tweek-client';
 import { KEYS_IDENTITY } from '../../services/context-service';
 import { safeConvertValue } from '../../services/types-service';
+import { SliderItem } from '../common/CustomSlider/CustomSlider';
 import { Jpad, JpadRules, Matcher, Partition, Rule, WeightedDistributionArg } from './types';
 
 export type AuthPartitionTest = {
@@ -136,7 +137,10 @@ export function getDependencies(...args: Parameters<typeof calculateDependencies
   return R.uniq(calculateDependencies(...args)).filter((x) => x.length > 0);
 }
 
-export function convertWeightedArgsToArray(data: WeightedDistributionArg[], valueType: ValueType) {
+export function convertWeightedArgsToArray(
+  data: WeightedDistributionArg[] | Record<string, number>,
+  valueType: ValueType,
+): SliderItem[] {
   if (Array.isArray(data)) return data;
   return Object.entries(data).map(([value, weight]) => ({
     value: safeConvertValue(value, valueType),
