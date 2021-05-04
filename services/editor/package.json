@@ -72,7 +72,7 @@
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.2.0",
     "rodal": "^1.6.3",
-    "rxjs": "^6.4.0",
+    "rxjs": "^7.0.0",
     "rxjs-compat": "^6.4.0",
     "title-case": "^3.0.2",
     "tweek-client": "^3.1.1",
