@@ -1,6 +1,6 @@
 import { ValueType } from 'tweek-client';
 
-export type ComplexValue<Op extends string> = Record<Op, unknown> & { $compare?: string };
+export type ComplexValue<Op extends string> = Record<Op, any> & { $compare?: string };
 
 export type GetOperatorValue = <Op extends string>(
   propertyValue: any,
