@@ -1,11 +1,13 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { ComponentType, useState } from 'react';
 import { connect } from 'react-redux';
+// @ts-ignore
 import Rodal from 'rodal';
 import './Alerts.css';
 import './Rodal.css';
+import { AlertButton, AlertData, StyleProps } from './types';
 
-const reactify = (Content, props) =>
+const reactify = (Content: string | ComponentType<StyleProps>, props: StyleProps) =>
   typeof Content === 'string' ? (
     <div {...props}>
       {Content.split('\n').map((line, i) => (
@@ -16,20 +18,31 @@ const reactify = (Content, props) =>
     <Content {...props} />
   );
 
-const Alert = ({
+export type AlertButtonProps<T> = Omit<AlertButton<T>, 'value'> & {
+  onClick: (data: T) => void;
+};
+
+export type AlertProps<T = unknown> = Omit<AlertData<T>, 'buttons'> & {
+  buttons: AlertButtonProps<T>[];
+  onClose: () => void;
+  visible: boolean;
+};
+
+export const Alert = ({
   title,
   message,
   component: Component,
   buttons,
+  visible,
   onClose,
   showCloseButton = false,
   resizable = false,
-}) => {
-  const [componentData, setComponentData] = useState();
+}: AlertProps) => {
+  const [componentData, setComponentData] = useState<any>();
   return (
     <Rodal
       closeOnEsc={true}
-      visible
+      visible={visible}
       showCloseButton={showCloseButton}
       onClose={onClose}
       className={classNames('rodal-container', { resizable })}
@@ -53,10 +66,16 @@ const Alert = ({
   );
 };
 
-export default connect((state) => ({ alerts: state.alerts }))(({ alerts }) => (
+type State = {
+  alerts: Array<Omit<AlertProps, 'visible'> & { id: string }>;
+};
+
+const Alerts = ({ alerts }: State) => (
   <div id="alerts">
     {alerts.map(({ id: key, ...alert }) => (
-      <Alert key={key} {...alert} />
+      <Alert key={key} visible {...alert} />
     ))}
   </div>
-));
+);
+
+export default connect((state: State) => ({ alerts: state.alerts }))(Alerts);
