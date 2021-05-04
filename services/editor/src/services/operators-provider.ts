@@ -5,7 +5,7 @@ export type ComplexValue<Op extends string> = Record<Op, unknown> & { $compare?:
 export type GetOperatorValue = <Op extends string>(
   propertyValue: any,
   propertyTypeDetails: ValueType,
-) => ComplexValue<Op> | unknown;
+) => ComplexValue<Op> | any;
 
 export type Operator<Op extends string> = {
   label: string;

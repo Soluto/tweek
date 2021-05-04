@@ -1,15 +1,24 @@
 import { useState } from 'react';
 import * as ContextService from '../../../../../services/context-service';
 import { getPropertySupportedOperators } from '../../../../../services/operators-provider';
-import PropertyComboBox from './PropertyComboBox';
+import { AnyMutator } from '../../../../../utils/mutator';
+import PropertyComboBox, { Suggestion } from './PropertyComboBox';
 
-const ensureKeysIdentity = (property) => property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
+const ensureKeysIdentity = (property: string) =>
+  property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
 
-const PropertyName = ({ mutate, property, ...props }) => {
+export type PropertyNameProps = {
+  property: string;
+  suggestedValues: Suggestion[];
+  //todo types
+  mutate: AnyMutator;
+};
+
+const PropertyName = ({ mutate, property, ...props }: PropertyNameProps) => {
   const [hasFocus, onFocus] = useState(false);
   property = ensureKeysIdentity(property);
 
-  const selectProperty = ({ value, defaultValue = '' }) => {
+  const selectProperty = ({ value, defaultValue = '' }: Suggestion) => {
     const propertyTypeDetails = ContextService.getPropertyTypeDetails(value);
     const supportedOperators = getPropertySupportedOperators(propertyTypeDetails);
     const newOperator = supportedOperators[0];
@@ -18,7 +27,7 @@ const PropertyName = ({ mutate, property, ...props }) => {
     mutate.apply((m) => m.updateKey(value).updateValue(newValue));
   };
 
-  const onChange = (input, selected) => {
+  const onChange = (input: string, selected?: Suggestion) => {
     if (selected) {
       selectProperty(selected);
       return;

@@ -7,9 +7,10 @@ import Avatar from './Avatar';
 import PropertySuggestion from './PropertySuggestion';
 import './styles.css';
 
-type Suggestion = {
+export type Suggestion = {
   value: string;
   label: string;
+  defaultValue?: string;
 };
 
 const getProperty = (suggestedValues: Suggestion[], property: string) => {
@@ -21,6 +22,8 @@ export type PropertyComboBoxProps = {
   property: string;
   suggestedValues: Suggestion[];
   warning: boolean;
+  onFocus?: (focused: boolean) => void;
+  onChange: (input: string, selected?: Suggestion) => void;
 };
 
 const PropertyComboBox = ({

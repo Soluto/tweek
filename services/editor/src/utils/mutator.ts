@@ -75,7 +75,7 @@ class StatelessMutator<T, Path extends Index[]> {
   up = (): StatelessMutator<T, Up<Path>> =>
     new StatelessMutator(() => this.getMutator().up(), this.onMutation);
 
-  apply = (mutation: (m: Mutator<T, Path>) => Mutator<T, Path>) => {
+  apply = (mutation: (m: Mutator<T, Path>) => Mutator<T, any>) => {
     const mutated = mutation(this.getMutator());
     this.onMutation(mutated.target);
   };
@@ -84,6 +84,11 @@ class StatelessMutator<T, Path extends Index[]> {
     mutationFactory: (m: Mutator<T, Path>) => Fn,
   ) => (...params: Parameters<Fn>) => this.apply((mutator) => mutationFactory(mutator)(...params));
 }
+
+export type AnyMutator<T = Record<string, any>, Path extends Index[] = [string]> = StatelessMutator<
+  T,
+  Path
+>;
 
 class Mutator<T, Path extends Index[] = []> {
   constructor(readonly target: T, readonly path: Path = ([] as string[]) as Path) {}
