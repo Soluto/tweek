@@ -7,12 +7,28 @@ import Avatar from './Avatar';
 import PropertySuggestion from './PropertySuggestion';
 import './styles.css';
 
-const getProperty = (suggestedValues, property) => {
+type Suggestion = {
+  value: string;
+  label: string;
+};
+
+const getProperty = (suggestedValues: Suggestion[], property: string) => {
   const result = suggestedValues.find((x) => x.value === property);
   return result ? result.label : property;
 };
 
-const PropertyComboBox = ({ property, suggestedValues, warning, ...props }) => {
+export type PropertyComboBoxProps = {
+  property: string;
+  suggestedValues: Suggestion[];
+  warning: boolean;
+};
+
+const PropertyComboBox = ({
+  property,
+  suggestedValues,
+  warning,
+  ...props
+}: PropertyComboBoxProps) => {
   const maxSearchResults = useMaxSearchResults();
   const showInternalKeys = useShowInternalKeys();
 

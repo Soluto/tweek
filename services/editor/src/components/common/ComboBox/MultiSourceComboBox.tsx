@@ -85,7 +85,7 @@ type BaseProps<T> = {
 };
 
 export type MultiSourceComboBoxProps<T> = BaseProps<T> &
-  Omit<ComboBoxProps<T>, keyof BaseProps<T> | ''>;
+  Omit<ComboBoxProps<T>, keyof BaseProps<T> | 'suggestions'>;
 
 const MultiSourceComboBox = <T,>({
   value = '',
