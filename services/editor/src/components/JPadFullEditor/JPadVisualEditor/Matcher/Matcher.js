@@ -23,7 +23,11 @@ const Condition = ({
       disabled={!canBeClosed}
     />
     <PropertyName {...{ property, mutate, suggestedValues, autofocus }} />
-    <PropertyPredicate {...{ predicate, mutate, property }} />
+    <PropertyPredicate
+      predicate={predicate}
+      property={property}
+      onChange={(value) => mutate.updateValue(value)}
+    />
   </div>
 );
 
@@ -38,10 +42,7 @@ export default hasChanged(({ matcher, mutate, autofocus }) => {
     R.toPairs,
     R.partition(([prop]) => prop[0] === '$'),
   )(matcher);
-  const ignoreActivePropsPropsPredicate = R.compose(
-    R.not,
-    R.contains(R.__, R.map(R.head, props)),
-  );
+  const ignoreActivePropsPropsPredicate = R.compose(R.not, R.contains(R.__, R.map(R.head, props)));
 
   const allSuggestions = ContextService.getAllProperties().map((prop) => ({
     label: prop.name,
