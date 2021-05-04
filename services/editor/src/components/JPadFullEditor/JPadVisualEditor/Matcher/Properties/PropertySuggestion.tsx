@@ -1,12 +1,10 @@
-import Chance from 'chance';
 import React, { useRef } from 'react';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
+import { v4 as uuid } from 'uuid';
 import Avatar from './Avatar';
 import './styles.css';
 import { usePropertyTypeDetails } from './usePropertyTypeDetails';
-
-const chance = new Chance();
 
 const HIGHLIGHTED_TEXT_INLINE_STYLE = {
   fontWeight: 800,
@@ -14,7 +12,19 @@ const HIGHLIGHTED_TEXT_INLINE_STYLE = {
   color: 'gray',
 };
 
-const PropertyTooltip = ({ propName, description, propType, identityType }) => (
+type PropertyTooltipProps = {
+  identityType: string;
+  propName: string;
+  description?: string;
+  propType: string | undefined;
+};
+
+const PropertyTooltip = ({
+  propName,
+  description,
+  propType,
+  identityType,
+}: PropertyTooltipProps) => (
   <div>
     <div style={{ fontSize: 18 }}>
       <span>{identityType}</span>.<span>{propName}</span>
@@ -40,10 +50,15 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) => (
   </div>
 );
 
-const PropertySuggestion = ({ suggestion, textToMark }) => {
+export type PropertySuggestionProps = {
+  textToMark: string;
+  suggestion: { value: string };
+};
+
+const PropertySuggestion = ({ suggestion, textToMark }: PropertySuggestionProps) => {
   const property = suggestion.value;
   const [identity, propName] = suggestion.value.split('.');
-  const tooltipId = useRef(chance.guid());
+  const tooltipId = useRef(uuid());
 
   const typeDetails = usePropertyTypeDetails(property);
 
@@ -67,12 +82,7 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
         textToHighlight={propName}
       />
       <ReactTooltip id={tooltipId.current}>
-        <PropertyTooltip
-          propName={propName}
-          identityType={identity}
-          propType={typeDetails.name}
-          description={typeDetails.description || ''}
-        />
+        <PropertyTooltip propName={propName} identityType={identity} propType={typeDetails.name} />
       </ReactTooltip>
     </div>
   );
