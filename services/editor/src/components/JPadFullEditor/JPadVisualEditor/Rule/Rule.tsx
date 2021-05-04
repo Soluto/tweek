@@ -1,17 +1,27 @@
 import React from 'react';
 import * as R from 'ramda';
 import { shouldUpdate } from 'recompose';
+import { ValueType } from 'tweek-client';
+import { AnyMutator } from '../../../../utils/mutator';
+import { Rule as RuleType } from '../../types';
 import Matcher from '../Matcher/Matcher';
 import RuleValue from '../RuleValue/RuleValue';
 import * as ContextService from '../../../../services/context-service';
 import './Rule.css';
 
-const ruleHasChanged = (props, nextProps) =>
+export type RuleProps = {
+  rule: RuleType;
+  valueType: ValueType;
+  mutate: AnyMutator<RuleType, []>;
+  autofocus?: boolean;
+};
+
+const ruleHasChanged = (props: RuleProps, nextProps: RuleProps) =>
   props.valueType !== nextProps.valueType ||
   !R.equals(props.rule, nextProps.rule) ||
   !R.equals(props.mutate.path, nextProps.mutate.path);
 
-const Rule = ({ rule, valueType, mutate, autofocus, keyPath }) => {
+const Rule = ({ rule, valueType, mutate, autofocus }: RuleProps) => {
   const valueTitle = rule.Type === 'SingleVariant' ? 'Value' : 'Values';
   const identities = ContextService.getIdentities();
 
@@ -23,7 +33,7 @@ const Rule = ({ rule, valueType, mutate, autofocus, keyPath }) => {
       </div>
       <div className="values">
         <label className="rule-partial-title">{valueTitle}</label>
-        <RuleValue {...{ rule, mutate, valueType, identities, keyPath }} />
+        <RuleValue rule={rule} mutate={mutate} valueType={valueType} identities={identities} />
       </div>
     </div>
   );
