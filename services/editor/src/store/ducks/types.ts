@@ -13,6 +13,10 @@ export type SelectedKey = {
   isLoaded: boolean;
   validation: {
     isValid: boolean;
+    key?: Validation;
+    manifest?: {
+      valueType?: Validation;
+    };
   };
   detailsAdded: boolean;
   usedBy?: string[];
