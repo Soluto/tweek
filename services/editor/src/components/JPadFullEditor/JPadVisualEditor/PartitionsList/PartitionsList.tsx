@@ -1,18 +1,37 @@
 import * as R from 'ramda';
 import React from 'react';
+import { ValueType } from 'tweek-client';
 import '../../../../styles/core/core.css';
-import NewPartition from './NewPartition';
+import { AnyMutator } from '../../../../utils/mutator';
+import { Alerter } from '../../../alerts/types';
+import { ConditionValueType, JpadRules, Partition, Rule } from '../../types';
+import NewPartition, { NewPartitionData } from './NewPartition';
 import PartitionItem from './PartitionItem';
 import './PartitionsList.css';
 
-const extractPartitionToObject = (mutate, partitions) => {
+export type PartitionData = {
+  partitionsValues: string[];
+  mutate: AnyMutator<Rule[]>;
+};
+
+type PartitionObj = Record<string, string> & {
+  mutate: AnyMutator<Rule[]>;
+};
+
+const extractPartitionToObject = (
+  mutate: AnyMutator<JpadRules>,
+  partitions: string[],
+): PartitionObj[] => {
   if (partitions.length === 0) {
-    return [{ mutate }];
+    return [{ mutate } as PartitionObj];
   }
 
   return R.flatten(
     Object.keys(mutate.getValue()).map((partitionValue) => {
-      const innerResults = extractPartitionToObject(mutate.in(partitionValue), partitions.slice(1));
+      const innerResults = extractPartitionToObject(
+        (mutate.in(partitionValue) as unknown) as AnyMutator<JpadRules>,
+        partitions.slice(1),
+      );
       return innerResults.map((innerResult) => ({
         [partitions[0]]: partitionValue,
         ...innerResult,
@@ -21,8 +40,8 @@ const extractPartitionToObject = (mutate, partitions) => {
   );
 };
 
-const sortPartitions = (partitions) =>
-  R.sortWith(partitions.map((_, i) => R.descend(R.pipe(R.prop('partitionsValues'), R.prop(i)))));
+const sortPartitions = (partitions: string[]): ((x: PartitionData[]) => PartitionData[]) =>
+  R.sortWith(partitions.map((_, i) => R.descend((p: PartitionData) => p.partitionsValues[i])));
 
 const deletePartitionGroupAlert = {
   title: 'Are you sure?',
@@ -30,41 +49,52 @@ const deletePartitionGroupAlert = {
     'This operation will delete the partition group along with all the rules inside it.\nDo you want to continue?',
 };
 
-const PartitionsList = ({ partitions, mutate, valueType, alerter }) => {
+export type PartitionsListProps = {
+  partitions: string[];
+  mutate: AnyMutator<Partition>;
+  valueType: ValueType;
+  alerter: Alerter;
+};
+
+const PartitionsList = ({ partitions, mutate, valueType, alerter }: PartitionsListProps) => {
   const rulesByPartitions = mutate.getValue();
   if (!rulesByPartitions) {
     return <div />;
   }
 
-  const addPartition = ({ partition: newPartition, defaultValue }) => {
-    console.log({ newPartition, defaultValue });
+  const addPartition = ({
+    partition: newPartition = {},
+    defaultValue,
+  }: Partial<NewPartitionData>) => {
+    const partitionDefaultValue: Rule[] =
+      defaultValue === ''
+        ? []
+        : [{ Type: ConditionValueType.SingleVariant, Matcher: {}, Value: defaultValue }];
 
-    const partitionDefaultValue =
-      defaultValue === '' ? [] : [{ Type: 'SingleVariant', Matcher: {}, Value: defaultValue }];
     mutate.apply((m) => {
       partitions.forEach((partition, i) => {
         const partitionValue = newPartition[partition] || '*';
         if (!m.getValue()[partitionValue]) {
           m.insert(partitionValue, i === partitions.length - 1 ? partitionDefaultValue : {});
         }
-        m = m.in(partitionValue);
+        m = m.in(partitionValue) as any;
       });
 
       return m;
     });
   };
 
-  const deletePartition = async (partitionGroup) => {
+  const deletePartition = async (partitionGroup: string[]) => {
     if ((await alerter.showConfirm(deletePartitionGroupAlert)).result) {
       mutate.apply((partitionMutate) => {
         for (const partition of partitionGroup) {
-          partitionMutate = partitionMutate.in(partition);
+          partitionMutate = partitionMutate.in(partition) as any;
         }
 
         let i = partitionGroup.length;
         do {
           partitionMutate.delete();
-          partitionMutate = partitionMutate.up();
+          partitionMutate = partitionMutate.up() as any;
         } while (--i && Object.keys(partitionMutate.getValue()).length === 0);
 
         return partitionMutate;
@@ -72,12 +102,10 @@ const PartitionsList = ({ partitions, mutate, valueType, alerter }) => {
     }
   };
 
-  let partitionsData = extractPartitionToObject(mutate, partitions);
+  const mappedPartitions = extractPartitionToObject(mutate as AnyMutator<JpadRules>, partitions);
 
-  partitionsData = partitionsData.map((x, i) => ({
-    ...x,
-    valueType,
-    id: i,
+  let partitionsData = mappedPartitions.map((x) => ({
+    mutate: x.mutate,
     partitionsValues: partitions.map((partitionName) => x[partitionName]),
   }));
 
