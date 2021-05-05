@@ -13,20 +13,8 @@ import KeyEditPage from './KeyEditPage/KeyEditPage';
 import KeyAddPage from './KeyAddPage/KeyAddPage';
 import './KeyPage.css';
 
-const KeyPage = ({
-  showCustomAlert,
-  showAlert,
-  showConfirm,
-  configKey,
-  detailsAdded,
-  ...props
-}) => {
+const KeyPage = ({ configKey, detailsAdded, ...props }) => {
   const { selectedKey } = props;
-  const alerter = {
-    showCustomAlert,
-    showAlert,
-    showConfirm,
-  };
   if (!selectedKey || !selectedKey.isLoaded) {
     return <MessageKeyPage data-comp="loading-key" message="Loading..." />;
   }
@@ -39,7 +27,7 @@ const KeyPage = ({
   return !implementation ? (
     <MessageKeyPage data-comp="key-not-found" message="Non-existent key" />
   ) : (
-    <KeyEditPage {...props} alerter={alerter} />
+    <KeyEditPage {...props} />
   );
 };
 
@@ -58,7 +46,7 @@ const mapStateToProps = (state, { match, location }) => {
 };
 
 const enhance = compose(
-  connect(mapStateToProps, { ...selectedKeyActions, ...alertActions }),
+  connect(mapStateToProps, selectedKeyActions),
   routeLeaveHook(
     hasUnsavedChanges,
     'You have unsaved changes, are you sure you want to leave this page?',

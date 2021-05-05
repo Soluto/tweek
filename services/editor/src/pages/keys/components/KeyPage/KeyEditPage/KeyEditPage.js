@@ -1,271 +1,111 @@
 import classNames from 'classnames';
-import React, { Component, useMemo } from 'react';
-import { compose, pure } from 'recompose';
-import { EditableTextArea } from '../../../../../components/common';
-import ConstEditor from '../../../../../components/ConstEditor';
-import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
+import React from 'react';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
-import { types } from '../../../../../services/types-service';
-import { Aliases, DependsOn, UsedBy } from './DependencyIndicator/DependencyIndicator';
-import HeaderMainInput from './HeaderMainInput';
+import KeyEditor from './KeyEditor';
 import './KeyEditPage.css';
-import KeyPageActions from './KeyPageActions/KeyPageActions';
-import KeyTags from './KeyTags/KeyTags';
-import RevisionHistory from './RevisionHistory/RevisionHistory';
+import KeyFullHeader from './KeyFullHeader';
+import KeyStickyHeader from './KeyStickyHeader';
 
-const Editor = ({
-  keyPath,
-  manifest,
-  sourceFile,
-  onManifestChange,
-  onSourceFileChange,
-  onDependencyChanged,
-  onValidationChange,
-  isReadonly,
-  alerter,
+const KeyEditPage = ({
+  selectedKey,
+  isInStickyMode,
+  revision,
+  deleteAlias,
+  history,
+  updateKeyName,
+  updateKeyManifest,
+  updateImplementation,
+  changeKeyValidationState,
 }) => {
-  const valueType = types[manifest.valueType] || types['string'];
-  if (manifest.implementation.type === 'file') {
-    let FileEditor = null;
-    if (manifest.implementation.format === 'jpad') {
-      FileEditor = JPadFullEditor;
-    }
-    return (
-      <FileEditor
-        keyPath={keyPath}
-        alerter={alerter}
-        source={sourceFile}
-        onChange={onSourceFileChange}
-        dependencies={manifest.dependencies}
-        onDependencyChanged={onDependencyChanged}
-        isReadonly={isReadonly}
-        valueType={valueType}
-      />
-    );
-  }
-  if (manifest.implementation.type === 'const') {
-    return (
-      <ConstEditor
-        value={manifest.implementation.value}
-        valueType={valueType}
-        onChange={(value) =>
-          onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })
-        }
-        onValidationChange={onValidationChange}
-      />
-    );
-  }
-  return null;
-};
-
-class KeyEditPage extends Component {
-  onTagsChanged(newTags) {
-    const oldManifest = this.props.selectedKey.local.manifest;
-    const newManifest = {
-      ...oldManifest,
-      meta: {
-        ...oldManifest.meta,
-        tags: newTags,
-      },
-    };
-    this.onSelectedKeyManifestChanged(newManifest);
-  }
-
-  onKeyNameChanged = (newKeyName) => {
-    this.props.updateKeyName(newKeyName);
-  };
-
-  onDisplayNameChanged = (newDisplayName) => {
-    const oldManifest = this.props.selectedKey.local.manifest;
-    const newManifest = {
-      ...oldManifest,
-      meta: {
-        ...oldManifest.meta,
-        name: newDisplayName,
-      },
-    };
-    this.onSelectedKeyManifestChanged(newManifest);
-  };
-
-  onDescriptionChanged(newDescription) {
-    const oldManifest = this.props.selectedKey.local.manifest;
-    const newManifest = {
-      ...oldManifest,
-      meta: {
-        ...oldManifest.meta,
-        description: newDescription,
-      },
-    };
-    this.onSelectedKeyManifestChanged(newManifest);
-  }
-
-  onSelectedKeyManifestChanged = (newManifest) => {
-    this.props.updateKeyManifest(newManifest);
-  };
-
-  onDependencyChanged = (dependencies) => {
-    const oldManifest = this.props.selectedKey.local.manifest;
-    const newManifest = {
-      ...oldManifest,
-      dependencies,
-    };
-    this.onSelectedKeyManifestChanged(newManifest);
-  };
-
-  render() {
-    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias, history } = this.props;
-    const {
-      key,
-      local: { manifest, implementation },
-      revisionHistory,
-      usedBy,
-      aliases,
-    } = selectedKey;
-    const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
-    const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
-
-    const commonHeadersProps = {
-      onKeyNameChanged: this.onKeyNameChanged,
-      onDisplayNameChanged: this.onDisplayNameChanged,
-      isHistoricRevision,
-      isReadonly,
-      keyManifest: manifest,
-    };
-
-    return (
-      <div id="key-edit-page" className="key-edit-page" data-comp="key-edit-page">
-        <div className="key-viewer-container-fieldset">
-          <div className="key-viewer-container">
-            {isInStickyMode ? <KeyStickyHeader {...commonHeadersProps} /> : null}
-            <KeyFullHeader
-              {...commonHeadersProps}
-              onDescriptionChanged={(text) => this.onDescriptionChanged(text)}
-              onTagsChanged={(newTags) => this.onTagsChanged(newTags)}
-              revisionHistory={revisionHistory}
-              revision={revision}
-              keyFullPath={key}
-              isInStickyMode={isInStickyMode}
-              usedBy={usedBy}
-              aliases={aliases}
-              deleteAlias={deleteAlias}
-              history={history}
-            />
-
-            <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
-              <Editor
-                keyPath={key}
-                manifest={manifest}
-                sourceFile={implementation.source}
-                onSourceFileChange={(source) => this.props.updateImplementation({ source })}
-                onManifestChange={this.onSelectedKeyManifestChanged}
-                onDependencyChanged={this.onDependencyChanged}
-                onValidationChange={this.props.changeKeyValidationState}
-                isReadonly={isReadonly}
-                alerter={alerter}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
-
-export default compose(pure, stickyHeaderIdentifier('key-edit-page', 150))(KeyEditPage);
-
-const KeyStickyHeader = (props) => {
-  const { isReadonly, isHistoricRevision } = props;
-
-  return (
-    <div className="sticky-key-header" disabled={isReadonly}>
-      <HeaderMainInput {...props} />
-
-      {!isReadonly ? (
-        <div className="sticky-key-page-action-wrapper">
-          <KeyPageActions {...{ isReadonly, isHistoricRevision }} isInStickyMode />
-        </div>
-      ) : null}
-    </div>
-  );
-};
-
-const KeyFullHeader = (props) => {
   const {
-    isReadonly,
+    key,
+    local: { manifest, implementation },
     revisionHistory,
-    keyManifest,
-    onDescriptionChanged,
-    onTagsChanged,
-    keyFullPath,
-    revision,
-    isHistoricRevision,
     usedBy,
     aliases,
-    deleteAlias,
-    history,
-  } = props;
+  } = selectedKey;
+
+  const onTagsChanged = (newTags) =>
+    updateKeyManifest({
+      ...manifest,
+      meta: {
+        ...manifest.meta,
+        tags: newTags,
+      },
+    });
+
+  const onDisplayNameChanged = (newDisplayName) =>
+    updateKeyManifest({
+      ...manifest,
+      meta: {
+        ...manifest.meta,
+        name: newDisplayName,
+      },
+    });
+
+  const onDescriptionChanged = (newDescription) =>
+    updateKeyManifest({
+      ...manifest,
+      meta: {
+        ...manifest.meta,
+        description: newDescription,
+      },
+    });
+
+  const onDependencyChanged = (dependencies) =>
+    updateKeyManifest({
+      ...manifest,
+      dependencies,
+    });
+
+  const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
+  const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
+
+  const commonHeadersProps = {
+    onKeyNameChanged: updateKeyName,
+    onDisplayNameChanged,
+    isHistoricRevision,
+    isReadonly,
+    keyManifest: manifest,
+  };
 
   return (
-    <div className="key-header">
-      <KeyPageActions {...{ isReadonly, isHistoricRevision }} isInStickyMode={false} />
+    <div id="key-edit-page" className="key-edit-page" data-comp="key-edit-page">
+      <div className="key-viewer-container-fieldset">
+        <div className="key-viewer-container">
+          {isInStickyMode ? <KeyStickyHeader {...commonHeadersProps} /> : null}
+          <KeyFullHeader
+            {...commonHeadersProps}
+            onDescriptionChanged={onDescriptionChanged}
+            onTagsChanged={onTagsChanged}
+            revisionHistory={revisionHistory}
+            revision={revision}
+            keyFullPath={key}
+            isInStickyMode={isInStickyMode}
+            usedBy={usedBy}
+            aliases={aliases}
+            deleteAlias={deleteAlias}
+            history={history}
+          />
 
-      <div className="key-meta-container">
-        <div className="key-header-and-modification-wrapper">
-          <HeaderMainInput {...props} />
-          {revisionHistory ? (
-            <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
-          ) : null}
+          <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
+            <KeyEditor
+              keyPath={key}
+              manifest={manifest}
+              sourceFile={implementation.source}
+              onSourceFileChange={(source) => updateImplementation({ source })}
+              onManifestChange={updateKeyManifest}
+              onDependencyChanged={onDependencyChanged}
+              onValidationChange={changeKeyValidationState}
+              isReadonly={isReadonly}
+            />
+          </div>
         </div>
-
-        <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-          <div className="key-full-path">
-            <label>Full path: </label>
-            <label className="actual-path">{keyFullPath}</label>
-          </div>
-
-          <div className="key-description-tags-hooks-wrapper">
-            <div className="key-description-wrapper">
-              <EditableTextArea
-                value={keyManifest.meta.description}
-                onTextChanged={(text) => onDescriptionChanged(text)}
-                placeHolder="Write key description"
-                title="Click to edit description"
-                classNames={{ input: 'description-input' }}
-                maxLength={400}
-              />
-              <UsedBy items={usedBy} />
-              <DependsOn items={keyManifest.dependencies} />
-              <Aliases items={aliases} deleteAlias={deleteAlias} />
-            </div>
-
-            <div className="key-tags-wrapper">
-              <KeyTags
-                onTagsChanged={(newTags) => onTagsChanged(newTags)}
-                tags={keyManifest.meta.tags || []}
-              />
-            </div>
-
-            {revisionHistory && <HookLinks {...{ keyFullPath, history }} />}
-          </div>
-        </fieldset>
       </div>
     </div>
   );
 };
 
-const HookLinks = ({ keyFullPath, history }) => {
-  const encodedKeyPath = useMemo(() => encodeURIComponent(keyFullPath), [keyFullPath]);
-  const addHook = () => history.push(`/settings/hooks/edit/?keyPath=${encodedKeyPath}`);
-  const viewHooks = () => history.push(`/settings/hooks/?keyPathFilter=${encodedKeyPath}`);
+const enhance = stickyHeaderIdentifier('key-edit-page', 150);
 
-  return (
-    <div className="key-hooks-wrapper">
-      <button className="metro-button" onClick={addHook}>
-        Add Hook
-      </button>
-      <button className="metro-button" onClick={viewHooks}>
-        View Hooks
-      </button>
-    </div>
-  );
-};
+export default enhance(KeyEditPage);
