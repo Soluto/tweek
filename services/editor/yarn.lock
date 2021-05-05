@@ -2019,6 +2019,13 @@
   resolved "https://registry.yarnpkg.com/@types/react-calendar/-/react-calendar-3.1.4.tgz#7d6cb69eab5abfc93a870a025866bc67bf46c8c7"
   integrity sha512-7yDdyPnNaKqOIp97NmPhDxaXb7pBSag+pYWBtt+vBJyyqqiMMtXzv5bdEWjVN7AWmfWdmzGsP8kg+TzvGvwwQg==
 
+"@types/react-collapse@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-collapse/-/react-collapse-5.0.0.tgz#ffe6173db457b4b147319e1bd522b5b9d3d68fac"
+  integrity sha512-iM5QPtS0JVbL5TWm8vilaG4iYiQIFSSqXDHcRUA50qBLSgC0GURk7VZYmgo6u4YF0LnpvKBQYRhPv1ut9DukIg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@>=16.9.0", "@types/react-dom@^17.0.3":
   version "17.0.3"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.3.tgz#7fdf37b8af9d6d40127137865bb3fff8871d7ee1"
@@ -10259,6 +10266,11 @@ react-calendar@^3.1.0:
     merge-class-names "^1.1.1"
     prop-types "^15.6.0"
 
+react-collapse@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-collapse/-/react-collapse-5.1.0.tgz#36f69ecb0fe797f976aaf5e4f2b2c248d2760140"
+  integrity sha512-5v0ywsn9HjiR/odNzbRDs0RZfrnbdSippJebWOBCFFDA12Vx8DddrbI4qWVf1P2wTiVagrpcSy07AU0b6+gM9Q==
+
 react-dev-utils@^11.0.3:
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.4.tgz#a7ccb60257a1ca2e0efe7a83e38e6700d17aa37a"
@@ -10429,15 +10441,6 @@ react-router@5.2.0, react-router@^5.2.0:
     react-is "^16.6.0"
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
-
-react-sanfona@^1.1.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-sanfona/-/react-sanfona-1.5.0.tgz#95f6f013ec1f9a7f759d1d6b5c05b6409c883274"
-  integrity sha512-ChPKfRyjJb2f5jMjqRwJlXly15Ycxv80IImejNmeoMdrk4IXR8T84OLMEb337iUmYLAbA8QA/mMwCYDnJAwHWg==
-  dependencies:
-    classnames "^2.2.6"
-    prop-types "^15.7.2"
-    uuid "^3.4.0"
 
 react-scripts@^4.0.3:
   version "4.0.3"

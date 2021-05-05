@@ -88,7 +88,7 @@ class StatelessMutator<T, Path extends Index[]> {
     this.apply((mutator) => mutationFactory(mutator).apply(mutator, params));
 }
 
-export type AnyMutator<T = Record<string, any>, Path extends Index[] = [string]> = StatelessMutator<
+export type AnyMutator<T = Record<string, any>, Path extends Index[] = []> = StatelessMutator<
   T,
   Path
 >;

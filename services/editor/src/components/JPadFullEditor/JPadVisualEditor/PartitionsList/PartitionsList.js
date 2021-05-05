@@ -1,9 +1,8 @@
 import * as R from 'ramda';
-import React, { useState } from 'react';
-import { Accordion, AccordionItem } from 'react-sanfona';
+import React from 'react';
 import '../../../../styles/core/core.css';
-import RulesList from '../RulesList/RulesList';
 import NewPartition from './NewPartition';
+import PartitionItem from './PartitionItem';
 import './PartitionsList.css';
 
 const extractPartitionToObject = (mutate, partitions) => {
@@ -31,9 +30,7 @@ const deletePartitionGroupAlert = {
     'This operation will delete the partition group along with all the rules inside it.\nDo you want to continue?',
 };
 
-const PartitionsList = ({ partitions, mutate, valueType, alerter, keyPath }) => {
-  const [activeItems, setActiveItems] = useState([]);
-
+const PartitionsList = ({ partitions, mutate, valueType, alerter }) => {
   const rulesByPartitions = mutate.getValue();
   if (!rulesByPartitions) {
     return <div />;
@@ -102,65 +99,17 @@ const PartitionsList = ({ partitions, mutate, valueType, alerter, keyPath }) => 
         valueType={valueType}
       />
 
-      <Accordion
-        className="partitions-accordion-container"
-        allowMultiple
-        activeItems={activeItems}
-        onChange={({ activeItems }) => setActiveItems(activeItems)}
-      >
-        {partitionsData.map((partitionData) => {
-          const rules = partitionData.mutate.getValue();
-          const isOnlyDefault =
-            rules.length === 1 &&
-            Object.keys(rules[0].Matcher).length === 0 &&
-            rules[0].Type === 'SingleVariant';
-
-          const partitionGroupName = partitionData.partitionsValues
-            .map((x) => (x === '*' ? 'Default' : x))
-            .join(', ');
-          return (
-            <AccordionItem
-              title={
-                <div
-                  className="partitions-accordion-container-item-title"
-                  data-comp="partition-group"
-                  data-group={partitionGroupName.toLowerCase()}
-                >
-                  <div className="expander-icon"></div>
-                  <h3>{partitionGroupName}</h3>
-                  <div className="partitions-accordion-container-item-title-details">
-                    {isOnlyDefault
-                      ? `value: ${
-                          valueType.name === 'object'
-                            ? JSON.stringify(rules[0].Value)
-                            : rules[0].Value
-                        }`
-                      : `rules: ${rules.length}`}
-                  </div>
-                  <div className="partitions-accordion-container-item-title-actions">
-                    <button
-                      data-comp="delete-partition-group"
-                      className="gray-circle-button"
-                      onClick={(e) => {
-                        deletePartition(partitionData.partitionsValues);
-                        e.stopPropagation();
-                      }}
-                    >
-                      x
-                    </button>
-                  </div>
-                </div>
-              }
-              key={partitionGroupName}
-              className="partitions-accordion-container-item"
-              titleClassName="partitions-accordion-container-item-title"
-              expandedClassName="partitions-accordion-container-item-expanded"
-            >
-              <RulesList {...{ valueType, alerter, keyPath }} mutate={partitionData.mutate} />
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
+      <div className="partitions-accordion-container">
+        {partitionsData.map((partitionData) => (
+          <PartitionItem
+            valueType={valueType}
+            onDelete={() => deletePartition(partitionData.partitionsValues)}
+            partitionsValues={partitionData.partitionsValues}
+            mutate={partitionData.mutate}
+            alerter={alerter}
+          />
+        ))}
+      </div>
     </div>
   );
 };

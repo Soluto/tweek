@@ -12,7 +12,7 @@ const deleteRuleAlert = {
 };
 
 export type RulesListProps = {
-  mutate: AnyMutator<RuleType[], []>;
+  mutate: AnyMutator<RuleType[]>;
   valueType: ValueType;
   alerter: Alerter;
 };
