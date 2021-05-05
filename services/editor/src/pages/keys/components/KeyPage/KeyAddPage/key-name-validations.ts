@@ -53,6 +53,7 @@ const validations = [
 export type KeyNameValidationResult = {
   isValid: boolean;
   hint?: string;
+  isShowingHint?: boolean;
 };
 
 export default function keyNameValidations(

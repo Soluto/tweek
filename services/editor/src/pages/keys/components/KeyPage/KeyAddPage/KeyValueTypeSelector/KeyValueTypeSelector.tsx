@@ -13,12 +13,12 @@ const getValueTypeSuggestions = () =>
 export type KeyValueTypeSelectorProps = {
   value: string;
   onChange: (valueType: string | undefined) => void;
-  validation: { isShowingHint?: boolean; hint?: string };
+  validation?: { isShowingHint?: boolean; hint?: string };
 };
 
 const KeyValueTypeSelector = ({
   value,
-  validation: { isShowingHint = false, hint },
+  validation: { isShowingHint = false, hint } = {},
   onChange,
 }: KeyValueTypeSelectorProps) => {
   const suggestions = getValueTypeSuggestions();
