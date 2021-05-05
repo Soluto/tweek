@@ -96,6 +96,7 @@
     "@types/react-highlight-words": "^0.16.2",
     "@types/react-router": "^5.1.13",
     "@types/react-router-dom": "^5.1.7",
+    "@types/react-tabs": "^2.3.2",
     "@types/react-tag-input": "^6.1.2",
     "@types/react-virtualized": "^9.21.11",
     "@types/recompose": "^0.30.7",
