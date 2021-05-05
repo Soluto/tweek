@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ValueType } from 'tweek-client';
+import { useAlerter } from '../../../../contexts/Alerts';
 import { AnyMutator } from '../../../../utils/mutator';
-import { Alerter } from '../../../alerts/types';
 import { ConditionValueType, Rule as RuleType } from '../../types';
 import Rule from '../Rule/Rule';
 import './RulesList.css';
@@ -14,11 +14,11 @@ const deleteRuleAlert = {
 export type RulesListProps = {
   mutate: AnyMutator<RuleType[]>;
   valueType: ValueType;
-  alerter: Alerter;
 };
 
-const RulesList = ({ mutate, valueType, alerter }: RulesListProps) => {
+const RulesList = ({ mutate, valueType }: RulesListProps) => {
   const [autofocusRuleIndex, setAutofocusRuleIndex] = useState(-1);
+  const alerter = useAlerter();
 
   const rules = mutate.getValue();
   if (!rules) {

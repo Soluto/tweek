@@ -2,9 +2,9 @@ import * as R from 'ramda';
 import React, { useEffect, useRef, useState } from 'react';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import { ValueType } from 'tweek-client';
+import { useAlerter } from '../../contexts/Alerts';
 import * as TypesService from '../../services/types-service';
 import Mutator from '../../utils/mutator';
-import { Alerter } from '../alerts/types';
 import { ErrorHandler } from '../common';
 import './JPadFullEditor.css';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
@@ -41,7 +41,6 @@ export type JPadFullEditorProps = {
   onDependencyChanged: (deps: string[]) => void;
   dependencies: string[];
   onChange: (source: string) => void;
-  alerter: Alerter;
   isReadonly?: boolean;
 };
 
@@ -51,11 +50,11 @@ const JPadFullEditor = ({
   onDependencyChanged,
   dependencies,
   onChange,
-  alerter,
   isReadonly,
 }: JPadFullEditorProps) => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [selectedTab, onTabSelected] = useState(0);
+  const alerter = useAlerter();
 
   const sourceTree = RulesService.convertToExplicitKey(JSON.parse(source));
   const onMutation = (sourceTree: Jpad) => {
@@ -128,7 +127,7 @@ const JPadFullEditor = ({
         <TabPanel className="tab-content">
           <ErrorHandler errorMessage="Rules Editor does not support this format yet, please use Source instead">
             <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-              <JPadVisualEditor mutate={mutate} alerter={alerter} valueType={valueType} />
+              <JPadVisualEditor mutate={mutate} valueType={valueType} />
             </fieldset>
           </ErrorHandler>
         </TabPanel>

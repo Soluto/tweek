@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 import React from 'react';
 import { ValueType } from 'tweek-client';
+import { useAlerter } from '../../../contexts/Alerts';
 import { AnyMutator } from '../../../utils/mutator';
-import { Alerter } from '../../alerts/types';
 import * as RulesService from '../rules-utils';
 import { AuthPartitionTest } from '../rules-utils';
 import { Jpad, JpadRules } from '../types';
@@ -64,10 +64,11 @@ function isEmptyRules(rules: JpadRules): boolean {
 export type JPadVisualEditorProps = {
   valueType: ValueType;
   mutate: AnyMutator<Jpad>;
-  alerter: Alerter;
 };
 
-const JPadVisualEditor = ({ valueType, mutate, alerter }: JPadVisualEditorProps) => {
+const JPadVisualEditor = ({ valueType, mutate }: JPadVisualEditorProps) => {
+  const alerter = useAlerter();
+
   const partitions = mutate.in('partitions').getValue();
   const defaultValueMutate = mutate.in('defaultValue');
 
@@ -153,7 +154,6 @@ const JPadVisualEditor = ({ valueType, mutate, alerter }: JPadVisualEditorProps)
           partitions={partitions}
           handlePartitionAddition={handlePartitionAddition}
           handlePartitionDelete={handlePartitionDelete}
-          alerter={alerter}
         />
       </div>
 
@@ -161,11 +161,10 @@ const JPadVisualEditor = ({ valueType, mutate, alerter }: JPadVisualEditorProps)
         <PartitionsList
           partitions={partitions}
           valueType={valueType}
-          alerter={alerter}
           mutate={mutate.in('rules') as any}
         />
       ) : (
-        <RulesList valueType={valueType} alerter={alerter} mutate={mutate.in('rules') as any} />
+        <RulesList valueType={valueType} mutate={mutate.in('rules') as any} />
       )}
     </div>
   );
