@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { KeyManifest } from 'tweek-client';
 import { ComboBox, ValidationIcon } from '../../../../../components/common';
 import * as SearchService from '../../../../../services/search-service';
+import { Validation } from '../../../../../store/ducks/types';
 import { useShowInternalKeys } from '../../../../../utils';
-import keyNameValidations, { KeyNameValidationResult } from './key-name-validations';
+import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
 
 const getKeyPrefix = (path: string) => path.split('/').slice(0, -1).join('/');
@@ -26,9 +27,9 @@ type State = { keys: Record<string, KeyManifest> };
 const enhance = connect((state: State) => ({ keys: state.keys }));
 
 export type NewKeyInputProps = State & {
-  validation?: { isShowingHint?: boolean; hint?: string };
+  validation?: Partial<Validation>;
   displayName: string;
-  onChange: (keyName: string, validation: KeyNameValidationResult) => void;
+  onChange: (keyName: string, validation: Validation) => void;
 };
 
 const NewKeyInput = ({

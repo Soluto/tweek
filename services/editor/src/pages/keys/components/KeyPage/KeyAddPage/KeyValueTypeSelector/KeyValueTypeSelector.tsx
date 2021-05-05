@@ -3,6 +3,7 @@ import { titleCase } from 'title-case';
 import { ComboBox, ValidationIcon } from '../../../../../../components/common';
 import * as TypesServices from '../../../../../../services/types-service';
 import './KeyValueTypeSelector.css';
+import { Validation } from '../../../../../../store/ducks/types';
 
 const getValueTypeSuggestions = () =>
   Object.keys(TypesServices.types).map((x) => ({
@@ -13,7 +14,7 @@ const getValueTypeSuggestions = () =>
 export type KeyValueTypeSelectorProps = {
   value: string;
   onChange: (valueType: string | undefined) => void;
-  validation?: { isShowingHint?: boolean; hint?: string };
+  validation?: Partial<Validation>;
 };
 
 const KeyValueTypeSelector = ({
