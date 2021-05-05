@@ -84,6 +84,7 @@ export type TypedInputProps = {
   hideIcon?: boolean;
   valueType: string | ValueType;
   className?: string;
+  placeholder?: string;
 };
 
 const TypedInput = ({

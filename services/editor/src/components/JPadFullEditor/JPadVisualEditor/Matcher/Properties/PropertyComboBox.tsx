@@ -24,6 +24,7 @@ export type PropertyComboBoxProps = {
   warning: boolean;
   onFocus?: (focused: boolean) => void;
   onChange: (input: string, selected?: Suggestion) => void;
+  autofocus?: boolean;
 };
 
 const PropertyComboBox = ({

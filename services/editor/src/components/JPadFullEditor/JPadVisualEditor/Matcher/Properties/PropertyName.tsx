@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as ContextService from '../../../../../services/context-service';
 import { getPropertySupportedOperators } from '../../../../../services/operators-provider';
 import { AnyMutator } from '../../../../../utils/mutator';
+import { Rule } from '../../../types';
 import PropertyComboBox, { Suggestion } from './PropertyComboBox';
 
 const ensureKeysIdentity = (property: string) =>
@@ -10,11 +11,11 @@ const ensureKeysIdentity = (property: string) =>
 export type PropertyNameProps = {
   property: string;
   suggestedValues: Suggestion[];
-  //todo types
-  mutate: AnyMutator;
+  mutate: AnyMutator<Rule[], [number, 'Matcher', string]>;
+  autofocus?: boolean;
 };
 
-const PropertyName = ({ mutate, property, ...props }: PropertyNameProps) => {
+const PropertyName = ({ mutate, property, suggestedValues, autofocus }: PropertyNameProps) => {
   const [hasFocus, onFocus] = useState(false);
   property = ensureKeysIdentity(property);
 
@@ -40,7 +41,8 @@ const PropertyName = ({ mutate, property, ...props }: PropertyNameProps) => {
   return (
     <PropertyComboBox
       data-comp="property-name"
-      {...props}
+      suggestedValues={suggestedValues}
+      autofocus={autofocus}
       onFocus={onFocus}
       property={property}
       onChange={onChange}

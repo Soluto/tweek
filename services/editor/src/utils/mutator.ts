@@ -7,11 +7,11 @@ type InnerProp<T, Path extends Index[]> = Path extends []
   ? Prop extends keyof T
     ? Rest extends Index[]
       ? InnerProp<T[Prop], Rest>
-      : never
-    : never
+      : unknown
+    : unknown
   : never;
 
-type Up<Path extends Index[]> = Path extends [...infer Rest, unknown] ? Rest : never[];
+type Head<Path extends Index[]> = Path extends [...infer Rest, unknown] ? Rest : Index[];
 type ChangeLast<Path extends Index[], Last> = Path extends [...infer Rest, infer Prop]
   ? Prop extends Last
     ? Path
@@ -69,10 +69,12 @@ class StatelessMutator<T, Path extends Index[]> {
     return this._liftMutation((m) => m.append);
   }
 
-  in = <P extends keyof InnerProp<T, Path>>(innerPath: P): StatelessMutator<T, [...Path, P]> =>
+  in = <P extends keyof InnerProp<T, Path> | Index>(
+    innerPath: P,
+  ): StatelessMutator<T, [...Path, P]> =>
     new StatelessMutator(() => this.getMutator().in(innerPath), this.onMutation);
 
-  up = (): StatelessMutator<T, Up<Path>> =>
+  up = (): StatelessMutator<T, Head<Path>> =>
     new StatelessMutator(() => this.getMutator().up(), this.onMutation);
 
   apply = (mutation: (m: Mutator<T, Path>) => Mutator<T, any>) => {
@@ -82,10 +84,11 @@ class StatelessMutator<T, Path extends Index[]> {
 
   _liftMutation = <Fn extends (...args: any[]) => any>(
     mutationFactory: (m: Mutator<T, Path>) => Fn,
-  ) => (...params: Parameters<Fn>) => this.apply((mutator) => mutationFactory(mutator)(...params));
+  ) => (...params: Parameters<Fn>) =>
+    this.apply((mutator) => mutationFactory(mutator).apply(mutator, params));
 }
 
-export type AnyMutator<T = Record<string, any>, Path extends Index[] = [string]> = StatelessMutator<
+export type AnyMutator<T = Record<string, any>, Path extends Index[] = []> = StatelessMutator<
   T,
   Path
 >;
@@ -100,10 +103,10 @@ class Mutator<T, Path extends Index[] = []> {
 
   setPath = <P extends Index[]>(path: P) => new Mutator(this.target, path);
 
-  in = <P extends keyof InnerProp<T, Path>>(innerPath: P) =>
+  in = <P extends keyof InnerProp<T, Path> | Index>(innerPath: P) =>
     this.setPath([...this.path, innerPath.toString()] as [...Path, P]);
 
-  up = () => this.setPath(this.path.slice(0, -1) as Up<Path>);
+  up = () => this.setPath(this.path.slice(0, -1) as Head<Path>);
 
   updateValue = (newValue: InnerProp<T, Path>) => {
     const innerPath = this.path.slice(0, -1);
@@ -121,7 +124,7 @@ class Mutator<T, Path extends Index[] = []> {
     return new Mutator(this.target, this.path);
   };
 
-  updateKey = <P extends keyof InnerProp<T, Up<Path>>>(
+  updateKey = <P extends keyof InnerProp<T, Head<Path>>>(
     newKey: P,
   ): Mutator<T, ChangeLast<Path, P>> => {
     const innerPath = this.path.slice(0, -1);
@@ -163,8 +166,8 @@ class Mutator<T, Path extends Index[] = []> {
     return new Mutator(this.target, this.path);
   };
 
-  delete = (): Mutator<T, Up<Path>> => {
-    const innerPath = this.path.slice(0, -1) as Up<Path>;
+  delete = (): Mutator<T, Head<Path>> => {
+    const innerPath = this.path.slice(0, -1) as Head<Path>;
     const key = this.path[this.path.length - 1];
     const container = innerPath.reduce((acc: any, x) => acc[x], this.target);
     if (Array.isArray(container)) {
@@ -175,8 +178,11 @@ class Mutator<T, Path extends Index[] = []> {
     return new Mutator(this.target, innerPath);
   };
 
-  insert = <P extends keyof InnerProp<T, Path>>(key: P, value: InnerProp<T, Path>[P]) => {
-    const container = this.getValue();
+  insert = <P extends keyof InnerProp<T, Path> | Index>(
+    key: P,
+    value: InnerProp<T, [...Path, P]>,
+  ) => {
+    const container = this.getValue() as any;
     container[key] = value;
     return new Mutator(this.target, this.path);
   };

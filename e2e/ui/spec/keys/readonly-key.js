@@ -12,6 +12,6 @@ test('should open the key as readonly', async (t) => {
   await t
     .expect(editKey.messageText.visible)
     .ok()
-    .expect(editKey.jpad.container.withAttribute('disabled').exists)
+    .expect(editKey.jpad.container.find('fieldset').withAttribute('disabled').exists)
     .ok();
 });

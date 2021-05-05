@@ -1,34 +1,52 @@
 import Chance from 'chance';
 import * as R from 'ramda';
 import React from 'react';
+import { ValueType } from 'tweek-client';
 import * as TypesService from '../../../../services/types-service';
+import { AnyMutator } from '../../../../utils/mutator';
 import { ComboBox, CustomSlider, TypedInput } from '../../../common';
+import { TypedInputProps } from '../../../common/Input/TypedInput';
 import { convertWeightedArgsToArray } from '../../rules-utils';
+import {
+  ConditionValueType,
+  DistributionType,
+  Rule,
+  ValueDistribution,
+  WeightedDistributionArg,
+} from '../../types';
 import './RuleValue.css';
 
 const chance = new Chance();
 
-function replaceNaN(fallbackValue) {
-  return isNaN(this) ? fallbackValue : this;
-}
+const parseNumericInput = (inputValue: string) =>
+  inputValue === '' ? 0 : parseInt(inputValue, 10);
 
-const parseNumericInput = (inputValue) => (inputValue === '' ? 0 : parseInt(inputValue, 10));
-const wrapWithClass = (propToClassNameFn) => (Comp) => (props) => (
-  <div className={propToClassNameFn(props)}>
-    <Comp {...props} />
+export type InputValueProps = Omit<TypedInputProps, 'valueType'> & { valueType: ValueType };
+
+export const InputValue = ({ valueType, ...props }: InputValueProps) => (
+  <div className={`inputValue input-type-${valueType.name}`}>
+    <TypedInput valueType={valueType} {...props} />
   </div>
 );
 
-export const InputValue = wrapWithClass(
-  ({ valueType }) => `inputValue input-type-${valueType.name}`,
-)(TypedInput);
+export type MultiVariantConverterProps = {
+  value: any;
+  valueType: ValueType;
+  identities: string[];
+  mutate: AnyMutator<Rule[], [number, 'Value']>;
+};
 
-const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }) => {
-  const convertToMultiVariant = (valueDistribution) =>
+const MultiVariantConverter = ({
+  valueType,
+  identities,
+  mutate,
+  value,
+}: MultiVariantConverterProps) => {
+  const convertToMultiVariant = (valueDistribution: ValueDistribution) =>
     mutate.apply((m) => {
       m.delete()
         .in('Type')
-        .updateValue('MultiVariant')
+        .updateValue(ConditionValueType.MultiVariant)
         .up()
         .insert('OwnerType', identities[0])
         .insert('ValueDistribution', valueDistribution);
@@ -51,7 +69,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
         className="to-feature-flag-button"
         onClick={() =>
           convertToMultiVariant({
-            type: 'bernoulliTrial',
+            type: DistributionType.bernoulliTrial,
             args: 0.1,
           })
         }
@@ -67,7 +85,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
       className="add-variant-button"
       onClick={() =>
         convertToMultiVariant({
-          type: 'weighted',
+          type: DistributionType.weighted,
           args: [
             {
               value,
@@ -86,23 +104,40 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
   );
 };
 
-const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) => (
+const SingleVariantValue = ({
+  value,
+  mutate,
+  identities,
+  valueType,
+}: MultiVariantConverterProps) => (
   <div className="rule-value-container">
     <InputValue
-      {...{ value, valueType }}
+      value={value}
+      valueType={valueType}
       data-comp="rule-value"
-      onChange={(newValue) => mutate.updateValue(newValue)}
+      onChange={(newValue: any) => mutate.updateValue(newValue)}
     />
-    <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
+    <MultiVariantConverter
+      value={value}
+      valueType={valueType}
+      mutate={mutate}
+      identities={identities}
+    />
   </div>
 );
 
 const multiVariantSliderColors = [
   ...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
-  ...R.range(1, 30).map((_) => chance.color()),
+  ...R.range(1, 30).map(() => chance.color()),
 ];
 
-const WeightedValues = ({ onUpdate, variants, valueType }) => (
+export type WeightedValuesProps = {
+  valueType: ValueType;
+  onUpdate: (data: WeightedDistributionArg[]) => void;
+  variants: WeightedDistributionArg[];
+};
+
+const WeightedValues = ({ onUpdate, variants, valueType }: WeightedValuesProps) => (
   <CustomSlider
     data={convertWeightedArgsToArray(variants, valueType)}
     onUpdate={onUpdate}
@@ -113,7 +148,11 @@ const WeightedValues = ({ onUpdate, variants, valueType }) => (
 );
 
 const bernouliTrialSliderColors = ['#007acc', 'lightGray'];
-const BernoulliTrial = ({ onUpdate, ratio }) => (
+export type BernoulliTrialProps = {
+  ratio: number;
+  onUpdate: (ratio: number) => void;
+};
+const BernoulliTrial = ({ onUpdate, ratio }: BernoulliTrialProps) => (
   <div className="bernoulli-trial-container">
     <div className="bernoulli-trial-input-wrapper">
       <label>Open to</label>
@@ -123,15 +162,15 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
         className="bernoulli-trial-input"
         value={+(ratio * 100).toFixed(2)}
         onChange={(e) => {
-          const newValue = e.target.value;
-          if (newValue < 0 || newValue > 100) {
+          const newValue = parseNumericInput(e.target.value);
+          if (newValue < 0 || newValue > 100 || isNaN(newValue)) {
             e.stopPropagation();
             return;
           }
-          onUpdate(parseNumericInput(newValue) * replaceNaN.call(0.01, ratio));
+          onUpdate(newValue * 0.01);
         }}
         onWheel={({ deltaY, target }) => {
-          const currentValue = parseNumericInput(target.value);
+          const currentValue = parseNumericInput((target as HTMLInputElement).value);
           let newValue = deltaY < 0 ? currentValue + 1 : currentValue - 1;
           newValue = Math.max(0, Math.min(100, newValue));
           onUpdate(newValue / 100);
@@ -154,7 +193,13 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
   </div>
 );
 
-const IdentitySelection = ({ identities, onChange, ownerType }) => (
+type IdentitySelectionProps = {
+  identities: string[];
+  ownerType: string;
+  onChange: (owner: string) => void;
+};
+
+const IdentitySelection = ({ identities, onChange, ownerType }: IdentitySelectionProps) => (
   <div className="identity-selection-container">
     <label className="identity-selection-title">Identity: </label>
     <ComboBox
@@ -167,20 +212,28 @@ const IdentitySelection = ({ identities, onChange, ownerType }) => (
   </div>
 );
 
+type MultiVariantValueProps = {
+  ValueDistribution: ValueDistribution;
+  mutate: AnyMutator<Rule[], [number, 'ValueDistribution']>;
+  identities: string[];
+  ownerType: string;
+  valueType: ValueType;
+};
+
 const MultiVariantValue = ({
   ValueDistribution: { type, args },
   mutate,
   identities,
   ownerType,
   valueType,
-}) => {
-  const updateOwnerType = (identity) => mutate.up().in('OwnerType').updateValue(identity);
+}: MultiVariantValueProps) => {
+  const updateOwnerType = (identity: string) => mutate.up().in('OwnerType').updateValue(identity);
   const wrapperProps = {
     'data-type': type,
     'data-comp': 'multi-variant-value',
   };
 
-  if (type === 'weighted') {
+  if (type === DistributionType.weighted) {
     return (
       <div {...wrapperProps}>
         <IdentitySelection
@@ -189,7 +242,7 @@ const MultiVariantValue = ({
           onChange={updateOwnerType}
         />
         <WeightedValues
-          variants={args}
+          variants={args as WeightedDistributionArg[]}
           valueType={valueType}
           onUpdate={(variants) => {
             if (variants.length !== 1) {
@@ -205,7 +258,7 @@ const MultiVariantValue = ({
                 .updateValue(newValue)
                 .up()
                 .in('Type')
-                .updateValue('SingleVariant')
+                .updateValue(ConditionValueType.SingleVariant)
                 .up()
                 .in('ValueDistribution')
                 .delete()
@@ -217,7 +270,7 @@ const MultiVariantValue = ({
       </div>
     );
   }
-  if (type === 'bernoulliTrial') {
+  if (type === DistributionType.bernoulliTrial) {
     return (
       <div {...wrapperProps}>
         <IdentitySelection
@@ -227,7 +280,7 @@ const MultiVariantValue = ({
         />
 
         <div style={{ marginTop: 5 }}>
-          <BernoulliTrial onUpdate={mutate.in('args').updateValue} ratio={args} />
+          <BernoulliTrial onUpdate={mutate.in('args').updateValue} ratio={args as number} />
 
           {args === 1 ? (
             <button
@@ -241,7 +294,7 @@ const MultiVariantValue = ({
                     .updateValue(true)
                     .up()
                     .in('Type')
-                    .updateValue('SingleVariant')
+                    .updateValue(ConditionValueType.SingleVariant)
                     .up()
                     .in('ValueDistribution')
                     .delete()
@@ -265,7 +318,7 @@ const MultiVariantValue = ({
                     .updateValue(false)
                     .up()
                     .in('Type')
-                    .updateValue('SingleVariant')
+                    .updateValue(ConditionValueType.SingleVariant)
                     .up()
                     .in('ValueDistribution')
                     .delete()
@@ -284,13 +337,21 @@ const MultiVariantValue = ({
   return null;
 };
 
-const RuleValue = ({ rule, mutate, valueType, autofocus, identities, keyPath }) => {
+export type RuleValueProps = {
+  rule: Rule;
+  mutate: AnyMutator<Rule[], [number]>;
+  valueType: ValueType;
+  identities: string[];
+};
+
+const RuleValue = ({ rule, mutate, valueType, identities }: RuleValueProps) => {
   if (rule.Type === 'SingleVariant') {
     return (
       <SingleVariantValue
         mutate={mutate.in('Value')}
         value={rule.Value}
-        {...{ identities, autofocus, valueType, keyPath }}
+        identities={identities}
+        valueType={valueType}
       />
     );
   }
@@ -301,14 +362,13 @@ const RuleValue = ({ rule, mutate, valueType, autofocus, identities, keyPath }) 
         mutate={mutate.in('ValueDistribution')}
         ValueDistribution={rule.ValueDistribution}
         ownerType={rule.OwnerType}
-        {...{ identities, valueType }}
+        identities={identities}
+        valueType={valueType}
       />
     );
   }
 
   return null;
 };
-
-RuleValue.displayName = 'RuleValue';
 
 export default RuleValue;

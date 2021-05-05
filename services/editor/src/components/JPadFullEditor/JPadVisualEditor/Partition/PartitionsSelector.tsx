@@ -1,14 +1,22 @@
 import React from 'react';
-import { WithContext as ReactTags } from 'react-tag-input';
+import { Tag, WithContext as ReactTags } from 'react-tag-input';
 import * as ContextService from '../../../../services/context-service';
 import './PartitionsSelector.css';
+import { Alerter } from '../../../alerts/types';
+
+export type PartitionSelectorProps = {
+  partitions: string[];
+  handlePartitionAddition: (partition: string) => void;
+  handlePartitionDelete: (index: number) => void;
+  alerter: Alerter;
+};
 
 const PartitionSelector = ({
   partitions,
   handlePartitionAddition,
   handlePartitionDelete,
   alerter,
-}) => {
+}: PartitionSelectorProps) => {
   const allProperties = ContextService.getSchemaProperties().map((x) => ({
     id: x.id,
     text: `${x.name} (${x.identity})`,
@@ -24,7 +32,7 @@ const PartitionSelector = ({
       },
   );
 
-  const handleAddition = (newValue) => {
+  const handleAddition = (newValue: Tag) => {
     const newId = newValue.id.toLowerCase();
 
     let newProperty = allProperties.find((x) => x.id.toLowerCase() === newId);
