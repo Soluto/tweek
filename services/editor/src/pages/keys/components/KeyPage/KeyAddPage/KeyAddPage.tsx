@@ -7,7 +7,7 @@ import {
   changeKeyValueType,
   updateKeyPath,
 } from '../../../../../store/ducks/selectedKey';
-import { SelectedKey, Validation } from '../../../../../store/ducks/types';
+import { SelectedKey, StoreState, Validation } from '../../../../../store/ducks/types';
 import './KeyAddPage.css';
 import KeyFormatSelector from './KeyFormatSelector';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
@@ -25,19 +25,10 @@ type StateProps = {
   validation: SelectedKey['validation'];
 };
 
-type State = {
-  selectedKey: SelectedKey;
-};
-
-const enhance = connect<StateProps, Actions, {}, State>(
-  ({
-    selectedKey: {
-      local: { manifest },
-      validation,
-    },
-  }) => ({
-    manifest,
-    validation,
+const enhance = connect<StateProps, Actions, {}, StoreState>(
+  (state) => ({
+    manifest: state.selectedKey!.local.manifest,
+    validation: state.selectedKey!.validation,
   }),
   {
     addKeyDetails,

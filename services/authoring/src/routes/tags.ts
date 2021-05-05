@@ -19,7 +19,7 @@ export class TagsController {
 
   @Authorize({ permission: PERMISSIONS.TAGS_READ })
   @GET
-  async getTags(): Promise<string[]> {
+  async getTags(): Promise<{ name: string }[]> {
     return await this.tagsRepository.getTags();
   }
 

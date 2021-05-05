@@ -28,3 +28,8 @@ export type Validation = {
   hint?: string;
   isShowingHint?: boolean;
 };
+
+export type StoreState = {
+  selectedKey?: SelectedKey;
+  tags: Record<string, string>;
+};
