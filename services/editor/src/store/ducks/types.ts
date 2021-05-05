@@ -45,6 +45,10 @@ export type KeyActions = {
   addAlias: (alias: string) => void;
   archiveKey: (archived: boolean, historySince: string) => void;
   deleteKey: () => void;
+  updateKeyManifest: (manifest: KeyManifest) => void;
+  deleteAlias: (dep: string) => void;
+  updateKeyName: (text: string) => void;
+  updateImplementation: (implementation: Partial<KeyImplementation>) => void;
 };
 
 export type TagActions = {

@@ -1,22 +1,35 @@
 import classNames from 'classnames';
+import { History } from 'history';
 import React from 'react';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
+import { KeyActions, SelectedKey } from '../../../../../store/ducks/types';
 import KeyEditor from './KeyEditor';
 import './KeyEditPage.css';
 import KeyFullHeader from './KeyFullHeader';
 import KeyStickyHeader from './KeyStickyHeader';
 
+export type EditPageActions = Pick<
+  KeyActions,
+  'updateKeyManifest' | 'deleteAlias' | 'updateKeyName' | 'updateImplementation'
+>;
+
+export type KeyEditPageProps = EditPageActions & {
+  selectedKey: SelectedKey;
+  isInStickyMode: boolean;
+  revision?: string;
+  history: History;
+};
+
 const KeyEditPage = ({
   selectedKey,
   isInStickyMode,
   revision,
-  deleteAlias,
   history,
+  deleteAlias,
   updateKeyName,
   updateKeyManifest,
   updateImplementation,
-  changeKeyValidationState,
-}) => {
+}: KeyEditPageProps) => {
   const {
     key,
     local: { manifest, implementation },
@@ -25,7 +38,7 @@ const KeyEditPage = ({
     aliases,
   } = selectedKey;
 
-  const onTagsChanged = (newTags) =>
+  const onTagsChanged = (newTags: string[]) =>
     updateKeyManifest({
       ...manifest,
       meta: {
@@ -34,7 +47,7 @@ const KeyEditPage = ({
       },
     });
 
-  const onDisplayNameChanged = (newDisplayName) =>
+  const onDisplayNameChanged = (newDisplayName: string) =>
     updateKeyManifest({
       ...manifest,
       meta: {
@@ -43,7 +56,7 @@ const KeyEditPage = ({
       },
     });
 
-  const onDescriptionChanged = (newDescription) =>
+  const onDescriptionChanged = (newDescription: string) =>
     updateKeyManifest({
       ...manifest,
       meta: {
@@ -52,13 +65,15 @@ const KeyEditPage = ({
       },
     });
 
-  const onDependencyChanged = (dependencies) =>
+  const onDependencyChanged = (dependencies: string[]) =>
     updateKeyManifest({
       ...manifest,
       dependencies,
     });
 
-  const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
+  const isHistoricRevision = Boolean(
+    revisionHistory && revision && revisionHistory[0].sha !== revision,
+  );
   const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
 
   const commonHeadersProps = {
@@ -81,7 +96,6 @@ const KeyEditPage = ({
             revisionHistory={revisionHistory}
             revision={revision}
             keyFullPath={key}
-            isInStickyMode={isInStickyMode}
             usedBy={usedBy}
             aliases={aliases}
             deleteAlias={deleteAlias}
@@ -90,13 +104,11 @@ const KeyEditPage = ({
 
           <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
             <KeyEditor
-              keyPath={key}
               manifest={manifest}
-              sourceFile={implementation.source}
+              sourceFile={implementation.source as string}
               onSourceFileChange={(source) => updateImplementation({ source })}
               onManifestChange={updateKeyManifest}
               onDependencyChanged={onDependencyChanged}
-              onValidationChange={changeKeyValidationState}
               isReadonly={isReadonly}
             />
           </div>

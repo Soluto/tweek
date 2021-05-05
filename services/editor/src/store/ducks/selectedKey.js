@@ -214,16 +214,6 @@ export function archiveKey(archived, historySince) {
   };
 }
 
-export function changeKeyValidationState(newValidationState) {
-  return function (dispatch, getState) {
-    const currentValidationState = getState().selectedKey.validation;
-    if (R.path(['const', 'isValid'], currentValidationState) !== newValidationState) {
-      const payload = R.assocPath(['const', 'isValid'], newValidationState, currentValidationState);
-      dispatch({ type: KEY_VALIDATION_CHANGE, payload });
-    }
-  };
-}
-
 export function changeKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);

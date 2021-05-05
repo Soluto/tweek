@@ -1,17 +1,16 @@
+import querystring from 'query-string';
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, lifecycle, pure } from 'recompose';
 import { withTweekValues } from 'react-tweek';
-import querystring from 'query-string';
-import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
-import * as alertActions from '../../../../store/ducks/alerts';
-import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import { compose, lifecycle, pure } from 'recompose';
 import routeLeaveHook from '../../../../hoc/route-leave-hook';
+import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import hasUnsavedChanges from '../utils/hasUnsavedChanges';
-import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
-import KeyEditPage from './KeyEditPage/KeyEditPage';
 import KeyAddPage from './KeyAddPage/KeyAddPage';
+import KeyEditPage from './KeyEditPage/KeyEditPage';
 import './KeyPage.css';
+import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 
 const KeyPage = ({ configKey, detailsAdded, ...props }) => {
   const { selectedKey } = props;
@@ -57,8 +56,12 @@ const enhance = compose(
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey, revision, historySince } = this.props;
-      if (!configKey) return;
-      if (selectedKey && selectedKey.key === configKey) return;
+      if (!configKey) {
+        return;
+      }
+      if (selectedKey && selectedKey.key === configKey) {
+        return;
+      }
       openKey(configKey, { revision, historySince });
     },
     componentWillReceiveProps({ configKey, revision, historySince }) {
