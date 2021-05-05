@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
   addKeyDetails,
   changeKeyFormat,
+  changeKeyValueType,
   updateKeyPath,
 } from '../../../../../store/ducks/selectedKey';
 import './KeyAddPage.css';
@@ -15,20 +16,28 @@ const enhance = connect(
   ({
     selectedKey: {
       local: { manifest },
-      validation: { key: keyValidation },
+      validation,
     },
   }) => ({
     manifest,
-    keyValidation,
+    validation,
   }),
   {
     addKeyDetails,
     updateKeyPath,
     changeKeyFormat,
+    changeKeyValueType,
   },
 );
 
-const KeyAddPage = ({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat, keyValidation }) => {
+const KeyAddPage = ({
+  manifest,
+  updateKeyPath,
+  addKeyDetails,
+  changeKeyFormat,
+  changeKeyValueType,
+  validation,
+}) => {
   const valueType = manifest.valueType;
   const displayName = manifest.meta.name;
   return (
@@ -39,13 +48,17 @@ const KeyAddPage = ({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat, k
         <NewKeyInput
           onChange={updateKeyPath}
           displayName={displayName}
-          validation={keyValidation}
+          validation={validation.key}
         />
       </div>
       <div className="add-key-properties-wrapper">
         <KeyFormatSelector onFormatChanged={changeKeyFormat} />
         <div className="hspace" />
-        <KeyValueTypeSelector value={valueType} />
+        <KeyValueTypeSelector
+          value={valueType}
+          validation={validation.manifest.valueType}
+          onChange={changeKeyValueType}
+        />
       </div>
       <div className="vspace" />
       <div className="add-key-button-wrapper">

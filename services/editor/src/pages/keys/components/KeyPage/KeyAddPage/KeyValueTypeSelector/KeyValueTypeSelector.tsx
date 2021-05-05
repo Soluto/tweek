@@ -1,9 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { titleCase } from 'title-case';
 import { ComboBox, ValidationIcon } from '../../../../../../components/common';
 import * as TypesServices from '../../../../../../services/types-service';
-import { changeKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import './KeyValueTypeSelector.css';
 
 const getValueTypeSuggestions = () =>
@@ -12,18 +10,17 @@ const getValueTypeSuggestions = () =>
     value: x,
   }));
 
-const enhance = connect(
-  (state) => ({
-    validation: state.selectedKey.validation.manifest.valueType,
-  }),
-  { changeKeyValueType },
-);
+export type KeyValueTypeSelectorProps = {
+  value: string;
+  onChange: (valueType: string | undefined) => void;
+  validation: { isShowingHint?: boolean; hint?: string };
+};
 
 const KeyValueTypeSelector = ({
   value,
   validation: { isShowingHint = false, hint },
-  changeKeyValueType: onChange,
-}) => {
+  onChange,
+}: KeyValueTypeSelectorProps) => {
   const suggestions = getValueTypeSuggestions();
 
   return (
@@ -43,4 +40,4 @@ const KeyValueTypeSelector = ({
   );
 };
 
-export default enhance(KeyValueTypeSelector);
+export default KeyValueTypeSelector;
