@@ -5,24 +5,20 @@ import { useHistory } from 'react-router';
 import { Tag, WithContext as ReactTags } from 'react-tag-input';
 import { saveNewTag } from '../../../../../../store/ducks/tags';
 import './KeyTags.css';
-import { StoreState } from '../../../../../../store/ducks/types';
+import { StoreState, TagActions } from '../../../../../../store/ducks/types';
 import { getTagLink } from '../../../../utils/search';
-
-export type Actions = {
-  saveNewTag: (tag: Tag) => void;
-};
 
 export type StateProps = {
   globalTags: StoreState['tags'];
 };
 
-const enhance = connect<StateProps, Actions, {}, StoreState>(
+const enhance = connect<StateProps, TagActions, {}, StoreState>(
   (state: StoreState) => ({ globalTags: state.tags }),
   { saveNewTag },
 );
 
 export type KeyTagsProps = StateProps &
-  Actions & {
+  TagActions & {
     tags: string[];
     onTagsChanged: (tags: string[]) => void;
   };

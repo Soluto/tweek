@@ -1,24 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { KeyImplementation, KeyManifest } from 'tweek-client';
+import { KeyManifest } from 'tweek-client';
 import {
   addKeyDetails,
   changeKeyFormat,
   changeKeyValueType,
   updateKeyPath,
 } from '../../../../../store/ducks/selectedKey';
-import { SelectedKey, StoreState, Validation } from '../../../../../store/ducks/types';
+import { KeyActions, SelectedKey, StoreState } from '../../../../../store/ducks/types';
 import './KeyAddPage.css';
 import KeyFormatSelector from './KeyFormatSelector';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import NewKeyInput from './NewKeyInput';
 
-type Actions = {
-  addKeyDetails: () => void;
-  updateKeyPath: (keyName: string, validation: Validation) => void;
-  changeKeyFormat: (f: KeyImplementation) => void;
-  changeKeyValueType: (valueType: string | undefined) => void;
-};
+type Actions = Pick<
+  KeyActions,
+  'addKeyDetails' | 'updateKeyPath' | 'changeKeyFormat' | 'changeKeyValueType'
+>;
 
 type StateProps = {
   manifest: KeyManifest;
