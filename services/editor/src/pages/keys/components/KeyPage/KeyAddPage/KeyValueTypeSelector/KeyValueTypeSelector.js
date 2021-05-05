@@ -12,14 +12,20 @@ const getValueTypeSuggestions = () =>
     value: x,
   }));
 
-const KeyValueTypeSelector = connect(
+const enhance = connect(
   (state) => ({
-    selectedKey: state.selectedKey,
     validation: state.selectedKey.validation.manifest.valueType,
   }),
   { changeKeyValueType },
-)(({ value, validation: { isShowingHint = false, hint }, changeKeyValueType: onChange }) => {
+);
+
+const KeyValueTypeSelector = ({
+  value,
+  validation: { isShowingHint = false, hint },
+  changeKeyValueType: onChange,
+}) => {
   const suggestions = getValueTypeSuggestions();
+
   return (
     <div className="key-value-type-selector-container">
       <label className="key-value-type-label">Key value type:</label>
@@ -35,6 +41,6 @@ const KeyValueTypeSelector = connect(
       </div>
     </div>
   );
-});
+};
 
-export default KeyValueTypeSelector;
+export default enhance(KeyValueTypeSelector);
