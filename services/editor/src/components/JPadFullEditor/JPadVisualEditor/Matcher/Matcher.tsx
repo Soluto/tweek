@@ -1,6 +1,5 @@
 import { equals } from 'ramda';
-import React from 'react';
-import { shouldUpdate } from 'recompose';
+import React, { memo } from 'react';
 import * as ContextService from '../../../../services/context-service';
 import { ComplexValue } from '../../../../services/operators-provider';
 import { AnyMutator } from '../../../../utils/mutator';
@@ -55,11 +54,6 @@ export type MatcherProps = {
   matcher: MatcherType;
 };
 
-const hasChanged = shouldUpdate<MatcherProps>(
-  (props, nextProps) =>
-    !equals(props.matcher, nextProps.matcher) || !equals(props.mutate.path, nextProps.mutate.path),
-);
-
 const Matcher = ({ matcher, mutate, autofocus }: MatcherProps) => {
   const props = Object.entries(matcher).filter(([p]) => !p.startsWith('$'));
 
@@ -100,4 +94,8 @@ const Matcher = ({ matcher, mutate, autofocus }: MatcherProps) => {
   );
 };
 
-export default hasChanged(Matcher);
+export default memo(
+  Matcher,
+  (props, nextProps) =>
+    equals(props.matcher, nextProps.matcher) && equals(props.mutate.path, nextProps.mutate.path),
+);

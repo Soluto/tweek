@@ -1,12 +1,11 @@
-import React from 'react';
 import * as R from 'ramda';
-import { shouldUpdate } from 'recompose';
+import React, { memo } from 'react';
 import { ValueType } from 'tweek-client';
+import * as ContextService from '../../../../services/context-service';
 import { AnyMutator } from '../../../../utils/mutator';
 import { Rule as RuleType } from '../../types';
 import Matcher from '../Matcher/Matcher';
 import RuleValue from '../RuleValue/RuleValue';
-import * as ContextService from '../../../../services/context-service';
 import './Rule.css';
 
 export type RuleProps = {
@@ -15,11 +14,6 @@ export type RuleProps = {
   mutate: AnyMutator<RuleType[], [number]>;
   autofocus?: boolean;
 };
-
-const ruleHasChanged = (props: RuleProps, nextProps: RuleProps) =>
-  props.valueType !== nextProps.valueType ||
-  !R.equals(props.rule, nextProps.rule) ||
-  !R.equals(props.mutate.path, nextProps.mutate.path);
 
 const Rule = ({ rule, valueType, mutate, autofocus }: RuleProps) => {
   const valueTitle = rule.Type === 'SingleVariant' ? 'Value' : 'Values';
@@ -39,4 +33,10 @@ const Rule = ({ rule, valueType, mutate, autofocus }: RuleProps) => {
   );
 };
 
-export default shouldUpdate(ruleHasChanged)(Rule);
+export default memo(
+  Rule,
+  (props: RuleProps, nextProps: RuleProps) =>
+    props.valueType === nextProps.valueType &&
+    R.equals(props.rule, nextProps.rule) &&
+    R.equals(props.mutate.path, nextProps.mutate.path),
+);
