@@ -15,6 +15,17 @@ export const compsPathSorter = (
   return lname.localeCompare(rname);
 };
 
+export const countLeafsInTree = (tree: TreeNode): number => {
+  if (tree === leaf) {
+    return 1;
+  }
+
+  return Object.keys(tree).reduce(
+    (aggregator, item) => aggregator + countLeafsInTree(tree[item]),
+    0,
+  );
+};
+
 export const pathsToTree = (paths: string[]): Tree => {
   const tree: Tree = {};
 
