@@ -1,8 +1,8 @@
 export const leaf = Symbol();
 
-type Tree = { [p: string]: TreeNode };
+export type Tree = { [p: string]: TreeNode };
 
-type TreeNode = Tree | typeof leaf;
+export type TreeNode = Tree | typeof leaf;
 
 export type CompareTreeNode = [string, TreeNode];
 

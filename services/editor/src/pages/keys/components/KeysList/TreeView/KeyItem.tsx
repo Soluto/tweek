@@ -1,8 +1,12 @@
 import classNames from 'classnames';
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { KeyManifest } from 'tweek-client';
+import { StoreState } from '../../../../../store/ducks/types';
 import { getDataValueType } from './utils';
+
+const enhance = connect((state: StoreState) => ({ keys: state.keys }));
 
 export type KeyItemProps = {
   name: string;
@@ -12,7 +16,7 @@ export type KeyItemProps = {
   keys: Record<string, KeyManifest>;
 };
 
-export const KeyItem = ({ name, fullPath, depth, selected, keys }: KeyItemProps) => (
+const KeyItem = ({ name, fullPath, depth, selected, keys }: KeyItemProps) => (
   <div className="key-link-wrapper" data-comp="key-link">
     <Link
       title={fullPath}
@@ -28,3 +32,5 @@ export const KeyItem = ({ name, fullPath, depth, selected, keys }: KeyItemProps)
     </Link>
   </div>
 );
+
+export default enhance(KeyItem);

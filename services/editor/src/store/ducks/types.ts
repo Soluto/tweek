@@ -50,6 +50,7 @@ export type KeyActions = {
   deleteAlias: (dep: string) => void;
   updateKeyName: (text: string) => void;
   updateImplementation: (implementation: Partial<KeyImplementation>) => void;
+  addKey: (guard: (s: StoreState) => boolean, key: string) => void;
 };
 
 export type TagActions = {

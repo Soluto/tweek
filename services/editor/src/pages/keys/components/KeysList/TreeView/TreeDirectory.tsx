@@ -1,13 +1,19 @@
 import React, { ReactElement, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 // @ts-ignore
 import { VelocityTransitionGroup } from 'velocity-react';
-import { StoreState } from '../../../../../store/ducks/types';
+import { addKey } from '../../../../../store/ducks/selectedKey';
+import { KeyActions, StoreState } from '../../../../../store/ducks/types';
 import hasUnsavedChanges from '../../utils/hasUnsavedChanges';
 import closedFolderIconSrc from '../resources/Folder-icon-closed.svg';
 import openedFolderIconSrc from '../resources/Folder-icon-opened.svg';
 
-export type TreeDirectoryProps = {
+type Actions = Pick<KeyActions, 'addKey'>;
+
+const enhance = connect(null, { addKey });
+
+export type TreeDirectoryProps = Actions & {
   fullPath: string;
   name: string;
   depth: number;
@@ -15,7 +21,6 @@ export type TreeDirectoryProps = {
   descendantsCount: number;
   selected: boolean;
   expandByDefault: boolean;
-  addKey: (fn: (s: StoreState) => boolean, key: string) => void;
 };
 
 const TreeDirectory = ({
@@ -90,4 +95,4 @@ const TreeDirectory = ({
   );
 };
 
-export default TreeDirectory;
+export default enhance(TreeDirectory);
