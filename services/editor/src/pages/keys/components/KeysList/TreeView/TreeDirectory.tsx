@@ -4,7 +4,7 @@ import ReactTooltip from 'react-tooltip';
 // @ts-ignore
 import { VelocityTransitionGroup } from 'velocity-react';
 import { addKey } from '../../../../../store/ducks/selectedKey';
-import { KeyActions, StoreState } from '../../../../../store/ducks/types';
+import { KeyActions } from '../../../../../store/ducks/types';
 import hasUnsavedChanges from '../../utils/hasUnsavedChanges';
 import closedFolderIconSrc from '../resources/Folder-icon-closed.svg';
 import openedFolderIconSrc from '../resources/Folder-icon-opened.svg';

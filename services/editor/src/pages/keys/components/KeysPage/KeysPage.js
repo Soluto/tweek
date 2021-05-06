@@ -48,11 +48,11 @@ const KeysPage = ({
   );
 
   return (
-    <DocumentTitle title={`Tweek - ${(selectedKey && selectedKey.key) || 'Keys'}`}>
+    <DocumentTitle title={`Tweek - ${selectedKey?.key || 'Keys'}`}>
       <div className="keys-page-container">
         <div key="KeysList" className="keys-list">
           <div className="keys-list-wrapper">
-            <KeysList keys={keys} />
+            <KeysList keys={keys} selectedKey={selectedKey?.key} />
           </div>
           <div className="add-button-wrapper">
             <button
