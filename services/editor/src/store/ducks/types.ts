@@ -1,4 +1,3 @@
-import { Tag } from 'react-tag-input';
 import { KeyImplementation, KeyManifest, Revision } from 'tweek-client';
 
 export type KeyData = {
@@ -33,7 +32,6 @@ export type Validation = {
 
 export type StoreState = {
   selectedKey?: SelectedKey;
-  keys: Record<string, KeyManifest>;
 };
 
 export type KeyActions = {
@@ -52,8 +50,4 @@ export type KeyActions = {
   addKey: (guard: (s: StoreState) => boolean, key?: string) => void;
   openKey: (key: string, config: { revision?: string | null; historySince: string }) => void;
   closeKey: () => void;
-};
-
-export type KeysActions = {
-  getKeys: () => void;
 };
