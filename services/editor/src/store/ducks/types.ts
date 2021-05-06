@@ -1,5 +1,7 @@
 import { Tag } from 'react-tag-input';
 import { KeyImplementation, KeyManifest, Revision } from 'tweek-client';
+import { getKeys } from './keys';
+import { downloadTags } from './tags';
 
 export type KeyData = {
   manifest: KeyManifest;
@@ -50,11 +52,16 @@ export type KeyActions = {
   deleteAlias: (dep: string) => void;
   updateKeyName: (text: string) => void;
   updateImplementation: (implementation: Partial<KeyImplementation>) => void;
-  addKey: (guard: (s: StoreState) => boolean, key: string) => void;
+  addKey: (guard: (s: StoreState) => boolean, key?: string) => void;
   openKey: (key: string, config: { revision?: string | null; historySince: string }) => void;
   closeKey: () => void;
 };
 
 export type TagActions = {
   saveNewTag: (tag: Tag) => void;
+  downloadTags: () => void;
+};
+
+export type KeysActions = {
+  getKeys: () => void;
 };

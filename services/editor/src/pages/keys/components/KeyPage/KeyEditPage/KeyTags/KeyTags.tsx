@@ -8,17 +8,19 @@ import './KeyTags.css';
 import { StoreState, TagActions } from '../../../../../../store/ducks/types';
 import { getTagLink } from '../../../../utils/search';
 
-export type StateProps = {
+type StateProps = {
   globalTags: StoreState['tags'];
 };
 
-const enhance = connect<StateProps, TagActions, {}, StoreState>(
+type Actions = Pick<TagActions, 'saveNewTag'>;
+
+const enhance = connect<StateProps, Actions, {}, StoreState>(
   (state: StoreState) => ({ globalTags: state.tags }),
   { saveNewTag },
 );
 
 export type KeyTagsProps = StateProps &
-  TagActions & {
+  Actions & {
     tags: string[];
     onTagsChanged: (tags: string[]) => void;
   };

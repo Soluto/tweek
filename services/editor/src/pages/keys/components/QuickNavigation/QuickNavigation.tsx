@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import { uniqBy } from 'ramda';
-import React, { useEffect, useState } from 'react';
+import React, { KeyboardEventHandler, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as SearchService from '../../../../services/search-service';
+import { StoreState } from '../../../../store/ducks/types';
 import { getTagLink } from '../../utils/search';
 
-function filterWithLimit(collection, filter, limit = 2) {
+function filterWithLimit<T>(collection: T[], filter: (i: T) => boolean, limit = 2) {
   return Array.from(
     (function* generate() {
       let i = 0;
@@ -78,13 +79,13 @@ const SearchResults = styled.ul`
   }
 `;
 
-const keyCode = {
-  ENTER: 13,
-  UP: 38,
-  DOWN: 40,
+type SearchResultProps = {
+  type: 'tag' | 'key' | 'search';
+  link: string;
+  id: string;
 };
 
-const SearchResult = ({ type, link, id }) => {
+const SearchResult = ({ type, link, id }: SearchResultProps) => {
   if (type === 'tag') {
     return (
       <Link to={link}>
@@ -102,10 +103,15 @@ const SearchResult = ({ type, link, id }) => {
   return null;
 };
 
-const QuickNavigation = ({ keys, tags, onBlur, push }) => {
+export type QuickNavigationProps = Pick<StoreState, 'keys' | 'tags'> & {
+  onBlur?: () => void;
+  push: (path: string) => void;
+};
+
+const QuickNavigation = ({ keys, tags, onBlur, push }: QuickNavigationProps) => {
   const [input, onInput] = useState('');
   const [index, setIndex] = useState(-1);
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<SearchResultProps[]>([]);
 
   useEffect(() => {
     if (!input) {
@@ -125,20 +131,20 @@ const QuickNavigation = ({ keys, tags, onBlur, push }) => {
         uniqBy((x) => x.link, [
           ...filterWithLimit(Object.values(keys), (k) => k.key_path?.startsWith(input)).map(
             (x) => ({
-              type: 'key',
+              type: 'key' as const,
               id: x.key_path,
               link: `/keys/${x.key_path}`,
             }),
           ),
           ...filterWithLimit(Object.values(tags), (t) => t?.toLowerCase().startsWith(input)).map(
             (x) => ({
-              type: 'tag',
+              type: 'tag' as const,
               id: x,
               link: getTagLink(x),
             }),
           ),
           ...filteredSearch.map((x) => ({
-            type: 'key',
+            type: 'key' as const,
             id: x,
             link: `/keys/${x}`,
           })),
@@ -152,17 +158,20 @@ const QuickNavigation = ({ keys, tags, onBlur, push }) => {
     };
   }, [input]); //eslint-disable-line react-hooks/exhaustive-deps
 
-  const onKeyDown = (e) => {
+  const onKeyDown: KeyboardEventHandler = (e) => {
     // eslint-disable-next-line default-case
-    switch (e.keyCode) {
-      case keyCode.ENTER:
-        push({ pathname: results[index].link });
+    switch (e.key) {
+      case 'Escape':
+        onBlur && onBlur();
         break;
-      case keyCode.DOWN:
+      case 'Enter':
+        push(results[index].link);
+        break;
+      case 'ArrowDown':
         setIndex((i) => i + 1);
         e.preventDefault();
         break;
-      case keyCode.UP:
+      case 'ArrowUp':
         setIndex((i) => Math.max(-1, i - 1));
         e.preventDefault();
         break;

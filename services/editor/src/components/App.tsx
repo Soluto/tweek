@@ -1,6 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { setObservableConfig } from 'recompose';
-import { Observable } from 'rxjs/Rx';
 import { CurrentUserProvider } from '../contexts/CurrentUser';
 import { TweekProvider } from '../contexts/Tweek';
 import withLoading from '../hoc/with-loading';
@@ -11,10 +9,6 @@ import './App.css';
 import AppHeader from './AppHeader';
 import AppPage from './AppPage';
 import { useGoogleTagManager } from './GoogleTagManager';
-
-setObservableConfig({
-  fromESObservable: Observable.from,
-});
 
 const AppContainer: FunctionComponent = ({ children }) => {
   useGoogleTagManager();
