@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { uniqBy } from 'ramda';
 import React, { KeyboardEventHandler, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTags } from '../../../../contexts/Tags';
 import * as SearchService from '../../../../services/search-service';
 import { StoreState } from '../../../../store/ducks/types';
 import { getTagLink } from '../../utils/search';
@@ -103,12 +104,13 @@ const SearchResult = ({ type, link, id }: SearchResultProps) => {
   return null;
 };
 
-export type QuickNavigationProps = Pick<StoreState, 'keys' | 'tags'> & {
+export type QuickNavigationProps = Pick<StoreState, 'keys'> & {
   onBlur?: () => void;
   push: (path: string) => void;
 };
 
-const QuickNavigation = ({ keys, tags, onBlur, push }: QuickNavigationProps) => {
+const QuickNavigation = ({ keys, onBlur, push }: QuickNavigationProps) => {
+  const tags = useTags();
   const [input, onInput] = useState('');
   const [index, setIndex] = useState(-1);
   const [results, setResults] = useState<SearchResultProps[]>([]);
@@ -136,13 +138,11 @@ const QuickNavigation = ({ keys, tags, onBlur, push }: QuickNavigationProps) => 
               link: `/keys/${x.key_path}`,
             }),
           ),
-          ...filterWithLimit(Object.values(tags), (t) => t?.toLowerCase().startsWith(input)).map(
-            (x) => ({
-              type: 'tag' as const,
-              id: x,
-              link: getTagLink(x),
-            }),
-          ),
+          ...filterWithLimit(tags, (t) => t.id.startsWith(input)).map((t) => ({
+            type: 'tag' as const,
+            id: t.id,
+            link: getTagLink(t.id),
+          })),
           ...filteredSearch.map((x) => ({
             type: 'key' as const,
             id: x,

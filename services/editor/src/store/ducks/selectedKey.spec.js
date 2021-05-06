@@ -184,22 +184,6 @@ describe('selectedKey', () => {
         payload: expectedPayload,
       });
     });
-
-    it('should dispatch TAGS_DOWNLOADED', async () => {
-      // Arrange
-      const expectedTags = [{ name: 'pita' }];
-      tweekManagementClient.getAllTags.mockResolvedValue(expectedTags);
-
-      // Act
-      const func = openKey('category/some key');
-      await func(dispatchMock);
-
-      // Assert
-      expect(dispatchMock).toHaveBeenCalledWith({
-        type: TAGS_DOWNLOADED,
-        payload: expectedTags,
-      });
-    });
   });
 
   describe('saveKey', () => {

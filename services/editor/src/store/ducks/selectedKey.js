@@ -12,7 +12,6 @@ import {
 import { continueGuard } from './ducks-utils/guards';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { addKeyToList, removeKeyFromList } from './keys';
-import { downloadTags } from './tags';
 
 const KEY_FORMAT_CHANGED = 'KEY_FORMAT_CHANGED';
 const KEY_PATH_CHANGE = 'KEY_PATH_CHANGE';
@@ -110,7 +109,6 @@ export function addKeyDetails() {
 export function openKey(key, config = {}) {
   const { revision, historySince } = config;
   return async function (dispatch) {
-    dispatch(downloadTags());
     try {
       await ContextService.refreshSchema();
     } catch (error) {

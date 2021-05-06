@@ -3,27 +3,26 @@ import DocumentTitle from 'react-document-title';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { useLoadTags } from '../../../../contexts/Tags';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
 import { refreshTypes } from '../../../../services/types-service';
 import { getKeys } from '../../../../store/ducks/keys';
 import { addKey } from '../../../../store/ducks/selectedKey';
-import { downloadTags } from '../../../../store/ducks/tags';
-import { KeyActions, KeysActions, StoreState, TagActions } from '../../../../store/ducks/types';
+import { KeyActions, KeysActions, StoreState } from '../../../../store/ducks/types';
 import KeysList from '../KeysList/KeysList';
 import QuickNavigation from '../QuickNavigation/QuickNavigation';
 import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import './KeysPage.css';
 
-type StateProps = Pick<StoreState, 'keys' | 'selectedKey' | 'tags'>;
-type Actions = Pick<TagActions, 'downloadTags'> & Pick<KeyActions, 'addKey'> & KeysActions;
+type StateProps = Pick<StoreState, 'keys' | 'selectedKey'>;
+type Actions = Pick<KeyActions, 'addKey'> & KeysActions;
 
 const enhance = connect<StateProps, Actions, PropsWithChildren<{}>, StoreState>(
-  (state) => ({ keys: state.keys, selectedKey: state.selectedKey, tags: state.tags }),
+  (state) => ({ keys: state.keys, selectedKey: state.selectedKey }),
   {
     getKeys,
     addKey,
-    downloadTags,
   },
 );
 
@@ -34,20 +33,17 @@ export type KeysPageProps = StateProps &
 const KeysPage: FunctionComponent<KeysPageProps> = ({
   keys,
   selectedKey,
-  tags,
   addKey,
   getKeys,
-  downloadTags,
   location,
   history,
   children,
 }) => {
+  useLoadTags();
+
   useEffect(() => {
     if (!keys || Object.keys(keys).length === 0) {
       getKeys();
-    }
-    if (!tags || Object.keys(tags).length === 0) {
-      downloadTags();
     }
   }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
@@ -89,7 +85,6 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({
                 history.push(x);
                 setNavOpen(false);
               }}
-              tags={tags || []}
               onBlur={() => setNavOpen(false)}
             />
           )}
