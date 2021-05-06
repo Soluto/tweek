@@ -1,29 +1,18 @@
-import React from 'react';
-import * as SearchService from '../../../../services/search-service';
-import { componentFromStream, createEventHandler } from 'recompose';
-import { combineLatest } from 'rxjs';
-import {
-  switchMap,
-  tap,
-  take,
-  map,
-  startWith,
-  scan,
-  debounceTime,
-  filter,
-  withLatestFrom,
-  switchMapTo,
-} from 'rxjs/operators';
-import { Link } from 'react-router-dom';
-import { getTagLink, getSearchLink } from '../../utils/search';
 import styled from '@emotion/styled';
+import { uniqBy } from 'ramda';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import * as SearchService from '../../../../services/search-service';
+import { getTagLink } from '../../utils/search';
 
 function filterWithLimit(collection, filter, limit = 2) {
   return Array.from(
     (function* generate() {
       let i = 0;
       for (let item of collection) {
-        if (i >= limit) break;
+        if (i >= limit) {
+          break;
+        }
         if (filter(item)) {
           yield item;
           i++;
@@ -36,8 +25,6 @@ function filterWithLimit(collection, filter, limit = 2) {
 const SearchInput = styled.input`
   display: inline-block;
   width: 600px;
-  padding: 10px 8px;
-  background-color: transparent;
   font-size: 26px;
   font-weight: 500;
   color: #515c66;
@@ -50,7 +37,7 @@ const SearchInput = styled.input`
   border-radius: 100px;
   border: none;
   background-color: #ffffff;
-  padding-left: 40px;
+  padding: 10px 8px 10px 40px;
 `;
 
 const SearchResults = styled.ul`
@@ -59,9 +46,11 @@ const SearchResults = styled.ul`
   border-radius: 10px;
   width: 600px;
   color: #515c66;
+
   li {
     list-style: none;
   }
+
   a {
     display: block;
 
@@ -70,6 +59,7 @@ const SearchResults = styled.ul`
     color: inherit;
     text-decoration: none;
   }
+
   li:hover,
   li[data-hovered='true'] {
     color: white;
@@ -94,7 +84,7 @@ const keyCode = {
   DOWN: 40,
 };
 
-function SearchResult({ type, link, id }) {
+const SearchResult = ({ type, link, id }) => {
   if (type === 'tag') {
     return (
       <Link to={link}>
@@ -110,117 +100,109 @@ function SearchResult({ type, link, id }) {
     return <Link to={link}> Show all results for {id}</Link>;
   }
   return null;
-}
+};
 
-function SearchInputContainer({ onBlur, onInput, input, onKeyDown }) {
-  return (
-    <SearchInput
-      type="text"
-      autoFocus
-      onKeyDown={onKeyDown}
-      onBlur={onBlur}
-      value={input}
-      onChange={(x) => onInput(x.target.value)}
-    />
-  );
-}
+const QuickNavigation = ({ keys, tags, onBlur, push }) => {
+  const [input, onInput] = useState('');
+  const [index, setIndex] = useState(-1);
+  const [results, setResults] = useState([]);
 
-export default componentFromStream((props$) => {
-  const { handler: onInput, stream: input$ } = createEventHandler();
-  const { handler: onKeyDown, stream: onKeyDown$ } = createEventHandler();
-  const results$ = input$
-    .pipe(
-      debounceTime(100),
-      filter((x) => x.length > 0),
-      withLatestFrom(
-        props$.map((x) => ({ keys: Object.values(x.keys), tags: Object.values(x.tags) })),
-      ),
-      switchMap(async ([x, { keys, tags }]) => [
-        ...filterWithLimit(keys, (k) => (k.key_path || '').startsWith(x)).map((x) => ({
-          type: 'key',
-          id: x.key_path,
-          link: `/keys/${x.key_path}`,
-        })),
-        ...filterWithLimit(tags, (t) => (t || '').toLowerCase().startsWith(x)).map((x) => ({
-          type: 'tag',
-          id: x,
-          link: getTagLink(x),
-        })),
-        ...(await SearchService.search(`id:${x}*`, { count: 2, type: 'free' })).map((x) => ({
-          type: 'key',
-          id: x,
-          link: `/keys/${x}`,
-        })),
-        { type: 'search', id: x, link: getSearchLink(x) },
-      ]),
-    )
-    .startWith([]);
-  const index$ = input$.pipe(
-    switchMapTo(
-      onKeyDown$.pipe(
-        filter((e) => e.keyCode === keyCode.DOWN || e.keyCode === keyCode.UP),
-        tap((e) => e.preventDefault()),
-        map((e) => {
-          if (e.keyCode === keyCode.DOWN) {
-            return 1;
-          }
-          if (e.keyCode === keyCode.UP) {
-            return -1;
-          }
-        }),
-        startWith(-1),
-        scan((acc, next) => Math.max(-1, acc + next)),
-      ),
-    ),
-    startWith(-1),
-  );
+  useEffect(() => {
+    if (!input) {
+      setResults([]);
+      return;
+    }
 
-  const submit$ = onKeyDown$.pipe(
-    withLatestFrom(index$, results$),
-    filter(([e, index, results]) => e.keyCode === keyCode.ENTER && results[index]),
-    take(1),
-    startWith(false),
-  );
+    let cancel = false;
+    const timeout = setTimeout(async () => {
+      const filteredSearch = await SearchService.search(`id:${input}*`, { count: 2, type: 'free' });
 
-  return combineLatest(props$, input$.startWith(''), results$, index$, submit$).map(
-    ([{ push, onBlur }, input, results, index, submit]) => {
-      if (submit) {
-        push({ pathname: results[index].link });
+      if (cancel) {
+        return;
       }
-      return (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            zIndex: 1000,
-            justifyContent: 'center',
-            backgroundColor: 'rgba(0,0,0, 0.4)',
-            paddingTop: 200,
-          }}
-        >
-          <div>
-            <SearchInputContainer
-              value={input}
-              onKeyDown={(x) => {
-                onKeyDown(x);
-              }}
-              onInput={onInput}
-              onBlur={onBlur}
-            />
-            <SearchResults index={-1}>
-              {results.map((r, i) => (
-                <li key={r.id} data-hovered={index === i}>
-                  <SearchResult id={r.id} link={r.link} type={r.type} />
-                </li>
-              ))}
-            </SearchResults>
-          </div>
-        </div>
+
+      setResults(
+        uniqBy((x) => x.link, [
+          ...filterWithLimit(Object.values(keys), (k) => k.key_path?.startsWith(input)).map(
+            (x) => ({
+              type: 'key',
+              id: x.key_path,
+              link: `/keys/${x.key_path}`,
+            }),
+          ),
+          ...filterWithLimit(Object.values(tags), (t) => t?.toLowerCase().startsWith(input)).map(
+            (x) => ({
+              type: 'tag',
+              id: x,
+              link: getTagLink(x),
+            }),
+          ),
+          ...filteredSearch.map((x) => ({
+            type: 'key',
+            id: x,
+            link: `/keys/${x}`,
+          })),
+        ]),
       );
-    },
+    }, 100);
+
+    return () => {
+      cancel = true;
+      clearTimeout(timeout);
+    };
+  }, [input]); //eslint-disable-line react-hooks/exhaustive-deps
+
+  const onKeyDown = (e) => {
+    // eslint-disable-next-line default-case
+    switch (e.keyCode) {
+      case keyCode.ENTER:
+        push({ pathname: results[index].link });
+        break;
+      case keyCode.DOWN:
+        setIndex((i) => i + 1);
+        e.preventDefault();
+        break;
+      case keyCode.UP:
+        setIndex((i) => Math.max(-1, i - 1));
+        e.preventDefault();
+        break;
+    }
+  };
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: 'flex',
+        zIndex: 1000,
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0,0,0, 0.4)',
+        paddingTop: 200,
+      }}
+    >
+      <div>
+        <SearchInput
+          type="text"
+          autoFocus
+          onKeyDown={onKeyDown}
+          onBlur={onBlur}
+          value={input}
+          onChange={(x) => onInput(x.target.value)}
+        />
+        <SearchResults>
+          {results.map((r, i) => (
+            <li key={`${r.type}-${r.id}`} data-hovered={index === i}>
+              <SearchResult id={r.id} link={r.link} type={r.type} />
+            </li>
+          ))}
+        </SearchResults>
+      </div>
+    </div>
   );
-});
+};
+
+export default QuickNavigation;
