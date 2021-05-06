@@ -15,10 +15,17 @@ import QuickNavigation from '../QuickNavigation/QuickNavigation';
 import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import './KeysPage.css';
 
-export default compose(
-  connect((state) => state, { ...keysActions, addKey, downloadTags, push }),
-  withLoading(() => Promise.all([refreshTypes(), refreshSchema()])),
-)(({ keys, addKey, children, selectedKey, getKeys, tags, push, downloadTags, router }) => {
+const KeysPage = ({
+  keys,
+  addKey,
+  children,
+  selectedKey,
+  getKeys,
+  tags,
+  push,
+  downloadTags,
+  router,
+}) => {
   useEffect(() => {
     if (!keys || keys.length === 0) {
       getKeys();
@@ -73,4 +80,9 @@ export default compose(
       </div>
     </DocumentTitle>
   );
-});
+};
+
+export default compose(
+  connect((state) => state, { ...keysActions, addKey, downloadTags, push }),
+  withLoading(() => Promise.all([refreshTypes(), refreshSchema()])),
+)(KeysPage);

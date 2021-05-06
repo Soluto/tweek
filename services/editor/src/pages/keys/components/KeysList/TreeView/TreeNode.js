@@ -5,14 +5,12 @@ import { connect } from 'react-redux';
 import { mapProps, compose, shouldUpdate } from 'recompose';
 import * as keysActions from '../../../../../store/ducks/keys';
 import { addKey } from '../../../../../store/ducks/selectedKey';
+import { KeyItem } from './KeyItem';
 import TreeDirectory from './TreeDirectory';
 import { compsPathSorter, leaf } from './pathSorter';
 
 const TreeNode = compose(
-  connect(
-    (state) => state,
-    { ...keysActions, addKey },
-  ),
+  connect((state) => state, { ...keysActions, addKey }),
   mapProps(({ selectedPath, fullPath, ...props }) => ({
     selectedPath,
     fullPath,
@@ -24,52 +22,38 @@ const TreeNode = compose(
     ({ selectedPath: _, ...oldProps }, { selectedPath: __, ...newProps }) =>
       !R.equals(oldProps, newProps),
   ),
-)(
-  ({
-    node,
-    name,
-    fullPath,
-    depth,
-    renderItem,
-    expandByDefault,
-    selected,
-    selectedPath,
-    addKey,
-  }) => {
-    let LeafElement = renderItem;
-    return node === leaf ? (
-      <LeafElement {...{ name, fullPath, depth, selected }} />
-    ) : (
-      <TreeDirectory
-        descendantsCount={countLeafsInTree(node)}
-        {...{
-          name,
-          selectedPath,
-          fullPath,
-          depth,
-          selected,
-          expandByDefault: expandByDefault,
-          addKey,
-        }}
-      >
-        {Object.keys(node)
-          .map((childPath) => (
-            <TreeNode
-              key={childPath}
-              name={childPath}
-              selectedPath={selectedPath}
-              node={node[childPath]}
-              fullPath={`${fullPath}/${childPath}`}
-              depth={depth + 1}
-              renderItem={renderItem}
-              expandByDefault={expandByDefault}
-            />
-          ))
-          .sort(compsPathSorter)}
-      </TreeDirectory>
-    );
-  },
-);
+)(({ node, name, fullPath, depth, expandByDefault, selected, selectedPath, addKey, keys }) => {
+  return node === leaf ? (
+    <KeyItem {...{ name, fullPath, depth, selected, keys }} />
+  ) : (
+    <TreeDirectory
+      descendantsCount={countLeafsInTree(node)}
+      {...{
+        name,
+        selectedPath,
+        fullPath,
+        depth,
+        selected,
+        expandByDefault: expandByDefault,
+        addKey,
+      }}
+    >
+      {Object.keys(node)
+        .map((childPath) => (
+          <TreeNode
+            key={childPath}
+            name={childPath}
+            selectedPath={selectedPath}
+            node={node[childPath]}
+            fullPath={`${fullPath}/${childPath}`}
+            depth={depth + 1}
+            expandByDefault={expandByDefault}
+          />
+        ))
+        .sort(compsPathSorter)}
+    </TreeDirectory>
+  );
+});
 
 TreeNode.propTypes = {
   node: PropTypes.oneOfType([PropTypes.object, PropTypes.symbol]).isRequired,

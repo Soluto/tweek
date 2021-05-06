@@ -33,6 +33,7 @@
     background-color: transparent;
     border-bottom: solid 1px #363a3e;
     padding: 18px;
+
     .search-input {
       .metro-textbox;
       background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iNDhweCIgaGVpZ2h0PSI0OHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+U2VhcmNoIEljb24gPC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlR3ZWVrLWljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPiAgICAgICAgPGcgaWQ9IlNlYXJjaC1JY29uLSIgc3Ryb2tlPSIjNjk2OTY5IiBzdHJva2Utd2lkdGg9IjIiPiAgICAgICAgICAgIDxnIGlkPSJTZWFyY2gtaWNvbiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTUuMDAwMDAwLCAxNS4wMDAwMDApIj4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTE0LjMwNjcsNy4zNjg1OTM1IEMxNC4zMDY3LDExLjQzODUwNzEgMTEuMTAzNywxNC43MzY4NzggNy4xNTM3LDE0LjczNjg3OCBDMy4yMDI3LDE0LjczNjg3OCAtMC4wMDAzLDExLjQzODUwNzEgLTAuMDAwMyw3LjM2ODU5MzUgQy0wLjAwMDMsMy4yOTg2Nzk5IDMuMjAyNywwLjAwMDMwOTAyOTEyNiA3LjE1MzcsMC4wMDAzMDkwMjkxMjYgQzExLjEwMzcsMC4wMDAzMDkwMjkxMjYgMTQuMzA2NywzLjI5ODY3OTkgMTQuMzA2Nyw3LjM2ODU5MzUgTDE0LjMwNjcsNy4zNjg1OTM1IFoiIGlkPSJTdHJva2UtMSI+PC9wYXRoPiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcuMDcxNiwxNy40OTk1OTgzIEwxMi4zODk2LDEyLjY3NjY4MzgiIGlkPSJTdHJva2UtMyI+PC9wYXRoPiAgICAgICAgICAgIDwvZz4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
@@ -49,13 +50,27 @@
         border: none;
       }
     }
-    .clear {
+
+    .clear-wrapper {
       position: absolute;
       top: 0;
       bottom: 0;
-      margin: 8px 0;
       right: 10px;
-      cursor: pointer;
+      display: flex;
+      align-items: center;
+
+      .clear {
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 1.8em;
+        height: 1.8em;
+        border-radius: 50%;
+
+        &:hover {
+          background-color: #eeeeee;
+        }
+      }
     }
   }
   .key-link-wrapper {

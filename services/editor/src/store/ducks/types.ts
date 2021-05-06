@@ -34,6 +34,7 @@ export type Validation = {
 export type StoreState = {
   selectedKey?: SelectedKey;
   tags: Record<string, string>;
+  keys: Record<string, KeyManifest>;
 };
 
 export type KeyActions = {
