@@ -1,11 +1,17 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { compsPathSorter, pathsToTree } from './treeUtils';
 import TreeNode from './TreeNode';
+import { compsPathSorter, pathsToTree } from './treeUtils';
 import './TreeView.css';
 
-const DirectoryTreeView = ({ paths, selectedPath, expandByDefault }) => {
+export type DirectoryTreeViewProps = {
+  paths: string[];
+  selectedPath?: string;
+  expandByDefault: boolean;
+};
+
+const DirectoryTreeView = ({ paths, selectedPath, expandByDefault }: DirectoryTreeViewProps) => {
   const pathTree = pathsToTree(paths);
+
   return (
     <div className="key-folder" data-comp="directory-tree-view">
       {Object.entries(pathTree)
@@ -23,11 +29,6 @@ const DirectoryTreeView = ({ paths, selectedPath, expandByDefault }) => {
         ))}
     </div>
   );
-};
-
-DirectoryTreeView.propTypes = {
-  paths: PropTypes.arrayOf(PropTypes.string).isRequired,
-  expandByDefault: PropTypes.bool,
 };
 
 export default DirectoryTreeView;
