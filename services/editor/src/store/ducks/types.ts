@@ -51,6 +51,8 @@ export type KeyActions = {
   updateKeyName: (text: string) => void;
   updateImplementation: (implementation: Partial<KeyImplementation>) => void;
   addKey: (guard: (s: StoreState) => boolean, key: string) => void;
+  openKey: (key: string, config: { revision?: string | null; historySince: string }) => void;
+  closeKey: () => void;
 };
 
 export type TagActions = {

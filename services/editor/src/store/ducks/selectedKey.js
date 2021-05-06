@@ -107,7 +107,8 @@ export function addKeyDetails() {
   };
 }
 
-export function openKey(key, { revision, historySince } = {}) {
+export function openKey(key, config = {}) {
+  const { revision, historySince } = config;
   return async function (dispatch) {
     dispatch(downloadTags());
     try {
@@ -118,8 +119,6 @@ export function openKey(key, { revision, historySince } = {}) {
 
     if (key === BLANK_KEY_NAME) {
       dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
-      // TODO: remove the code below
-      dispatch(changeKeyValueType('string'));
       return;
     }
 
@@ -386,6 +385,9 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
     detailsAdded = true;
   } else {
     validation = {
+      key: {
+        isValid: false,
+      },
       manifest: {
         valueType: keyValueTypeValidations(keyData.manifest.valueType),
       },

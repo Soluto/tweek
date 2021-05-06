@@ -1,7 +1,7 @@
 import { equals } from 'ramda';
 import { StoreState } from '../../../../store/ducks/types';
 
-const hasUnsavedChanges = ({ selectedKey }: StoreState) => {
+const hasUnsavedChanges = ({ selectedKey }: Pick<StoreState, 'selectedKey'>) => {
   if (!selectedKey || selectedKey.isSaving) {
     return false;
   }

@@ -1,7 +1,13 @@
 import classNames from 'classnames';
 import { History } from 'history';
-import React from 'react';
-import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
+import React, { UIEventHandler, useState } from 'react';
+import { connect } from 'react-redux';
+import {
+  deleteAlias,
+  updateImplementation,
+  updateKeyManifest,
+  updateKeyName,
+} from '../../../../../store/ducks/selectedKey';
 import { KeyActions, SelectedKey } from '../../../../../store/ducks/types';
 import KeyEditor from './KeyEditor';
 import './KeyEditPage.css';
@@ -13,16 +19,21 @@ export type EditPageActions = Pick<
   'updateKeyManifest' | 'deleteAlias' | 'updateKeyName' | 'updateImplementation'
 >;
 
+const enhance = connect<{}, EditPageActions>(null, {
+  updateKeyManifest,
+  deleteAlias,
+  updateKeyName,
+  updateImplementation,
+});
+
 export type KeyEditPageProps = EditPageActions & {
   selectedKey: SelectedKey;
-  isInStickyMode: boolean;
   revision?: string;
   history: History;
 };
 
 const KeyEditPage = ({
   selectedKey,
-  isInStickyMode,
   revision,
   history,
   deleteAlias,
@@ -37,6 +48,13 @@ const KeyEditPage = ({
     usedBy,
     aliases,
   } = selectedKey;
+  const [isInStickyMode, setIsInStickyMode] = useState(false);
+
+  const onScroll: UIEventHandler<HTMLDivElement> = (event) => {
+    const distanceFromTop = (event.target as Element).scrollTop;
+    const shouldShowSticky = distanceFromTop > 150;
+    setIsInStickyMode(shouldShowSticky);
+  };
 
   const onTagsChanged = (newTags: string[]) =>
     updateKeyManifest({
@@ -85,7 +103,7 @@ const KeyEditPage = ({
   };
 
   return (
-    <div id="key-edit-page" className="key-edit-page" data-comp="key-edit-page">
+    <div id="key-edit-page" className="key-edit-page" data-comp="key-edit-page" onScroll={onScroll}>
       <div className="key-viewer-container-fieldset">
         <div className="key-viewer-container">
           {isInStickyMode ? <KeyStickyHeader {...commonHeadersProps} /> : null}
@@ -117,7 +135,5 @@ const KeyEditPage = ({
     </div>
   );
 };
-
-const enhance = stickyHeaderIdentifier('key-edit-page', 150);
 
 export default enhance(KeyEditPage);
