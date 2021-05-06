@@ -17,7 +17,7 @@ export type AlertButton<T> = {
   'data-alert-button': string;
 };
 
-export type AlertData<T = unknown> = {
+export type AlertData<T> = {
   title?: string | ComponentType<StyleProps>;
   message?: string | ComponentType<StyleProps>;
   component?: ComponentType<AlertComponentProps<T>>;
@@ -26,12 +26,15 @@ export type AlertData<T = unknown> = {
   resizable?: boolean;
 };
 
-export type AlertResult = {
+export type AlertResult<T> = {
   result?: any;
+  data?: T;
 };
 
 export type Alerter = {
-  showCustomAlert: (alert: AlertData) => Promise<AlertResult>;
-  showAlert: (alert: Omit<AlertData, 'buttons' | 'showCloseButton'>) => Promise<AlertResult>;
-  showConfirm: (alert: Omit<AlertData, 'buttons'>) => Promise<AlertResult>;
+  showCustomAlert: <T>(alert: AlertData<T>) => Promise<AlertResult<T>>;
+  showAlert: <T>(
+    alert: Omit<AlertData<T>, 'buttons' | 'showCloseButton'>,
+  ) => Promise<AlertResult<T>>;
+  showConfirm: <T>(alert: Omit<AlertData<T>, 'buttons'>) => Promise<AlertResult<T>>;
 };

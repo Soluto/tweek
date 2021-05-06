@@ -1,5 +1,5 @@
 import { filter } from 'ramda';
-import { KeyManifest } from 'tweek-client';
+import { KeyManifest, SearchOptions } from 'tweek-client';
 import { tweekManagementClient } from '../utils';
 
 const internalKey = /^@tweek\//;
@@ -30,5 +30,5 @@ export const getSuggestions = async (
   return filterInternalKeys(suggestions, showInternalKeys);
 };
 
-export const search = async (query: string, maxResults: number) =>
+export const search = async (query: string, maxResults: number | SearchOptions) =>
   await tweekManagementClient.search(query, maxResults || 25);

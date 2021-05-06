@@ -1,6 +1,4 @@
-import { push } from 'connected-react-router';
 import { handleActions } from 'redux-actions';
-import { getTagLink } from '../../pages/keys/utils/search';
 import { showError, tweekManagementClient } from '../../utils';
 
 const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
@@ -14,12 +12,6 @@ export function downloadTags() {
     } catch (error) {
       showError(error, 'Failed to download tags');
     }
-  };
-}
-
-export function navigateToTagResults(tag) {
-  return (dispatch) => {
-    dispatch(push(getTagLink(tag)));
   };
 }
 

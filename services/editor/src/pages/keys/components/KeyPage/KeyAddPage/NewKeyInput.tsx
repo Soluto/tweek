@@ -1,34 +1,43 @@
-import * as R from 'ramda';
+import { uniq } from 'ramda';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { KeyManifest } from 'tweek-client';
 import { ComboBox, ValidationIcon } from '../../../../../components/common';
 import * as SearchService from '../../../../../services/search-service';
+import { Validation } from '../../../../../store/ducks/types';
 import { useShowInternalKeys } from '../../../../../utils';
 import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
 
-const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
-const getSugesstions = R.pipe(
-  R.filter((key) => !key.meta.archived),
-  R.keys(),
-  R.map(getKeyPrefix),
-  R.uniq(),
-  R.filter((x) => x !== ''),
-);
+const getKeyPrefix = (path: string) => path.split('/').slice(0, -1).join('/');
 
-function getKeyNameSuggestions(allKeys, showInternalKeys) {
+function getKeyNameSuggestions(allKeys: Record<string, KeyManifest>, showInternalKeys: boolean) {
   const keys = SearchService.filterInternalKeys(allKeys, showInternalKeys);
-  return getSugesstions(keys).sort();
+
+  const suggestions = Object.entries(keys)
+    .filter(([_, k]) => !k.meta.archived)
+    .map(([p]) => getKeyPrefix(p))
+    .filter(Boolean);
+
+  return uniq(suggestions).sort();
 }
 
-const enhance = connect((state) => ({ keys: state.keys }));
+type State = { keys: Record<string, KeyManifest> };
+
+const enhance = connect((state: State) => ({ keys: state.keys }));
+
+export type NewKeyInputProps = State & {
+  validation?: Partial<Validation>;
+  displayName: string;
+  onChange: (keyName: string, validation: Validation) => void;
+};
 
 const NewKeyInput = ({
   keys,
   validation: { isShowingHint = false, hint } = {},
   onChange,
   displayName,
-}) => {
+}: NewKeyInputProps) => {
   const showInternalKeys = useShowInternalKeys();
   const keysNames = Object.keys(keys);
 

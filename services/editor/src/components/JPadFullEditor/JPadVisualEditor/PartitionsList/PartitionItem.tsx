@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Collapse } from 'react-collapse';
 import { ValueType } from 'tweek-client';
 import { AnyMutator } from '../../../../utils/mutator';
-import { Alerter } from '../../../alerts/types';
 import { Rule, SingleValueRule } from '../../types';
 import RulesList from '../RulesList/RulesList';
 
@@ -12,16 +11,9 @@ export type PartitionItemProps = {
   onDelete: () => void;
   partitionsValues: string[];
   mutate: AnyMutator<Rule[]>;
-  alerter: Alerter;
 };
 
-const PartitionItem = ({
-  valueType,
-  partitionsValues,
-  mutate,
-  onDelete,
-  alerter,
-}: PartitionItemProps) => {
+const PartitionItem = ({ valueType, partitionsValues, mutate, onDelete }: PartitionItemProps) => {
   const [open, setOpen] = useState(false);
 
   const rules = mutate.getValue();
@@ -71,7 +63,7 @@ const PartitionItem = ({
         </div>
       </div>
       <Collapse isOpened={open}>
-        <RulesList valueType={valueType} alerter={alerter} mutate={mutate} />
+        <RulesList valueType={valueType} mutate={mutate} />
       </Collapse>
     </div>
   );

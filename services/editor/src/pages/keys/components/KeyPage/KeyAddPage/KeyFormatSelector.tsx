@@ -1,15 +1,19 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { KeyImplementation } from 'tweek-client';
 import { ComboBox } from '../../../../../components/common';
 import { getManifestImplementationByFormat, validKeyFormats } from '../../utils/keyFormatHelpers';
 
 const formatSuggestions = validKeyFormats.map((x) => ({ label: x, value: x }));
-const isValidFormat = (format) => validKeyFormats.includes(format);
+const isValidFormat = (format: string) => validKeyFormats.includes(format);
 
-const KeyFormatSelector = ({ onFormatChanged }) => {
+export type KeyFormatSelectorProps = {
+  onFormatChanged: (f: KeyImplementation) => void;
+};
+
+const KeyFormatSelector = ({ onFormatChanged }: KeyFormatSelectorProps) => {
   const [format, setFormat] = useState('jpad');
 
-  const updateFormat = (newFormat) => {
+  const updateFormat = (newFormat: string) => {
     if (isValidFormat(newFormat)) {
       const implementation = getManifestImplementationByFormat(newFormat);
       onFormatChanged(implementation);
@@ -31,10 +35,6 @@ const KeyFormatSelector = ({ onFormatChanged }) => {
       </div>
     </div>
   );
-};
-
-KeyFormatSelector.propTypes = {
-  onFormatChanged: PropTypes.func.isRequired,
 };
 
 export default KeyFormatSelector;

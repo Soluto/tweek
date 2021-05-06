@@ -1,9 +1,9 @@
 import * as R from 'ramda';
 import React from 'react';
 import { ValueType } from 'tweek-client';
+import { useAlerter } from '../../../../contexts/Alerts';
 import '../../../../styles/core/core.css';
 import { AnyMutator } from '../../../../utils/mutator';
-import { Alerter } from '../../../alerts/types';
 import { ConditionValueType, JpadRules, Partition, Rule } from '../../types';
 import NewPartition, { NewPartitionData } from './NewPartition';
 import PartitionItem from './PartitionItem';
@@ -53,10 +53,10 @@ export type PartitionsListProps = {
   partitions: string[];
   mutate: AnyMutator<Partition>;
   valueType: ValueType;
-  alerter: Alerter;
 };
 
-const PartitionsList = ({ partitions, mutate, valueType, alerter }: PartitionsListProps) => {
+const PartitionsList = ({ partitions, mutate, valueType }: PartitionsListProps) => {
+  const alerter = useAlerter();
   const rulesByPartitions = mutate.getValue();
   if (!rulesByPartitions) {
     return <div />;
@@ -134,7 +134,6 @@ const PartitionsList = ({ partitions, mutate, valueType, alerter }: PartitionsLi
             onDelete={() => deletePartition(partitionData.partitionsValues)}
             partitionsValues={partitionData.partitionsValues}
             mutate={partitionData.mutate}
-            alerter={alerter}
           />
         ))}
       </div>

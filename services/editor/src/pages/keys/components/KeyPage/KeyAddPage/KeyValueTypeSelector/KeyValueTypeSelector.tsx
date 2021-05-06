@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { titleCase } from 'title-case';
 import { ComboBox, ValidationIcon } from '../../../../../../components/common';
 import * as TypesServices from '../../../../../../services/types-service';
-import { changeKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import './KeyValueTypeSelector.css';
+import { Validation } from '../../../../../../store/ducks/types';
 
 const getValueTypeSuggestions = () =>
   Object.keys(TypesServices.types).map((x) => ({
@@ -12,14 +11,19 @@ const getValueTypeSuggestions = () =>
     value: x,
   }));
 
-const KeyValueTypeSelector = connect(
-  (state) => ({
-    selectedKey: state.selectedKey,
-    validation: state.selectedKey.validation.manifest.valueType,
-  }),
-  { changeKeyValueType },
-)(({ value, validation: { isShowingHint = false, hint }, changeKeyValueType: onChange }) => {
+export type KeyValueTypeSelectorProps = {
+  value: string;
+  onChange: (valueType: string | undefined) => void;
+  validation?: Partial<Validation>;
+};
+
+const KeyValueTypeSelector = ({
+  value,
+  validation: { isShowingHint = false, hint } = {},
+  onChange,
+}: KeyValueTypeSelectorProps) => {
   const suggestions = getValueTypeSuggestions();
+
   return (
     <div className="key-value-type-selector-container">
       <label className="key-value-type-label">Key value type:</label>
@@ -35,6 +39,6 @@ const KeyValueTypeSelector = connect(
       </div>
     </div>
   );
-});
+};
 
 export default KeyValueTypeSelector;

@@ -1,20 +1,27 @@
-import React, { ComponentProps, ComponentType, useEffect, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
 import { Prompt } from 'react-router';
 
-const routeLeaveHook = <T,>(
-  fn: (props: T) => boolean,
-  message: string,
-  wrapperProps?: ComponentProps<'div'>,
-) => <Props extends T>(Component: ComponentType<Props>) => (props: Props) => {
-  const shouldDisplayPrompt = useRef(false);
-  shouldDisplayPrompt.current = fn(props);
+export type RouteLeaveGuardProps = {
+  guard: boolean;
+  message: string;
+  className?: string;
+};
+
+export const RouteLeaveGuard: FunctionComponent<RouteLeaveGuardProps> = ({
+  message,
+  guard,
+  className,
+  children,
+}) => {
+  const ref = useRef({ message, guard });
+  ref.current = { message, guard };
 
   useEffect(() => {
     const onUnload = (e: BeforeUnloadEvent) => {
-      if (shouldDisplayPrompt.current) {
+      if (ref.current.guard) {
         e = e || window.event;
-        e.returnValue = message;
-        return message;
+        e.returnValue = ref.current.message;
+        return ref.current.message;
       }
     };
 
@@ -24,11 +31,9 @@ const routeLeaveHook = <T,>(
   }, []);
 
   return (
-    <div {...wrapperProps}>
-      <Prompt message={message} when={shouldDisplayPrompt.current} />
-      <Component {...props} />
+    <div className={className}>
+      <Prompt message={message} when={guard} />
+      {children}
     </div>
   );
 };
-
-export default routeLeaveHook;

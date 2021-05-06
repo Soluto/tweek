@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import PropTypes from 'prop-types';
 import './SaveButton.css';
 
-export type SaveButtonProps = {
+export type SaveButtonProps = ComponentProps<'button'> & {
   isSaving: boolean;
   hasChanges?: boolean;
   isValid?: boolean;
-  className?: string;
 };
 
 const SaveButton = ({ isSaving, hasChanges, isValid, ...props }: SaveButtonProps) => (

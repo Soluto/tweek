@@ -19,8 +19,8 @@ import { getClient } from './services/auth-service';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
-const renderKeyRoutes = ({ match: { path } }: RouteComponentProps) => (
-  <KeysPage>
+const renderKeyRoutes = ({ match: { path }, location, history }: RouteComponentProps) => (
+  <KeysPage location={location} history={history}>
     <Switch>
       <Route exact path={path} component={SelectKeyMessage} />
       <Route path="/keys/$search/:query" component={SearchResults} />
