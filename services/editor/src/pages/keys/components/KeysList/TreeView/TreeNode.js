@@ -7,7 +7,7 @@ import * as keysActions from '../../../../../store/ducks/keys';
 import { addKey } from '../../../../../store/ducks/selectedKey';
 import { KeyItem } from './KeyItem';
 import TreeDirectory from './TreeDirectory';
-import { compsPathSorter, leaf } from './pathSorter';
+import { compsPathSorter, leaf } from './treeUtils';
 
 const TreeNode = compose(
   connect((state) => state, { ...keysActions, addKey }),
@@ -24,33 +24,31 @@ const TreeNode = compose(
   ),
 )(({ node, name, fullPath, depth, expandByDefault, selected, selectedPath, addKey, keys }) => {
   return node === leaf ? (
-    <KeyItem {...{ name, fullPath, depth, selected, keys }} />
+    <KeyItem name={name} fullPath={fullPath} depth={depth} selected={selected} keys={keys} />
   ) : (
     <TreeDirectory
       descendantsCount={countLeafsInTree(node)}
-      {...{
-        name,
-        selectedPath,
-        fullPath,
-        depth,
-        selected,
-        expandByDefault: expandByDefault,
-        addKey,
-      }}
+      name={name}
+      selectedPath={selectedPath}
+      fullPath={fullPath}
+      depth={depth}
+      selected={selected}
+      expandByDefault={expandByDefault}
+      addKey={addKey}
     >
-      {Object.keys(node)
-        .map((childPath) => (
+      {Object.entries(node)
+        .sort(compsPathSorter)
+        .map(([childPath, childNode]) => (
           <TreeNode
             key={childPath}
             name={childPath}
             selectedPath={selectedPath}
-            node={node[childPath]}
+            node={childNode}
             fullPath={`${fullPath}/${childPath}`}
             depth={depth + 1}
             expandByDefault={expandByDefault}
           />
-        ))
-        .sort(compsPathSorter)}
+        ))}
     </TreeDirectory>
   );
 });
@@ -60,7 +58,6 @@ TreeNode.propTypes = {
   name: PropTypes.string.isRequired,
   fullPath: PropTypes.string,
   depth: PropTypes.number.isRequired,
-  renderItem: PropTypes.func.isRequired,
   expandByDefault: PropTypes.bool,
 };
 
