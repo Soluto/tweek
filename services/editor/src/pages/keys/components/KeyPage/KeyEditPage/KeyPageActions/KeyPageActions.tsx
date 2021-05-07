@@ -1,10 +1,9 @@
 import { equals } from 'ramda';
 import React from 'react';
 import { SaveButton } from '../../../../../../components/common';
-import { useAlerter } from '../../../../../../contexts/Alerts';
+import { AlertButton, buttons, useAlerter } from '../../../../../../contexts/Alerts';
 import { useKeyActions } from '../../../../../../contexts/SelectedKey/useKeyActions';
 import { createUseSelectedKey } from '../../../../../../contexts/SelectedKey/useSelectedKey';
-import { buttons } from '../../../../../../store/ducks';
 import { AddAliasButton, ArchiveButton, DeleteButton, UnarchiveButton } from './ActionButtons';
 import { AddAliasComponent, AliasData } from './AddAliasComponent';
 import './KeyPageActions.css';
@@ -39,9 +38,9 @@ const KeyPageActions = ({
   const archived = manifest?.meta.archived;
 
   const onAddAlias = async () => {
-    const okButton = {
+    const okButton: AlertButton<AliasData> = {
       ...buttons.OK,
-      validate: (data?: AliasData) => data?.validation?.isValid,
+      validate: (data) => data?.validation?.isValid,
     };
 
     const alertResult = await alerter.showCustomAlert({
@@ -73,7 +72,6 @@ const KeyPageActions = ({
           ))}
         {extraButtons && <AddAliasButton disabled={isSaving} onClick={onAddAlias} />}
         <SaveButton
-          // todo isValid={isValid}
           isSaving={isSaving}
           hasChanges={hasChanges}
           tabIndex={-1}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertComponentProps } from '../../../../../../components/alerts/types';
+import { AlertComponentProps } from '../../../../../../contexts/Alerts';
 import { useKeyPathValidation, Validation } from '../../KeyAddPage/key-name-validations';
 import NewKeyInput from '../../KeyAddPage/NewKeyInput';
 

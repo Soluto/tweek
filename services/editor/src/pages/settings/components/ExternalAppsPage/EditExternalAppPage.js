@@ -1,15 +1,13 @@
 import cogoToast from 'cogo-toast';
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
-import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import { SaveButton } from '../../../../components/common';
-import { ReduxContext } from '../../../../store';
-import { showCustomAlert } from '../../../../store/ducks';
+import { useAlerter } from '../../../../contexts/Alerts';
+import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import createAlert from './CreateExternalAppSecret';
 import './EditExternalAppPage.css';
 
 const EditExternalAppPage = ({ location, history }) => {
-  const { dispatch } = useContext(ReduxContext);
   const initialExternalAppData = (location.state && location.state.externalApp) || {};
   const id = initialExternalAppData.id;
   const isEditPage = Boolean(id);
@@ -40,7 +38,6 @@ const EditExternalAppPage = ({ location, history }) => {
           setIsSaving,
           history,
           setSaveError,
-          dispatch,
         })}
       />
     </div>
@@ -86,19 +83,21 @@ const useSaveExternalAppCallback = ({
   setIsSaving,
   history,
   setSaveError,
-  dispatch,
-}) =>
-  useCallback(async () => {
+}) => {
+  const { showCustomAlert } = useAlerter();
+
+  return useCallback(async () => {
     try {
       setIsSaving(true);
 
-      if (id) await tweekManagementClient.updateExternalApp(id, { name, permissions });
-      else {
+      if (id) {
+        await tweekManagementClient.updateExternalApp(id, { name, permissions });
+      } else {
         const { appId, appSecret } = await tweekManagementClient.createExternalApp({
           name,
           permissions,
         });
-        await dispatch(showCustomAlert(createAlert(appId, appSecret)));
+        await showCustomAlert(createAlert(appId, appSecret));
       }
 
       setIsSaving(false);
@@ -108,7 +107,8 @@ const useSaveExternalAppCallback = ({
       setIsSaving(false);
       setSaveError(err);
     }
-  }, [id, name, permissions]); //eslint-disable-line react-hooks/exhaustive-deps
+  }, [id, name, permissions, showCustomAlert]); //eslint-disable-line react-hooks/exhaustive-deps
+};
 
 const validateInput = ({ name, permissions }) =>
   Boolean(name && permissions && Array.isArray(permissions));

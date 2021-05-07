@@ -1,14 +1,11 @@
 import cogoToast from 'cogo-toast';
-import React, { useState, useEffect, useContext } from 'react';
-import { useErrorNotifier, tweekManagementClient } from '../../../../utils';
-import { ReduxContext } from '../../../../store';
-import { showCustomAlert, showConfirm } from '../../../../store/ducks';
+import React, { useEffect, useState } from 'react';
+import { useAlerter } from '../../../../contexts/Alerts';
+import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import createAlert from './CreateExternalAppSecret';
 import './ExternalAppsPage.css';
 
 const ExternalAppsPage = ({ history }) => {
-  const { dispatch } = useContext(ReduxContext);
-
   const [externalApps, setExternalApps] = useState([]);
   const [deleteError, setDeleteError] = useState(null);
   const [deletingState, setDeletingState] = useState({ isDeleting: false, idBeingDeleted: null });
@@ -31,7 +28,6 @@ const ExternalAppsPage = ({ history }) => {
               externalApp,
               externalApps,
               history,
-              dispatch,
               setDeleteError,
               setExternalApps,
               deletingState,
@@ -58,7 +54,6 @@ const ExternalApp = ({
   externalApp,
   externalApps,
   history,
-  dispatch,
   setDeleteError,
   setExternalApps,
   deletingState,
@@ -97,7 +92,6 @@ const ExternalApp = ({
             externalApps,
             setExternalApps,
             setDeleteError,
-            dispatch,
             deletingState,
             setDeletingState,
           }}
@@ -130,64 +124,50 @@ const DeleteButton = ({
   externalApps,
   setExternalApps,
   setDeleteError,
-  dispatch,
   deletingState,
   setDeletingState,
 }) => {
   const isBeingDeleted =
     deletingState.isDeleting && deletingState.idBeingDeleted === externalApp.id;
 
+  const { showConfirm } = useAlerter();
+
+  const deleteExternalApp = async () => {
+    try {
+      const alertDetails = {
+        title: 'Delete External App',
+        message: 'Are you sure you want to delete this external app?',
+      };
+      const deleteConfirmation = await showConfirm(alertDetails);
+      if (!deleteConfirmation.result) {
+        return;
+      }
+
+      setDeletingState({ isDeleting: true, idBeingDeleted: externalApp.id });
+      await tweekManagementClient.deleteExternalApp(externalApp.id);
+      setDeletingState({ isDeleting: false, idBeingDeleted: null });
+
+      setExternalApps(externalApps.filter((h) => h.id !== externalApp.id));
+      cogoToast.success('External App Deleted');
+    } catch (err) {
+      setDeletingState({ isDeleting: false, idBeingDeleted: null });
+      setDeleteError(err);
+    }
+  };
+
   return (
     <button
       disabled={deletingState.isDeleting}
       className="delete-external-app-button"
-      onClick={() =>
-        deleteExternalApp({
-          externalApp,
-          externalApps,
-          setExternalApps,
-          setDeleteError,
-          dispatch,
-          setDeletingState,
-        })
-      }
+      onClick={deleteExternalApp}
     >
       {isBeingDeleted ? 'Deleting...' : 'Delete'}
     </button>
   );
 };
 
-const deleteExternalApp = async ({
-  externalApp,
-  externalApps,
-  setDeleteError,
-  dispatch,
-  setExternalApps,
-  setDeletingState,
-}) => {
-  try {
-    const alertDetails = {
-      title: 'Delete External App',
-      message: 'Are you sure you want to delete this external app?',
-    };
-    const deleteConfirmation = await dispatch(showConfirm(alertDetails));
-    if (!deleteConfirmation.result) return;
-
-    setDeletingState({ isDeleting: true, idBeingDeleted: externalApp.id });
-    await tweekManagementClient.deleteExternalApp(externalApp.id);
-    setDeletingState({ isDeleting: false, idBeingDeleted: null });
-
-    setExternalApps(externalApps.filter((h) => h.id !== externalApp.id));
-    cogoToast.success('External App Deleted');
-  } catch (err) {
-    setDeletingState({ isDeleting: false, idBeingDeleted: null });
-    setDeleteError(err);
-  }
-};
-
 const AddExternalAppSecretButton = ({ externalApp, setSecrets }) => {
-  const { dispatch } = useContext(ReduxContext);
-
+  const { showCustomAlert, showConfirm } = useAlerter();
   const [additionError, setAdditionError] = useState(null);
   const [additionState, setAdditionState] = useState(false);
 
@@ -195,111 +175,82 @@ const AddExternalAppSecretButton = ({ externalApp, setSecrets }) => {
 
   useErrorNotifier(additionError, 'Failed to add external app secret');
 
-  return (
-    <button
-      disabled={isBeingAdding}
-      className="metro-button"
-      onClick={() =>
-        addExternalAppSecretKey({
-          externalApp,
-          setSecrets,
-          setAdditionError,
-          dispatch,
-          setAdditionState,
-        })
+  const addExternalAppSecretKey = async () => {
+    try {
+      const alertDetails = {
+        title: 'Add External App Secret',
+        message: 'Are you sure you want to add new external app secret?',
+      };
+      const additionConfirmation = await showConfirm(alertDetails);
+      if (!additionConfirmation.result) {
+        return;
       }
-    >
+
+      setAdditionState(true);
+      const { keyId, secret } = await tweekManagementClient.createExternalAppSecretKey(
+        externalApp.id,
+      );
+      await showCustomAlert(createAlert(externalApp.id, secret));
+      setAdditionState(false);
+
+      const newSecret = { id: keyId, creationDate: new Date().toISOString() };
+      externalApp.secretKeys = [...externalApp.secretKeys, newSecret];
+      setSecrets(externalApp.secretKeys);
+      cogoToast.success('External App Secret Added');
+    } catch (err) {
+      setAdditionState(false);
+      setAdditionError(err);
+    }
+  };
+
+  return (
+    <button disabled={isBeingAdding} className="metro-button" onClick={addExternalAppSecretKey}>
       {isBeingAdding ? 'Adding Secret...' : 'Add Secret'}
     </button>
   );
 };
 
 const DeleteExternalAppSecretButton = ({ secretKey, externalApp, setSecrets }) => {
-  const { dispatch } = useContext(ReduxContext);
-
+  const { showConfirm } = useAlerter();
   const [deleteError, setDeleteError] = useState(null);
   const [deletingState, setDeletingState] = useState({ isDeleting: false, idBeingDeleted: null });
 
   const isBeingDeleted = deletingState.isDeleting && deletingState.idBeingDeleted === secretKey.id;
 
   useErrorNotifier(deleteError, 'Failed to delete external app secret');
+
+  const deleteExternalAppSecretKey = async () => {
+    const id = secretKey.id;
+    try {
+      const alertDetails = {
+        title: 'Delete External App Secret',
+        message: 'Are you sure you want to delete this external app secret?',
+      };
+      const deleteConfirmation = await showConfirm(alertDetails);
+      if (!deleteConfirmation.result) {
+        return;
+      }
+
+      setDeletingState({ isDeleting: true, idBeingDeleted: externalApp.id });
+      await tweekManagementClient.deleteExternalAppSecretKey(externalApp.id, id);
+      setDeletingState({ isDeleting: false, idBeingDeleted: null });
+
+      externalApp.secretKeys = externalApp.secretKeys.filter((s) => s.id !== id);
+      setSecrets(externalApp.secretKeys);
+      cogoToast.success('External App Secret Deleted');
+    } catch (err) {
+      setDeletingState({ isDeleting: false, idBeingDeleted: null });
+      setDeleteError(err);
+    }
+  };
+
   return (
     <button
       disabled={deletingState.isDeleting}
       className="metro-button"
-      onClick={() =>
-        deleteExternalAppSecretKey({
-          id: secretKey.id,
-          externalApp,
-          setSecrets,
-          setDeleteError,
-          dispatch,
-          setDeletingState,
-        })
-      }
+      onClick={deleteExternalAppSecretKey}
     >
       {isBeingDeleted ? 'Deleting Secret...' : 'Delete Secret'}
     </button>
   );
-};
-
-const addExternalAppSecretKey = async ({
-  externalApp,
-  setSecrets,
-  setAdditionError,
-  dispatch,
-  setAdditionState,
-}) => {
-  try {
-    const alertDetails = {
-      title: 'Add External App Secret',
-      message: 'Are you sure you want to add new external app secret?',
-    };
-    const additionConfirmation = await dispatch(showConfirm(alertDetails));
-    if (!additionConfirmation.result) return;
-
-    setAdditionState(true);
-    const { keyId, secret } = await tweekManagementClient.createExternalAppSecretKey(
-      externalApp.id,
-    );
-    await dispatch(showCustomAlert(createAlert(externalApp.id, secret)));
-    setAdditionState(false);
-
-    const newSecret = { id: keyId, creationDate: new Date().toISOString() };
-    externalApp.secretKeys = [...externalApp.secretKeys, newSecret];
-    setSecrets(externalApp.secretKeys);
-    cogoToast.success('External App Secret Added');
-  } catch (err) {
-    setAdditionState(false);
-    setAdditionError(err);
-  }
-};
-
-const deleteExternalAppSecretKey = async ({
-  id,
-  externalApp,
-  setSecrets,
-  setDeleteError,
-  dispatch,
-  setDeletingState,
-}) => {
-  try {
-    const alertDetails = {
-      title: 'Delete External App Secret',
-      message: 'Are you sure you want to delete this external app secret?',
-    };
-    const deleteConfirmation = await dispatch(showConfirm(alertDetails));
-    if (!deleteConfirmation.result) return;
-
-    setDeletingState({ isDeleting: true, idBeingDeleted: externalApp.id });
-    await tweekManagementClient.deleteExternalAppSecretKey(externalApp.id, id);
-    setDeletingState({ isDeleting: false, idBeingDeleted: null });
-
-    externalApp.secretKeys = externalApp.secretKeys.filter((s) => s.id !== id);
-    setSecrets(externalApp.secretKeys);
-    cogoToast.success('External App Secret Deleted');
-  } catch (err) {
-    setDeletingState({ isDeleting: false, idBeingDeleted: null });
-    setDeleteError(err);
-  }
 };

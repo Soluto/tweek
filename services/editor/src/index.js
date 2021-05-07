@@ -1,16 +1,13 @@
+import 'papp-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { AlertsProvider } from './contexts/Alerts';
-import { store } from './store';
 import Routes from './Routes';
-import 'papp-polyfill';
+import { store } from './store';
 
 ReactDOM.render(
   <Provider store={store}>
-    <AlertsProvider>
-      <Routes />
-    </AlertsProvider>
+    <Routes />
   </Provider>,
   document.getElementById('root'),
 );
