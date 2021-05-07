@@ -2,7 +2,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as R from 'ramda';
 import React, { useEffect, useState } from 'react';
-import { KeyManifest } from 'tweek-client';
+import { useAllKeys } from '../../../../contexts/AllKeys';
 import * as SearchService from '../../../../services/search-service';
 import { useEnableCardsView, useMaxSearchResults, useShowInternalKeys } from '../../../../utils';
 import CardView from './CardView';
@@ -38,13 +38,13 @@ const KeysFilter = ({ filter, onFilterChange }: KeysFilterProps) => (
 
 export type KeysListProps = {
   selectedKey?: string;
-  keys: Record<string, KeyManifest>;
 };
 
-const KeysList = ({ selectedKey, keys }: KeysListProps) => {
+const KeysList = ({ selectedKey }: KeysListProps) => {
   const supportMultiResultsView = useEnableCardsView();
   const showInternalKeys = useShowInternalKeys();
   const maxSearchResults = useMaxSearchResults();
+  const keys = useAllKeys();
 
   const visibleKeys = SearchService.filterInternalKeys(
     R.filter((key) => !key.meta.archived, keys),

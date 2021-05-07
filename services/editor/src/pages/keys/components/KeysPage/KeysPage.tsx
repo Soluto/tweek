@@ -1,61 +1,34 @@
-import React, { FunctionComponent, PropsWithChildren, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import DocumentTitle from 'react-document-title';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { useLoadKeys } from '../../../../contexts/AllKeys';
+import { createUseSelectedKey } from '../../../../contexts/SelectedKey/useSelectedKey';
+import { useLoadTags } from '../../../../contexts/Tags';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
 import { refreshTypes } from '../../../../services/types-service';
-import { getKeys } from '../../../../store/ducks/keys';
-import { addKey } from '../../../../store/ducks/selectedKey';
-import { downloadTags } from '../../../../store/ducks/tags';
-import { KeyActions, KeysActions, StoreState, TagActions } from '../../../../store/ducks/types';
+import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import KeysList from '../KeysList/KeysList';
 import QuickNavigation from '../QuickNavigation/QuickNavigation';
-import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import './KeysPage.css';
 
-type StateProps = Pick<StoreState, 'keys' | 'selectedKey' | 'tags'>;
-type Actions = Pick<TagActions, 'downloadTags'> & Pick<KeyActions, 'addKey'> & KeysActions;
+export type KeysPageProps = Pick<RouteComponentProps, 'location' | 'history'>;
 
-const enhance = connect<StateProps, Actions, PropsWithChildren<{}>, StoreState>(
-  (state) => ({ keys: state.keys, selectedKey: state.selectedKey, tags: state.tags }),
-  {
-    getKeys,
-    addKey,
-    downloadTags,
-  },
-);
+const useSelectedKey = createUseSelectedKey((key) => key.manifest?.key_path);
 
-export type KeysPageProps = StateProps &
-  Actions &
-  Pick<RouteComponentProps, 'location' | 'history'>;
-
-const KeysPage: FunctionComponent<KeysPageProps> = ({
-  keys,
-  selectedKey,
-  tags,
-  addKey,
-  getKeys,
-  downloadTags,
-  location,
-  history,
-  children,
-}) => {
-  useEffect(() => {
-    if (!keys || Object.keys(keys).length === 0) {
-      getKeys();
-    }
-    if (!tags || Object.keys(tags).length === 0) {
-      downloadTags();
-    }
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+const KeysPage: FunctionComponent<KeysPageProps> = ({ location, history, children }) => {
+  useLoadTags();
+  useLoadKeys();
 
   useEffect(() => {
     setNavOpen(false);
   }, [location.pathname, location.search]);
 
   const [navOpen, setNavOpen] = useState(false);
+
+  const selectedKey = useSelectedKey();
+
   useHotkeys(
     'ctrl+k',
     () => {
@@ -65,17 +38,17 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({
   );
 
   return (
-    <DocumentTitle title={`Tweek - ${selectedKey?.key || 'Keys'}`}>
+    <DocumentTitle title={`Tweek - ${selectedKey || 'Keys'}`}>
       <div className="keys-page-container">
         <div key="KeysList" className="keys-list">
           <div className="keys-list-wrapper">
-            <KeysList keys={keys} selectedKey={selectedKey?.key} />
+            <KeysList selectedKey={selectedKey} />
           </div>
           <div className="add-button-wrapper">
             <button
               className="add-key-button"
               data-comp="add-new-key"
-              onClick={() => addKey(hasUnsavedChanges)}
+              onClick={() => history.push(`/keys/${BLANK_KEY_NAME}`)}
             >
               Add key
             </button>
@@ -84,12 +57,10 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({
         <div key="Page" className="key-page" data-comp="key-page">
           {navOpen && (
             <QuickNavigation
-              keys={keys}
               push={(x) => {
                 history.push(x);
                 setNavOpen(false);
               }}
-              tags={tags || []}
               onBlur={() => setNavOpen(false)}
             />
           )}
@@ -101,6 +72,6 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({
 };
 
 const loadingFactory = () => Promise.all([refreshTypes(), refreshSchema()]);
-const KeysPageWithLoading = withLoading(loadingFactory)(KeysPage);
+const enhance = withLoading(loadingFactory);
 
-export default enhance(KeysPageWithLoading);
+export default enhance(KeysPage);

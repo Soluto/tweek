@@ -2,8 +2,9 @@ import styled from '@emotion/styled';
 import { uniqBy } from 'ramda';
 import React, { KeyboardEventHandler, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useKeysContext } from '../../../../contexts/AllKeys';
+import { useTags } from '../../../../contexts/Tags';
 import * as SearchService from '../../../../services/search-service';
-import { StoreState } from '../../../../store/ducks/types';
 import { getTagLink } from '../../utils/search';
 
 function filterWithLimit<T>(collection: T[], filter: (i: T) => boolean, limit = 2) {
@@ -103,12 +104,15 @@ const SearchResult = ({ type, link, id }: SearchResultProps) => {
   return null;
 };
 
-export type QuickNavigationProps = Pick<StoreState, 'keys' | 'tags'> & {
+export type QuickNavigationProps = {
   onBlur?: () => void;
   push: (path: string) => void;
 };
 
-const QuickNavigation = ({ keys, tags, onBlur, push }: QuickNavigationProps) => {
+const QuickNavigation = ({ onBlur, push }: QuickNavigationProps) => {
+  const tags = useTags();
+  const keys$ = useKeysContext();
+
   const [input, onInput] = useState('');
   const [index, setIndex] = useState(-1);
   const [results, setResults] = useState<SearchResultProps[]>([]);
@@ -129,20 +133,18 @@ const QuickNavigation = ({ keys, tags, onBlur, push }: QuickNavigationProps) => 
 
       setResults(
         uniqBy((x) => x.link, [
-          ...filterWithLimit(Object.values(keys), (k) => k.key_path?.startsWith(input)).map(
+          ...filterWithLimit(Object.values(keys$.value), (k) => k.key_path?.startsWith(input)).map(
             (x) => ({
               type: 'key' as const,
               id: x.key_path,
               link: `/keys/${x.key_path}`,
             }),
           ),
-          ...filterWithLimit(Object.values(tags), (t) => t?.toLowerCase().startsWith(input)).map(
-            (x) => ({
-              type: 'tag' as const,
-              id: x,
-              link: getTagLink(x),
-            }),
-          ),
+          ...filterWithLimit(tags, (t) => t.id.startsWith(input)).map((t) => ({
+            type: 'tag' as const,
+            id: t.id,
+            link: getTagLink(t.id),
+          })),
           ...filteredSearch.map((x) => ({
             type: 'key' as const,
             id: x,

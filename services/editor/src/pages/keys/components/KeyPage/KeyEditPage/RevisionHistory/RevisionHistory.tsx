@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
 import moment from 'moment';
 import React from 'react';
-import { connect } from 'react-redux';
 import { useHistory } from 'react-router';
 import { Revision as RevisionProps } from 'tweek-client';
-import { StoreState } from '../../../../../../store/ducks/types';
+import { createUseSelectedKey } from '../../../../../../contexts/SelectedKey/useSelectedKey';
 
 const RevisionHistorySelect = styled.select`
   align-self: flex-start;
@@ -23,12 +22,14 @@ const EmptyRevisionHistory = styled.div`
 
 export type RevisionHistoryProps = {
   revisionHistory: RevisionProps[];
-  selectedKey: string;
   revision?: string;
 };
 
-const RevisionHistory = ({ revisionHistory, selectedKey, revision }: RevisionHistoryProps) => {
+const useSelectedKey = createUseSelectedKey((key) => key.manifest?.key_path);
+
+const RevisionHistory = ({ revisionHistory, revision }: RevisionHistoryProps) => {
   const history = useHistory();
+  const selectedKey = useSelectedKey();
 
   const goToRevision = (sha: string) => {
     const params = new URLSearchParams();
@@ -59,6 +60,4 @@ const RevisionHistory = ({ revisionHistory, selectedKey, revision }: RevisionHis
   );
 };
 
-const mapStateToProps = (state: StoreState) => ({ selectedKey: state.selectedKey!.key });
-
-export default connect(mapStateToProps)(RevisionHistory);
+export default RevisionHistory;

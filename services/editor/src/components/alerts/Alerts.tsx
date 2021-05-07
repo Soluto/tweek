@@ -1,11 +1,10 @@
 import classNames from 'classnames';
 import React, { ComponentType, useState } from 'react';
-import { connect } from 'react-redux';
 // @ts-ignore
 import Rodal from 'rodal';
+import { StyleProps, useAlerts, VisibleAlert } from '../../contexts/Alerts';
 import './Alerts.css';
 import './Rodal.css';
-import { AlertButton, AlertData, StyleProps } from './types';
 
 const reactify = (Content: string | ComponentType<StyleProps>, props: StyleProps) =>
   typeof Content === 'string' ? (
@@ -18,13 +17,7 @@ const reactify = (Content: string | ComponentType<StyleProps>, props: StyleProps
     <Content {...props} />
   );
 
-export type AlertButtonProps<T> = Omit<AlertButton<T>, 'value'> & {
-  onClick: (data: T) => void;
-};
-
-export type AlertProps<T = unknown> = Omit<AlertData<T>, 'buttons'> & {
-  buttons: AlertButtonProps<T>[];
-  onClose: () => void;
+export type AlertProps<T = unknown> = Omit<VisibleAlert<T>, 'id'> & {
   visible: boolean;
 };
 
@@ -66,16 +59,16 @@ export const Alert = ({
   );
 };
 
-type State = {
-  alerts: Array<Omit<AlertProps, 'visible'> & { id: string }>;
+const Alerts = () => {
+  const alerts = useAlerts();
+
+  return (
+    <div id="alerts">
+      {alerts.map(({ id: key, ...alert }) => (
+        <Alert key={key} visible {...alert} />
+      ))}
+    </div>
+  );
 };
 
-const Alerts = ({ alerts }: State) => (
-  <div id="alerts">
-    {alerts.map(({ id: key, ...alert }) => (
-      <Alert key={key} visible {...alert} />
-    ))}
-  </div>
-);
-
-export default connect((state: State) => ({ alerts: state.alerts }))(Alerts);
+export default Alerts;

@@ -1,5 +1,6 @@
+import { useCallback } from 'react';
+import { useKeysContext } from '../../../../../contexts/AllKeys';
 import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
-import { Validation } from '../../../../../store/ducks/types';
 
 type ValidationRequest = {
   value: string;
@@ -51,7 +52,21 @@ const validations = [
   invalidCharactersValidation,
 ];
 
+export type Validation = {
+  isValid: boolean;
+  hint?: string;
+  isShowingHint?: boolean;
+};
+
 export default function keyNameValidations(keyName: string, keysList: string[]): Validation {
   const failedRule = validations.find((x) => !x.rule({ value: keyName, keysList }));
   return { isValid: !failedRule, hint: failedRule?.hint };
 }
+
+export const useKeyPathValidation = () => {
+  const keys$ = useKeysContext();
+
+  return useCallback((keyPath: string) => keyNameValidations(keyPath, Object.keys(keys$.value)), [
+    keys$,
+  ]);
+};

@@ -1,48 +1,34 @@
 import * as R from 'ramda';
 import React from 'react';
-import { connect } from 'react-redux';
 import { useHistory } from 'react-router';
 import { Tag, WithContext as ReactTags } from 'react-tag-input';
-import { saveNewTag } from '../../../../../../store/ducks/tags';
-import './KeyTags.css';
-import { StoreState, TagActions } from '../../../../../../store/ducks/types';
+import { useSaveNewTag, useTags } from '../../../../../../contexts/Tags';
 import { getTagLink } from '../../../../utils/search';
+import './KeyTags.css';
 
-type StateProps = {
-  globalTags: StoreState['tags'];
+export type KeyTagsProps = {
+  tags: string[];
+  onTagsChanged: (tags: string[]) => void;
 };
 
-type Actions = Pick<TagActions, 'saveNewTag'>;
-
-const enhance = connect<StateProps, Actions, {}, StoreState>(
-  (state: StoreState) => ({ globalTags: state.tags }),
-  { saveNewTag },
-);
-
-export type KeyTagsProps = StateProps &
-  Actions & {
-    tags: string[];
-    onTagsChanged: (tags: string[]) => void;
-  };
-
-const KeyTags = ({ globalTags, tags: originalTags, onTagsChanged, saveNewTag }: KeyTagsProps) => {
+const KeyTags = ({ tags: keyTags, onTagsChanged }: KeyTagsProps) => {
   const history = useHistory();
+  const knownTags = useTags();
+  const saveNewTag = useSaveNewTag();
 
-  const tags = originalTags.map((x) => ({
+  const tags = keyTags.map((x) => ({
     id: x.toLowerCase(),
     text: x,
   }));
-  const tagsSuggestions = Object.entries(globalTags).map(([id, text]) => ({ id, text }));
 
   const onTagAdded = ({ text }: Tag) => {
-    const newTag = { id: text.toLowerCase(), text };
-
-    if (tags.some((t) => t.id === newTag.id)) {
+    const newTag = text.toLowerCase();
+    if (tags.some((t) => t.id === newTag)) {
       return;
     }
 
     onTagsChanged([...tags.map((t) => t.text), text]);
-    saveNewTag(newTag);
+    saveNewTag(text);
   };
 
   const onTagDeleted = (deletedTagIndex: number) => {
@@ -56,7 +42,7 @@ const KeyTags = ({ globalTags, tags: originalTags, onTagsChanged, saveNewTag }: 
         tags={tags}
         handleDelete={onTagDeleted}
         handleAddition={onTagAdded}
-        suggestions={tagsSuggestions}
+        suggestions={knownTags}
         placeholder="New tag"
         allowDragDrop={false}
         handleTagClick={(i) => history.push(getTagLink(tags[i].text))}
@@ -75,4 +61,4 @@ const KeyTags = ({ globalTags, tags: originalTags, onTagsChanged, saveNewTag }: 
   );
 };
 
-export default enhance(KeyTags);
+export default KeyTags;

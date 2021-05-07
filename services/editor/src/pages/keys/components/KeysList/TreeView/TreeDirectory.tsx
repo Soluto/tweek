@@ -1,19 +1,13 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useHistory } from 'react-router';
 import ReactTooltip from 'react-tooltip';
 // @ts-ignore
 import { VelocityTransitionGroup } from 'velocity-react';
-import { addKey } from '../../../../../store/ducks/selectedKey';
-import { KeyActions } from '../../../../../store/ducks/types';
-import hasUnsavedChanges from '../../utils/hasUnsavedChanges';
+import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import closedFolderIconSrc from '../resources/Folder-icon-closed.svg';
 import openedFolderIconSrc from '../resources/Folder-icon-opened.svg';
 
-type Actions = Pick<KeyActions, 'addKey'>;
-
-const enhance = connect(null, { addKey });
-
-export type TreeDirectoryProps = Actions & {
+export type TreeDirectoryProps = {
   fullPath: string;
   name: string;
   depth: number;
@@ -31,9 +25,9 @@ const TreeDirectory = ({
   descendantsCount,
   selected,
   expandByDefault,
-  addKey,
 }: TreeDirectoryProps) => {
   const [isCollapsed, setIsCollapsed] = useState(!selected && !expandByDefault);
+  const history = useHistory();
 
   useEffect(() => {
     if (selected) {
@@ -74,7 +68,9 @@ const TreeDirectory = ({
           data-place="top"
           onClick={(event) => {
             event.stopPropagation();
-            addKey(hasUnsavedChanges, `${fullPath}/`);
+            const params = new URLSearchParams();
+            params.set('hint', `${fullPath}/`);
+            history.push({ pathname: `/keys/${BLANK_KEY_NAME}`, search: params.toString() });
           }}
         />
         <ReactTooltip id={fullPath} />
@@ -95,4 +91,4 @@ const TreeDirectory = ({
   );
 };
 
-export default enhance(TreeDirectory);
+export default TreeDirectory;

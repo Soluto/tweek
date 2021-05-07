@@ -1,36 +1,26 @@
 import React from 'react';
-import HeaderMainInput, { HeaderMainInputProps } from './HeaderMainInput';
+import HeaderMainInput from './HeaderMainInput';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 
-export type KeyStickyHeaderProps = HeaderMainInputProps & {
+export type KeyStickyHeaderProps = {
+  isReadonly?: boolean;
   isHistoricRevision?: boolean;
 };
 
-const KeyStickyHeader = ({
-  isReadonly,
-  isHistoricRevision,
-  keyManifest,
-  onDisplayNameChanged,
-}: KeyStickyHeaderProps) => {
-  return (
-    <div className="sticky-key-header">
-      <HeaderMainInput
-        isReadonly={isReadonly}
-        keyManifest={keyManifest}
-        onDisplayNameChanged={onDisplayNameChanged}
-      />
+const KeyStickyHeader = ({ isReadonly, isHistoricRevision }: KeyStickyHeaderProps) => (
+  <div className="sticky-key-header">
+    <HeaderMainInput />
 
-      {!isReadonly && (
-        <div className="sticky-key-page-action-wrapper">
-          <KeyPageActions
-            isReadonly={isReadonly}
-            isHistoricRevision={isHistoricRevision}
-            isInStickyMode
-          />
-        </div>
-      )}
-    </div>
-  );
-};
+    {!isReadonly && (
+      <div className="sticky-key-page-action-wrapper">
+        <KeyPageActions
+          isReadonly={isReadonly}
+          isHistoricRevision={isHistoricRevision}
+          isInStickyMode
+        />
+      </div>
+    )}
+  </div>
+);
 
 export default KeyStickyHeader;

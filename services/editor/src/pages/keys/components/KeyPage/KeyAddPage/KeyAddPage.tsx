@@ -1,81 +1,46 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { KeyManifest } from 'tweek-client';
-import {
-  addKeyDetails,
-  changeKeyFormat,
-  changeKeyValueType,
-  updateKeyPath,
-} from '../../../../../store/ducks/selectedKey';
-import { KeyActions, SelectedKey, StoreState } from '../../../../../store/ducks/types';
+import { Redirect, RouteComponentProps } from 'react-router';
+import { useLoadKey } from '../../../../../contexts/SelectedKey/SelectedKey';
+import { createUseSelectedKey } from '../../../../../contexts/SelectedKey/useSelectedKey';
+import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
+import { RouteLeaveGuard } from '../../../../../hoc/route-leave-hook';
+import KeyEditPage from '../KeyEditPage/KeyEditPage';
 import './KeyAddPage.css';
-import KeyFormatSelector from './KeyFormatSelector';
-import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
-import NewKeyInput from './NewKeyInput';
+import KeyManifestPage from './KeyManifestPage';
 
-type Actions = Pick<
-  KeyActions,
-  'addKeyDetails' | 'updateKeyPath' | 'changeKeyFormat' | 'changeKeyValueType'
->;
+const useShouldContinue = createUseSelectedKey(({ remote, manifest }) => ({
+  shouldContinue: !!manifest,
+  savedKeyPath: !!remote && remote.manifest.key_path,
+}));
 
-type StateProps = {
-  manifest: KeyManifest;
-  validation: SelectedKey['validation'];
-};
+const KeyAddPage = ({ location }: RouteComponentProps) => {
+  const loading = useLoadKey(undefined, location.key);
 
-const enhance = connect<StateProps, Actions, {}, StoreState>(
-  (state) => ({
-    manifest: state.selectedKey!.local.manifest,
-    validation: state.selectedKey!.validation,
-  }),
-  {
-    addKeyDetails,
-    updateKeyPath,
-    changeKeyFormat,
-    changeKeyValueType,
-  },
-);
+  const { shouldContinue, savedKeyPath } = useShouldContinue();
+  const { createNewKey } = useUpdateKey();
 
-export type KeyAddPageProps = Actions & StateProps;
+  if (loading) {
+    return null;
+  }
 
-const KeyAddPage = ({
-  manifest,
-  updateKeyPath,
-  addKeyDetails,
-  changeKeyFormat,
-  changeKeyValueType,
-  validation,
-}: KeyAddPageProps) => {
-  const valueType = manifest.valueType;
-  const displayName = manifest.meta.name;
+  if (!shouldContinue) {
+    const params = new URLSearchParams(location.search);
+    return <KeyManifestPage onContinue={createNewKey} hint={params.get('hint') || ''} />;
+  }
+
+  if (savedKeyPath) {
+    return <Redirect push to={`/keys/${savedKeyPath}`} />;
+  }
+
   return (
-    <div id="add-key-page" className="add-key-page" data-comp="add-key-page">
-      <h3 className="heading-text">Add new Key</h3>
-      <div className="add-key-input-wrapper">
-        <label className="keypath-label">Keypath:</label>
-        <NewKeyInput
-          onChange={updateKeyPath}
-          displayName={displayName}
-          validation={validation.key}
-        />
-      </div>
-      <div className="add-key-properties-wrapper">
-        <KeyFormatSelector onFormatChanged={changeKeyFormat} />
-        <div className="hspace" />
-        <KeyValueTypeSelector
-          value={valueType}
-          validation={validation.manifest?.valueType}
-          onChange={changeKeyValueType}
-        />
-      </div>
-      <div className="vspace" />
-      <div className="add-key-button-wrapper">
-        <button className="add-key-button" data-comp="add-key-button" onClick={addKeyDetails}>
-          Continue
-        </button>
-      </div>
-    </div>
+    <RouteLeaveGuard
+      guard
+      message="You have unsaved changes, are you sure you want to leave this page?"
+      className="key-page-wrapper"
+    >
+      <KeyEditPage />
+    </RouteLeaveGuard>
   );
 };
 
-export default enhance(KeyAddPage);
+export default KeyAddPage;

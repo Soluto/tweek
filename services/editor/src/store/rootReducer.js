@@ -1,19 +1,11 @@
-import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
-import keysReducer from './ducks/keys';
-import selectedKeyReducer from './ducks/selectedKey';
-import tagsReducer from './ducks/tags';
-import alertsReducer from './ducks/alerts';
-import schemaReducer from './ducks/schema';
+import { combineReducers } from 'redux';
 import contextReducer from './ducks/context';
+import schemaReducer from './ducks/schema';
 
 const createRootReducer = (history) =>
   combineReducers({
-    keys: keysReducer,
-    selectedKey: selectedKeyReducer,
     router: connectRouter(history),
-    tags: tagsReducer,
-    alerts: alertsReducer,
     context: contextReducer,
     schema: schemaReducer,
   });

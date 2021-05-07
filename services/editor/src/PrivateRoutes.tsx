@@ -5,6 +5,7 @@ import Loader from './components/Loader';
 import NoMatch from './components/NoMatch';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
 import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
+import KeyAddPage from './pages/keys/components/KeyPage/KeyAddPage/KeyAddPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import SearchResults from './pages/keys/components/SearchResults/SearchResults';
@@ -16,6 +17,7 @@ import IdentityPage from './pages/settings/components/IdentityPage/IdentityPage'
 import PoliciesPage from './pages/settings/components/PoliciesPage/PoliciesPage';
 import SettingsPage from './pages/settings/components/SettingsPage/SettingsPage';
 import { getClient } from './services/auth-service';
+import { BLANK_KEY_NAME } from './store/ducks/ducks-utils/blankKeyDefinition';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
@@ -24,6 +26,7 @@ const renderKeyRoutes = ({ match: { path }, location, history }: RouteComponentP
     <Switch>
       <Route exact path={path} component={SelectKeyMessage} />
       <Route path="/keys/$search/:query" component={SearchResults} />
+      <Route path={`/keys/${BLANK_KEY_NAME}`} component={KeyAddPage} />
       <Route component={KeyPage} />
     </Switch>
   </KeysPage>

@@ -1,53 +1,26 @@
 import classNames from 'classnames';
-import { History } from 'history';
 import React, { UIEventHandler, useState } from 'react';
-import { connect } from 'react-redux';
-import {
-  deleteAlias,
-  updateImplementation,
-  updateKeyManifest,
-  updateKeyName,
-} from '../../../../../store/ducks/selectedKey';
-import { KeyActions, SelectedKey } from '../../../../../store/ducks/types';
+import { createUseSelectedKey } from '../../../../../contexts/SelectedKey/useSelectedKey';
+import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
 import KeyEditor from './KeyEditor';
 import './KeyEditPage.css';
 import KeyFullHeader from './KeyFullHeader';
 import KeyStickyHeader from './KeyStickyHeader';
 
-export type EditPageActions = Pick<
-  KeyActions,
-  'updateKeyManifest' | 'deleteAlias' | 'updateKeyName' | 'updateImplementation'
->;
+const useSelectedKey = createUseSelectedKey((key) => ({
+  manifest: key.manifest!,
+  implementation: key.implementation,
+  revisionHistory: key.revisionHistory,
+  usedBy: key.usedBy,
+  aliases: key.aliases,
+  revision: key.revision,
+}));
 
-const enhance = connect<{}, EditPageActions>(null, {
-  updateKeyManifest,
-  deleteAlias,
-  updateKeyName,
-  updateImplementation,
-});
+const KeyEditPage = () => {
+  const { manifest, implementation, revisionHistory, usedBy, aliases, revision } = useSelectedKey();
 
-export type KeyEditPageProps = EditPageActions & {
-  selectedKey: SelectedKey;
-  revision?: string;
-  history: History;
-};
+  const { updateKeyManifest } = useUpdateKey();
 
-const KeyEditPage = ({
-  selectedKey,
-  revision,
-  history,
-  deleteAlias,
-  updateKeyName,
-  updateKeyManifest,
-  updateImplementation,
-}: KeyEditPageProps) => {
-  const {
-    key,
-    local: { manifest, implementation },
-    revisionHistory,
-    usedBy,
-    aliases,
-  } = selectedKey;
   const [isInStickyMode, setIsInStickyMode] = useState(false);
 
   const onScroll: UIEventHandler<HTMLDivElement> = (event) => {
@@ -62,15 +35,6 @@ const KeyEditPage = ({
       meta: {
         ...manifest.meta,
         tags: newTags,
-      },
-    });
-
-  const onDisplayNameChanged = (newDisplayName: string) =>
-    updateKeyManifest({
-      ...manifest,
-      meta: {
-        ...manifest.meta,
-        name: newDisplayName,
       },
     });
 
@@ -95,11 +59,8 @@ const KeyEditPage = ({
   const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
 
   const commonHeadersProps = {
-    onKeyNameChanged: updateKeyName,
-    onDisplayNameChanged,
     isHistoricRevision,
     isReadonly,
-    keyManifest: manifest,
   };
 
   return (
@@ -113,19 +74,16 @@ const KeyEditPage = ({
             onTagsChanged={onTagsChanged}
             revisionHistory={revisionHistory}
             revision={revision}
-            keyFullPath={key}
+            keyFullPath={manifest.key_path}
             usedBy={usedBy}
             aliases={aliases}
-            deleteAlias={deleteAlias}
-            history={history}
+            keyManifest={manifest}
           />
 
           <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
             <KeyEditor
               manifest={manifest}
-              sourceFile={implementation.source as string}
-              onSourceFileChange={(source) => updateImplementation({ source })}
-              onManifestChange={updateKeyManifest}
+              sourceFile={implementation!}
               onDependencyChanged={onDependencyChanged}
               isReadonly={isReadonly}
             />
@@ -136,4 +94,4 @@ const KeyEditPage = ({
   );
 };
 
-export default enhance(KeyEditPage);
+export default KeyEditPage;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { buttons } from '../../../../store/ducks';
+import { buttons } from '../../../../contexts/Alerts';
 import './CreateExternalAppSecret.css';
 
 const Component = ({ appId, appSecret }) => (

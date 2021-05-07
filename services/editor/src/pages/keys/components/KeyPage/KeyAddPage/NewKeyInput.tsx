@@ -1,13 +1,12 @@
 import { uniq } from 'ramda';
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { KeyManifest } from 'tweek-client';
 import { ComboBox, ValidationIcon } from '../../../../../components/common';
+import { useAllKeys } from '../../../../../contexts/AllKeys';
 import * as SearchService from '../../../../../services/search-service';
-import { Validation } from '../../../../../store/ducks/types';
 import { useShowInternalKeys } from '../../../../../utils';
-import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
+import { Validation } from './key-name-validations';
 
 const getKeyPrefix = (path: string) => path.split('/').slice(0, -1).join('/');
 
@@ -22,31 +21,20 @@ function getKeyNameSuggestions(allKeys: Record<string, KeyManifest>, showInterna
   return uniq(suggestions).sort();
 }
 
-type State = { keys: Record<string, KeyManifest> };
-
-const enhance = connect((state: State) => ({ keys: state.keys }));
-
-export type NewKeyInputProps = State & {
-  validation?: Partial<Validation>;
-  displayName: string;
-  onChange: (keyName: string, validation: Validation) => void;
+export type NewKeyInputProps = {
+  validation?: Validation;
+  keyPath: string;
+  onChange: (keyPath: string) => void;
 };
 
 const NewKeyInput = ({
-  keys,
-  validation: { isShowingHint = false, hint } = {},
+  validation: { isValid, hint } = { isValid: true },
   onChange,
-  displayName,
+  keyPath,
 }: NewKeyInputProps) => {
   const showInternalKeys = useShowInternalKeys();
-  const keysNames = Object.keys(keys);
 
-  useEffect(() => {
-    const validation = keyNameValidations(displayName, keysNames);
-    validation.isShowingHint = false;
-    onChange(displayName, validation);
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
-
+  const keys = useAllKeys();
   const suggestions = getKeyNameSuggestions(keys, showInternalKeys).map((x) => ({
     label: x,
     value: x,
@@ -54,23 +42,15 @@ const NewKeyInput = ({
 
   return (
     <div className="keypath-input-wrapper">
-      <div
-        data-comp="new-key-name"
-        className="keypath-input-container"
-        data-with-error={isShowingHint}
-      >
-        <ValidationIcon show={isShowingHint} hint={hint} />
+      <div data-comp="new-key-name" className="keypath-input-container" data-with-error={!isValid}>
+        <ValidationIcon show={!isValid} hint={hint} />
         <ComboBox
           autofocus
           data-field="new-key-name-input"
           suggestions={suggestions}
-          value={displayName}
+          value={keyPath}
           placeholder="Enter key full path"
-          onChange={(text) => {
-            const validation = keyNameValidations(text, keysNames);
-            validation.isShowingHint = !validation.isValid;
-            onChange(text, validation);
-          }}
+          onChange={onChange}
           showValueInOptions
         />
       </div>
@@ -78,4 +58,4 @@ const NewKeyInput = ({
   );
 };
 
-export default enhance(NewKeyInput);
+export default NewKeyInput;
