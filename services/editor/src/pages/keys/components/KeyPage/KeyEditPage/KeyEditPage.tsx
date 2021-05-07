@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React, { UIEventHandler, useState } from 'react';
-import { createUseSelectedKey } from '../../../../../contexts/SelectedKey/useSelectedKey';
-import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
+import { createUseSelectedKey, useUpdateKey } from '../../../../../contexts/SelectedKey';
 import KeyEditor from './KeyEditor';
 import './KeyEditPage.css';
 import KeyFullHeader from './KeyFullHeader';

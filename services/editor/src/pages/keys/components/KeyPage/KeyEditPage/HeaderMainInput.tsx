@@ -1,7 +1,6 @@
 import React from 'react';
 import { EditableText } from '../../../../../components/common';
-import { createUseSelectedKey } from '../../../../../contexts/SelectedKey/useSelectedKey';
-import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
+import { createUseSelectedKey, useUpdateKey } from '../../../../../contexts/SelectedKey';
 
 const useSelectedKey = createUseSelectedKey(({ manifest, revision, revisionHistory }) => {
   const isHistoricRevision = Boolean(

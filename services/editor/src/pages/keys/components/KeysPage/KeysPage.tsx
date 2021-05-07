@@ -3,7 +3,7 @@ import DocumentTitle from 'react-document-title';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { RouteComponentProps } from 'react-router';
 import { useLoadKeys } from '../../../../contexts/AllKeys';
-import { createUseSelectedKey } from '../../../../contexts/SelectedKey/useSelectedKey';
+import { createUseSelectedKey } from '../../../../contexts/SelectedKey';
 import { useLoadTags } from '../../../../contexts/Tags';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';

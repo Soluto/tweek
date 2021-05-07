@@ -2,7 +2,7 @@ import React from 'react';
 import { KeyManifest } from 'tweek-client';
 import ConstEditor from '../../../../../components/ConstEditor';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
-import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
+import { useUpdateKey } from '../../../../../contexts/SelectedKey';
 import { types } from '../../../../../services/types-service';
 
 export type EditorProps = {

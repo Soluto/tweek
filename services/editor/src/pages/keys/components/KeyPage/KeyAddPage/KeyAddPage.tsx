@@ -1,8 +1,10 @@
 import React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
-import { useLoadKey } from '../../../../../contexts/SelectedKey/SelectedKey';
-import { createUseSelectedKey } from '../../../../../contexts/SelectedKey/useSelectedKey';
-import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
+import {
+  createUseSelectedKey,
+  useLoadKey,
+  useUpdateKey,
+} from '../../../../../contexts/SelectedKey';
 import { RouteLeaveGuard } from '../../../../../hoc/route-leave-hook';
 import KeyEditPage from '../KeyEditPage/KeyEditPage';
 import './KeyAddPage.css';
