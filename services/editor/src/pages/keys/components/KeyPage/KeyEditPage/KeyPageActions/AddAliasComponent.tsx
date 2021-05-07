@@ -1,7 +1,6 @@
 import React from 'react';
 import { AlertComponentProps } from '../../../../../../components/alerts/types';
-import { Validation } from '../../../../../../store/ducks/types';
-import { useKeyPathValidation } from '../../KeyAddPage/key-name-validations';
+import { useKeyPathValidation, Validation } from '../../KeyAddPage/key-name-validations';
 import NewKeyInput from '../../KeyAddPage/NewKeyInput';
 
 export type AliasData = {

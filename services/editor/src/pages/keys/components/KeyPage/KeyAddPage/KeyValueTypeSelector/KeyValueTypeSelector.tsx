@@ -3,7 +3,7 @@ import { titleCase } from 'title-case';
 import { ComboBox, ValidationIcon } from '../../../../../../components/common';
 import * as TypesServices from '../../../../../../services/types-service';
 import './KeyValueTypeSelector.css';
-import { Validation } from '../../../../../../store/ducks/types';
+import { Validation } from '../key-name-validations';
 
 const getValueTypeSuggestions = () =>
   Object.keys(TypesServices.types).map((x) => ({

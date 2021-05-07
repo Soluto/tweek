@@ -4,9 +4,9 @@ import { KeyManifest } from 'tweek-client';
 import { ComboBox, ValidationIcon } from '../../../../../components/common';
 import { useAllKeys } from '../../../../../contexts/AllKeys';
 import * as SearchService from '../../../../../services/search-service';
-import { Validation } from '../../../../../store/ducks/types';
 import { useShowInternalKeys } from '../../../../../utils';
 import './NewKeyInput.css';
+import { Validation } from './key-name-validations';
 
 const getKeyPrefix = (path: string) => path.split('/').slice(0, -1).join('/');
 
