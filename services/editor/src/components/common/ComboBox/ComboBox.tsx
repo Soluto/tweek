@@ -4,6 +4,7 @@ import React, {
   KeyboardEventHandler,
   ReactElement,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import Input, { InputProps } from '../Input/Input';
@@ -77,6 +78,7 @@ const ComboBox = <T,>({
   const [hasFocus, setFocus] = useState(false);
   const [value, setValue] = useState(initialValue);
   const [highlighted, setHighlighted] = useState<{ index: number; suggestion?: T }>({ index: -1 });
+  const filter = useRef(false);
 
   useEffect(() => {
     setValue(initialValue);
@@ -85,15 +87,19 @@ const ComboBox = <T,>({
   const updateFocus = (focus: boolean) => {
     setFocus(focus);
     onFocus && onFocus(focus);
+    if (!focus) {
+      filter.current = false;
+    }
   };
 
   const filterSuggestions = () => {
     const getCaseLabel = createCase(matchCase, getLabel);
 
-    const filterFunc =
-      filterBy ||
-      ((input, suggestion) =>
-        input === '' || getCaseLabel(suggestion).includes(createCase(matchCase, input)));
+    const filterFunc = filter.current
+      ? filterBy ||
+        ((input, suggestion) =>
+          input === '' || getCaseLabel(suggestion).includes(createCase(matchCase, input)))
+      : () => true;
 
     const filteredSuggestions = initialSuggestions.filter((s) => filterFunc(value, s));
     if (
@@ -118,6 +124,7 @@ const ComboBox = <T,>({
   const onChange = (input: string, selected?: T) => {
     setValue(input);
     originalOnChange && originalOnChange(input, selected);
+    filter.current = true;
   };
 
   const getSuggestion = (index: number) => suggestions[Math.max(0, index)];
