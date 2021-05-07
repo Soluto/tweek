@@ -1,61 +1,37 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { KeyManifest } from 'tweek-client';
-import {
-  addKeyDetails,
-  changeKeyFormat,
-  changeKeyValueType,
-  updateKeyPath,
-} from '../../../../../store/ducks/selectedKey';
-import { KeyActions, SelectedKey, StoreState } from '../../../../../store/ducks/types';
+import { useSelectedKetActions, useSelectedKey } from '../../../../../contexts/SelectedKey';
+import { useKeyPathValidation } from './key-name-validations';
 import './KeyAddPage.css';
 import KeyFormatSelector from './KeyFormatSelector';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import NewKeyInput from './NewKeyInput';
 
-type Actions = Pick<
-  KeyActions,
-  'addKeyDetails' | 'updateKeyPath' | 'changeKeyFormat' | 'changeKeyValueType'
->;
-
-type StateProps = {
-  manifest: KeyManifest;
-  validation: SelectedKey['validation'];
-};
-
-const enhance = connect<StateProps, Actions, {}, StoreState>(
-  (state) => ({
-    manifest: state.selectedKey!.local.manifest,
-    validation: state.selectedKey!.validation,
-  }),
-  {
+const KeyAddPage = () => {
+  const {
     addKeyDetails,
     updateKeyPath,
     changeKeyFormat,
     changeKeyValueType,
-  },
-);
+  } = useSelectedKetActions();
 
-export type KeyAddPageProps = Actions & StateProps;
+  const {
+    local: { manifest },
+    validation,
+  } = useSelectedKey()!;
 
-const KeyAddPage = ({
-  manifest,
-  updateKeyPath,
-  addKeyDetails,
-  changeKeyFormat,
-  changeKeyValueType,
-  validation,
-}: KeyAddPageProps) => {
+  const validateKey = useKeyPathValidation();
+
   const valueType = manifest.valueType;
-  const displayName = manifest.meta.name;
+  const displayName = manifest.key_path;
+
   return (
     <div id="add-key-page" className="add-key-page" data-comp="add-key-page">
       <h3 className="heading-text">Add new Key</h3>
       <div className="add-key-input-wrapper">
         <label className="keypath-label">Keypath:</label>
         <NewKeyInput
-          onChange={updateKeyPath}
-          displayName={displayName}
+          onChange={(keyPath) => updateKeyPath(keyPath, validateKey(keyPath))}
+          keyPath={displayName}
           validation={validation.key}
         />
       </div>
@@ -78,4 +54,4 @@ const KeyAddPage = ({
   );
 };
 
-export default enhance(KeyAddPage);
+export default KeyAddPage;

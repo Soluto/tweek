@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { SelectedKeyProvider } from '../../../../contexts/SelectedKey';
 import { RouteLeaveGuard } from '../../../../hoc/route-leave-hook';
 import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import { closeKey, openKey } from '../../../../store/ducks/selectedKey';
@@ -54,7 +55,7 @@ const KeyPage = ({ selectedKey, match, location, history, openKey, closeKey }: K
   return !implementation ? (
     <MessageKeyPage data-comp="key-not-found" message="Non-existent key" />
   ) : (
-    <KeyEditPage revision={revision || undefined} history={history} selectedKey={selectedKey} />
+    <KeyEditPage revision={revision || undefined} history={history} />
   );
 };
 
@@ -64,7 +65,9 @@ const KeyPageWithGuard = (props: KeyPageProps) => (
     message="You have unsaved changes, are you sure you want to leave this page?"
     className="key-page-wrapper"
   >
-    <KeyPage {...props} />
+    <SelectedKeyProvider>
+      <KeyPage {...props} />
+    </SelectedKeyProvider>
   </RouteLeaveGuard>
 );
 

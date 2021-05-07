@@ -1,59 +1,31 @@
 import * as R from 'ramda';
 import React from 'react';
-import { connect } from 'react-redux';
 import { SaveButton } from '../../../../../../components/common';
 import { useAlerter } from '../../../../../../contexts/Alerts';
+import { useSelectedKetActions, useSelectedKey } from '../../../../../../contexts/SelectedKey';
 import { buttons } from '../../../../../../store/ducks';
-import {
-  addAlias,
-  archiveKey,
-  deleteKey,
-  saveKey,
-} from '../../../../../../store/ducks/selectedKey';
-import { KeyActions, SelectedKey, StoreState } from '../../../../../../store/ducks/types';
 import { useHistorySince } from '../../../../../../utils';
 import { AddAliasButton, ArchiveButton, DeleteButton, UnarchiveButton } from './ActionButtons';
 import { AddAliasComponent, AliasData } from './AddAliasComponent';
 import './KeyPageActions.css';
 
-type Actions = Pick<KeyActions, 'saveKey' | 'addAlias' | 'archiveKey' | 'deleteKey'>;
-
-type StateProps = {
-  selectedKey: SelectedKey;
-  isValid: boolean;
+export type KeyPageActionsProps = {
+  isReadonly?: boolean;
+  isHistoricRevision?: boolean;
+  isInStickyMode?: boolean;
 };
 
-const enhance = connect<StateProps, Actions, {}, StoreState>(
-  (state) => ({ selectedKey: state.selectedKey!, isValid: state.selectedKey!.validation.isValid }),
-  {
-    saveKey,
-    addAlias,
-    archiveKey,
-    deleteKey,
-  },
-);
-
-export type KeyPageActionsProps = StateProps &
-  Actions & {
-    isReadonly?: boolean;
-    isHistoricRevision?: boolean;
-    isInStickyMode?: boolean;
-  };
-
 const KeyPageActions = ({
-  selectedKey: { key, local, remote, isSaving },
   isReadonly,
   isHistoricRevision,
-  isValid,
   isInStickyMode,
-  saveKey,
-  addAlias,
-  archiveKey,
-  deleteKey,
 }: KeyPageActionsProps) => {
   const alerter = useAlerter();
   const historySince = useHistorySince();
+  const { local, remote, isSaving, validation } = useSelectedKey()!;
+  const { saveKey, addAlias, archiveKey, deleteKey } = useSelectedKetActions();
 
+  const isValid = validation.isValid;
   const hasChanges = !R.equals(local, remote);
   const extraButtons = !isInStickyMode;
   const archived = local && local.manifest.meta.archived;
@@ -65,14 +37,14 @@ const KeyPageActions = ({
     };
 
     const alertResult = await alerter.showCustomAlert({
-      title: `Add alias for ${key}`,
+      title: `Add alias for ${local.manifest.key_path}`,
       message: 'Insert a new alias',
       component: AddAliasComponent,
       buttons: [okButton, buttons.CANCEL],
     });
 
     if (alertResult.result && alertResult.data?.validation?.isValid) {
-      addAlias(alertResult.data.displayName!);
+      addAlias(alertResult.data.keyPath!);
     }
   };
 
@@ -105,4 +77,4 @@ const KeyPageActions = ({
   );
 };
 
-export default enhance(KeyPageActions);
+export default KeyPageActions;

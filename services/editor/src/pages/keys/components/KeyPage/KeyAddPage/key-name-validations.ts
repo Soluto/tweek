@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { useKeysContext } from '../../../../../contexts/AllKeys';
 import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import { Validation } from '../../../../../store/ducks/types';
 
@@ -55,3 +57,11 @@ export default function keyNameValidations(keyName: string, keysList: string[]):
   const failedRule = validations.find((x) => !x.rule({ value: keyName, keysList }));
   return { isValid: !failedRule, hint: failedRule?.hint };
 }
+
+export const useKeyPathValidation = () => {
+  const keys$ = useKeysContext();
+
+  return useCallback((keyPath: string) => keyNameValidations(keyPath, Object.keys(keys$.value)), [
+    keys$,
+  ]);
+};

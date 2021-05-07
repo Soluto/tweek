@@ -13,7 +13,7 @@ const getValueTypeSuggestions = () =>
 
 export type KeyValueTypeSelectorProps = {
   value: string;
-  onChange: (valueType: string | undefined) => void;
+  onChange: (valueType: string) => void;
   validation?: Partial<Validation>;
 };
 

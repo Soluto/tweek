@@ -1,53 +1,32 @@
 import classNames from 'classnames';
 import { History } from 'history';
 import React, { UIEventHandler, useState } from 'react';
-import { connect } from 'react-redux';
-import {
-  deleteAlias,
-  updateImplementation,
-  updateKeyManifest,
-  updateKeyName,
-} from '../../../../../store/ducks/selectedKey';
-import { KeyActions, SelectedKey } from '../../../../../store/ducks/types';
+import { useSelectedKetActions, useSelectedKey } from '../../../../../contexts/SelectedKey';
 import KeyEditor from './KeyEditor';
 import './KeyEditPage.css';
 import KeyFullHeader from './KeyFullHeader';
 import KeyStickyHeader from './KeyStickyHeader';
 
-export type EditPageActions = Pick<
-  KeyActions,
-  'updateKeyManifest' | 'deleteAlias' | 'updateKeyName' | 'updateImplementation'
->;
-
-const enhance = connect<{}, EditPageActions>(null, {
-  updateKeyManifest,
-  deleteAlias,
-  updateKeyName,
-  updateImplementation,
-});
-
-export type KeyEditPageProps = EditPageActions & {
-  selectedKey: SelectedKey;
+export type KeyEditPageProps = {
   revision?: string;
   history: History;
 };
 
-const KeyEditPage = ({
-  selectedKey,
-  revision,
-  history,
-  deleteAlias,
-  updateKeyName,
-  updateKeyManifest,
-  updateImplementation,
-}: KeyEditPageProps) => {
+const KeyEditPage = ({ revision, history }: KeyEditPageProps) => {
   const {
-    key,
     local: { manifest, implementation },
     revisionHistory,
     usedBy,
     aliases,
-  } = selectedKey;
+  } = useSelectedKey()!;
+
+  const {
+    updateKeyManifest,
+    deleteAlias,
+    updateKeyName,
+    updateImplementation,
+  } = useSelectedKetActions();
+
   const [isInStickyMode, setIsInStickyMode] = useState(false);
 
   const onScroll: UIEventHandler<HTMLDivElement> = (event) => {
@@ -113,7 +92,7 @@ const KeyEditPage = ({
             onTagsChanged={onTagsChanged}
             revisionHistory={revisionHistory}
             revision={revision}
-            keyFullPath={key}
+            keyFullPath={manifest.key_path}
             usedBy={usedBy}
             aliases={aliases}
             deleteAlias={deleteAlias}
@@ -136,4 +115,4 @@ const KeyEditPage = ({
   );
 };
 
-export default enhance(KeyEditPage);
+export default KeyEditPage;

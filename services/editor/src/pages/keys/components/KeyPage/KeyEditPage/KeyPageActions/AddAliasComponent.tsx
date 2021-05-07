@@ -1,22 +1,25 @@
 import React from 'react';
 import { AlertComponentProps } from '../../../../../../components/alerts/types';
 import { Validation } from '../../../../../../store/ducks/types';
+import { useKeyPathValidation } from '../../KeyAddPage/key-name-validations';
 import NewKeyInput from '../../KeyAddPage/NewKeyInput';
 
 export type AliasData = {
-  displayName?: string;
-  validation?: Partial<Validation>;
+  keyPath?: string;
+  validation?: Validation;
 };
 
 export const AddAliasComponent = ({
   onChange,
-  componentData: { displayName = '', validation = {} } = {},
-}: AlertComponentProps<AliasData>) => (
-  <NewKeyInput
-    onChange={(newName, newValidation) =>
-      onChange({ displayName: newName, validation: newValidation })
-    }
-    displayName={displayName}
-    validation={validation}
-  />
-);
+  componentData: { keyPath = '', validation } = {},
+}: AlertComponentProps<AliasData>) => {
+  const validateKeyPath = useKeyPathValidation();
+
+  return (
+    <NewKeyInput
+      onChange={(keyPath) => onChange({ keyPath, validation: validateKeyPath(keyPath) })}
+      keyPath={keyPath}
+      validation={validation}
+    />
+  );
+};
