@@ -2,9 +2,14 @@ import { equals } from 'ramda';
 import React from 'react';
 import { SaveButton } from '../../../../../../components/common';
 import { AlertButton, buttons, useAlerter } from '../../../../../../contexts/Alerts';
-import { useKeyActions } from '../../../../../../contexts/SelectedKey/useKeyActions';
-import { createUseSelectedKey } from '../../../../../../contexts/SelectedKey/useSelectedKey';
-import { AddAliasButton, ArchiveButton, DeleteButton, UnarchiveButton } from './ActionButtons';
+import { createUseSelectedKey, useKeyActions } from '../../../../../../contexts/SelectedKey';
+import {
+  AddAliasButton,
+  ArchiveButton,
+  DeleteButton,
+  ResetButton,
+  UnarchiveButton,
+} from './ActionButtons';
 import { AddAliasComponent, AliasData } from './AddAliasComponent';
 import './KeyPageActions.css';
 
@@ -22,6 +27,7 @@ const useSelectedKey = createUseSelectedKey(({ remote, manifest, implementation,
       !equals(remote.implementation, implementation),
     isSaving,
     manifest,
+    isNew: !remote,
   };
 });
 
@@ -31,10 +37,10 @@ const KeyPageActions = ({
   isInStickyMode,
 }: KeyPageActionsProps) => {
   const alerter = useAlerter();
-  const { manifest, hasChanges, isSaving } = useSelectedKey()!;
-  const { saveKey, addAlias, archiveKey, deleteKey } = useKeyActions();
+  const { manifest, hasChanges, isSaving, isNew } = useSelectedKey();
+  const { saveKey, addAlias, archiveKey, deleteKey, resetKey } = useKeyActions();
 
-  const extraButtons = !isInStickyMode;
+  const extraButtons = !isInStickyMode && !isNew;
   const archived = manifest?.meta.archived;
 
   const onAddAlias = async () => {
@@ -63,14 +69,20 @@ const KeyPageActions = ({
         </div>
       )}
       <div className="key-action-buttons-wrapper">
-        {extraButtons && archived && <DeleteButton disabled={isSaving} onClick={deleteKey} />}
-        {extraButtons &&
-          (archived ? (
-            <UnarchiveButton disabled={isSaving} onClick={() => archiveKey(false)} />
-          ) : (
-            <ArchiveButton disabled={isSaving} onClick={() => archiveKey(true)} />
-          ))}
-        {extraButtons && <AddAliasButton disabled={isSaving} onClick={onAddAlias} />}
+        {extraButtons && (
+          <>
+            {archived ? (
+              <>
+                <DeleteButton disabled={isSaving} onClick={deleteKey} />
+                <UnarchiveButton disabled={isSaving} onClick={() => archiveKey(false)} />
+              </>
+            ) : (
+              <ArchiveButton disabled={isSaving} onClick={() => archiveKey(true)} />
+            )}
+            <AddAliasButton disabled={isSaving} onClick={onAddAlias} />
+            {hasChanges && <ResetButton disabled={isSaving} onClick={resetKey} />}
+          </>
+        )}
         <SaveButton
           isSaving={isSaving}
           hasChanges={hasChanges}

@@ -1,9 +1,6 @@
-import { equals } from 'ramda';
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { useLoadKey } from '../../../../contexts/SelectedKey/SelectedKey';
-import { createUseSelectedKey } from '../../../../contexts/SelectedKey/useSelectedKey';
-import { RouteLeaveGuard } from '../../../../hoc/route-leave-hook';
+import { createUseSelectedKey, useLoadKey } from '../../../../contexts/SelectedKey';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
 import './KeyPage.css';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
@@ -17,7 +14,7 @@ const KeyPage = ({ match, location }: RouteComponentProps) => {
   const params = new URLSearchParams(location.search);
   const revision = params.get('revision');
 
-  const loading = useLoadKey(configKey, revision || undefined);
+  const loading = useLoadKey(configKey, revision || undefined, true);
   const selectedKey = useSelectedKey();
 
   if (loading) {
@@ -31,22 +28,4 @@ const KeyPage = ({ match, location }: RouteComponentProps) => {
   return <KeyEditPage />;
 };
 
-const useHasChanges = createUseSelectedKey(
-  ({ remote, manifest, implementation }) =>
-    !equals(remote?.manifest, manifest) || !equals(remote?.implementation, implementation),
-);
-
-const KeyPageWithGuard = (props: RouteComponentProps) => {
-  const hasChanges = useHasChanges();
-  return (
-    <RouteLeaveGuard
-      guard={hasChanges}
-      message="You have unsaved changes, are you sure you want to leave this page?"
-      className="key-page-wrapper"
-    >
-      <KeyPage {...props} />
-    </RouteLeaveGuard>
-  );
-};
-
-export default KeyPageWithGuard;
+export default KeyPage;

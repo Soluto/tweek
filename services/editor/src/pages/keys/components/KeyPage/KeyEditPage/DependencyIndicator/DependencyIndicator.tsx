@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { ComponentType, Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Collapse } from 'react-collapse';
 import { Link } from 'react-router-dom';
-import { useDeleteAlias } from '../../../../../../contexts/SelectedKey/useKeyActions';
+import { useDeleteAlias } from '../../../../../../contexts/SelectedKey';
 import trashIcon from '../../../../../../resources/trash-icon.svg';
 import './DependencyIndicator.css';
 

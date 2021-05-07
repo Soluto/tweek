@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { useHistory } from 'react-router';
 import { Revision as RevisionProps } from 'tweek-client';
-import { createUseSelectedKey } from '../../../../../../contexts/SelectedKey/useSelectedKey';
+import { createUseSelectedKey } from '../../../../../../contexts/SelectedKey';
 
 const RevisionHistorySelect = styled.select`
   align-self: flex-start;
