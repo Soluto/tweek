@@ -2,26 +2,19 @@ import React from 'react';
 import { KeyManifest } from 'tweek-client';
 import ConstEditor from '../../../../../components/ConstEditor';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
+import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
 import { types } from '../../../../../services/types-service';
 
 export type EditorProps = {
   manifest: KeyManifest;
   sourceFile: string;
-  onSourceFileChange: (source: string) => void;
-  onManifestChange: (manifest: KeyManifest) => void;
   onDependencyChanged: (deps: string[]) => void;
   isReadonly?: boolean;
 };
 
-const KeyEditor = ({
-  manifest,
-  sourceFile,
-  onManifestChange,
-  onSourceFileChange,
-  onDependencyChanged,
-  isReadonly,
-}: EditorProps) => {
+const KeyEditor = ({ manifest, sourceFile, onDependencyChanged, isReadonly }: EditorProps) => {
   const valueType = types[manifest.valueType] || types['string'];
+  const { updateKeyManifest, updateImplementation } = useUpdateKey();
 
   if (manifest.implementation.type === 'file') {
     switch (manifest.implementation.format) {
@@ -29,7 +22,7 @@ const KeyEditor = ({
         return (
           <JPadFullEditor
             source={sourceFile}
-            onChange={onSourceFileChange}
+            onChange={updateImplementation}
             dependencies={manifest.dependencies}
             onDependencyChanged={onDependencyChanged}
             isReadonly={isReadonly}
@@ -47,7 +40,7 @@ const KeyEditor = ({
         value={manifest.implementation.value}
         valueType={valueType}
         onChange={(value) =>
-          onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })
+          updateKeyManifest({ ...manifest, implementation: { ...manifest.implementation, value } })
         }
       />
     );

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
+import React, { useEffect, useState } from 'react';
+import DocumentTitle from 'react-document-title';
+import { Link } from 'react-router-dom';
+import { useAllKeys } from '../../../../contexts/AllKeys';
 import * as SearchService from '../../../../services/search-service';
 import { getTagLink } from '../../utils/search';
-import DocumentTitle from 'react-document-title';
 
 const useSearchResults = (query) => {
   const [searchResults, setSearchResults] = useState(null);
@@ -117,7 +117,7 @@ export default function SearchResults({
   },
 }) {
   const results = useSearchResults(query);
-  const keys = useSelector((x) => x.keys);
+  const keys = useAllKeys();
 
   return (
     <>

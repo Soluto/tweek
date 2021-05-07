@@ -1,41 +1,23 @@
-import React, { FunctionComponent, PropsWithChildren, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import DocumentTitle from 'react-document-title';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { useLoadKeys } from '../../../../contexts/AllKeys';
+import { createUseSelectedKey } from '../../../../contexts/SelectedKey/useSelectedKey';
 import { useLoadTags } from '../../../../contexts/Tags';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
 import { refreshTypes } from '../../../../services/types-service';
-import { addKey } from '../../../../store/ducks/selectedKey';
-import { KeyActions, StoreState } from '../../../../store/ducks/types';
+import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import KeysList from '../KeysList/KeysList';
 import QuickNavigation from '../QuickNavigation/QuickNavigation';
-import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import './KeysPage.css';
 
-type StateProps = Pick<StoreState, 'selectedKey'>;
-type Actions = Pick<KeyActions, 'addKey'>;
+export type KeysPageProps = Pick<RouteComponentProps, 'location' | 'history'>;
 
-const enhance = connect<StateProps, Actions, PropsWithChildren<{}>, StoreState>(
-  (state) => ({ selectedKey: state.selectedKey }),
-  {
-    addKey,
-  },
-);
+const useSelectedKey = createUseSelectedKey((key) => key.manifest?.key_path);
 
-export type KeysPageProps = StateProps &
-  Actions &
-  Pick<RouteComponentProps, 'location' | 'history'>;
-
-const KeysPage: FunctionComponent<KeysPageProps> = ({
-  selectedKey,
-  addKey,
-  location,
-  history,
-  children,
-}) => {
+const KeysPage: FunctionComponent<KeysPageProps> = ({ location, history, children }) => {
   useLoadTags();
   useLoadKeys();
 
@@ -44,6 +26,9 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({
   }, [location.pathname, location.search]);
 
   const [navOpen, setNavOpen] = useState(false);
+
+  const selectedKey = useSelectedKey();
+
   useHotkeys(
     'ctrl+k',
     () => {
@@ -53,17 +38,17 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({
   );
 
   return (
-    <DocumentTitle title={`Tweek - ${selectedKey?.key || 'Keys'}`}>
+    <DocumentTitle title={`Tweek - ${selectedKey || 'Keys'}`}>
       <div className="keys-page-container">
         <div key="KeysList" className="keys-list">
           <div className="keys-list-wrapper">
-            <KeysList selectedKey={selectedKey?.key} />
+            <KeysList selectedKey={selectedKey} />
           </div>
           <div className="add-button-wrapper">
             <button
               className="add-key-button"
               data-comp="add-new-key"
-              onClick={() => addKey(hasUnsavedChanges)}
+              onClick={() => history.push(`/keys/${BLANK_KEY_NAME}`)}
             >
               Add key
             </button>
@@ -87,6 +72,6 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({
 };
 
 const loadingFactory = () => Promise.all([refreshTypes(), refreshSchema()]);
-const KeysPageWithLoading = withLoading(loadingFactory)(KeysPage);
+const enhance = withLoading(loadingFactory);
 
-export default enhance(KeysPageWithLoading);
+export default enhance(KeysPage);

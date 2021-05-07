@@ -1,8 +1,9 @@
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } from 'react';
+import React, { ComponentType, Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Collapse } from 'react-collapse';
 import { Link } from 'react-router-dom';
+import { useDeleteAlias } from '../../../../../../contexts/SelectedKey/useKeyActions';
 import trashIcon from '../../../../../../resources/trash-icon.svg';
 import './DependencyIndicator.css';
 
@@ -39,37 +40,43 @@ const Expander: FunctionComponent<ExpanderProps> = ({ title, children, ...props 
   );
 };
 
-const renderLink = (dep: string) => <Link to={`/keys/${dep}`}>{dep}</Link>;
-
-export type RenderTextProps = {
-  deleteAlias: (dep: string) => void;
+type DependencyProps = {
+  dependency: string;
 };
 
-const renderText = (dep: string, { deleteAlias }: RenderTextProps) => (
-  <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-    <span style={{ marginRight: 5 }}>{dep}</span>
-    <button data-comp="delete-alias" onClick={() => deleteAlias(dep)}>
-      <img src={trashIcon} alt={''} />
-    </button>
-  </div>
+const KeyDependency = ({ dependency }: DependencyProps) => (
+  <Link to={`/keys/${dependency}`}>{dependency}</Link>
 );
+
+const AliasDependency = ({ dependency }: DependencyProps) => {
+  const deleteAlias = useDeleteAlias();
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      <span style={{ marginRight: 5 }}>{dependency}</span>
+      <button data-comp="delete-alias" onClick={() => deleteAlias(dependency)}>
+        <img src={trashIcon} alt={''} />
+      </button>
+    </div>
+  );
+};
 
 export type DependencyListProps = {
   items?: string[];
 };
 
-const createDependenciesList = <T,>(
+const createDependenciesList = (
   componentName: string,
   title: string,
-  renderElement: (dep: string, props: T) => ReactElement,
-): FunctionComponent<DependencyListProps & T> => ({ items, ...props }) => (
+  Component: ComponentType<DependencyProps>,
+): FunctionComponent<DependencyListProps> => ({ items }) => (
   <div className="dependency-indicator-container" data-comp={componentName} data-loaded={!!items}>
     {items?.length ? (
       <Expander title={title}>
         <ul>
           {items.map((dep) => (
             <li key={dep} className="dependency-item" data-dependency={dep}>
-              {renderElement(dep, props as T)}
+              <Component dependency={dep} />
             </li>
           ))}
         </ul>
@@ -78,8 +85,8 @@ const createDependenciesList = <T,>(
   </div>
 );
 
-export const DependsOn = createDependenciesList('depends-on', 'Depends on:', renderLink);
+export const DependsOn = createDependenciesList('depends-on', 'Depends on:', KeyDependency);
 
-export const UsedBy = createDependenciesList('used-by', 'Used by:', renderLink);
+export const UsedBy = createDependenciesList('used-by', 'Used by:', KeyDependency);
 
-export const Aliases = createDependenciesList('aliases', 'Aliases:', renderText);
+export const Aliases = createDependenciesList('aliases', 'Aliases:', AliasDependency);

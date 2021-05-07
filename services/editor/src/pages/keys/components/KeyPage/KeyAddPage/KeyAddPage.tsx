@@ -1,56 +1,45 @@
 import React from 'react';
-import { useSelectedKetActions, useSelectedKey } from '../../../../../contexts/SelectedKey';
-import { useKeyPathValidation } from './key-name-validations';
+import { Redirect, RouteComponentProps } from 'react-router';
+import { useLoadKey } from '../../../../../contexts/SelectedKey/SelectedKey';
+import { createUseSelectedKey } from '../../../../../contexts/SelectedKey/useSelectedKey';
+import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
+import { RouteLeaveGuard } from '../../../../../hoc/route-leave-hook';
+import KeyEditPage from '../KeyEditPage/KeyEditPage';
 import './KeyAddPage.css';
-import KeyFormatSelector from './KeyFormatSelector';
-import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
-import NewKeyInput from './NewKeyInput';
+import KeyManifestPage from './KeyManifestPage';
 
-const KeyAddPage = () => {
-  const {
-    addKeyDetails,
-    updateKeyPath,
-    changeKeyFormat,
-    changeKeyValueType,
-  } = useSelectedKetActions();
+const useShouldContinue = createUseSelectedKey(({ remote, manifest }) => ({
+  shouldContinue: !!manifest,
+  savedKeyPath: !!remote && remote.manifest.key_path,
+}));
 
-  const {
-    local: { manifest },
-    validation,
-  } = useSelectedKey()!;
+const KeyAddPage = ({ location }: RouteComponentProps) => {
+  const loading = useLoadKey(undefined, location.key);
 
-  const validateKey = useKeyPathValidation();
+  const { shouldContinue, savedKeyPath } = useShouldContinue();
+  const { createNewKey } = useUpdateKey();
 
-  const valueType = manifest.valueType;
-  const displayName = manifest.key_path;
+  if (loading) {
+    return null;
+  }
+
+  if (!shouldContinue) {
+    const params = new URLSearchParams(location.search);
+    return <KeyManifestPage onContinue={createNewKey} hint={params.get('hint') || ''} />;
+  }
+
+  if (savedKeyPath) {
+    return <Redirect push to={`/keys/${savedKeyPath}`} />;
+  }
 
   return (
-    <div id="add-key-page" className="add-key-page" data-comp="add-key-page">
-      <h3 className="heading-text">Add new Key</h3>
-      <div className="add-key-input-wrapper">
-        <label className="keypath-label">Keypath:</label>
-        <NewKeyInput
-          onChange={(keyPath) => updateKeyPath(keyPath, validateKey(keyPath))}
-          keyPath={displayName}
-          validation={validation.key}
-        />
-      </div>
-      <div className="add-key-properties-wrapper">
-        <KeyFormatSelector onFormatChanged={changeKeyFormat} />
-        <div className="hspace" />
-        <KeyValueTypeSelector
-          value={valueType}
-          validation={validation.manifest?.valueType}
-          onChange={changeKeyValueType}
-        />
-      </div>
-      <div className="vspace" />
-      <div className="add-key-button-wrapper">
-        <button className="add-key-button" data-comp="add-key-button" onClick={addKeyDetails}>
-          Continue
-        </button>
-      </div>
-    </div>
+    <RouteLeaveGuard
+      guard
+      message="You have unsaved changes, are you sure you want to leave this page?"
+      className="key-page-wrapper"
+    >
+      <KeyEditPage />
+    </RouteLeaveGuard>
   );
 };
 

@@ -1,10 +1,10 @@
-import * as R from 'ramda';
+import { equals } from 'ramda';
 import React from 'react';
 import { SaveButton } from '../../../../../../components/common';
 import { useAlerter } from '../../../../../../contexts/Alerts';
-import { useSelectedKetActions, useSelectedKey } from '../../../../../../contexts/SelectedKey';
+import { useKeyActions } from '../../../../../../contexts/SelectedKey/useKeyActions';
+import { createUseSelectedKey } from '../../../../../../contexts/SelectedKey/useSelectedKey';
 import { buttons } from '../../../../../../store/ducks';
-import { useHistorySince } from '../../../../../../utils';
 import { AddAliasButton, ArchiveButton, DeleteButton, UnarchiveButton } from './ActionButtons';
 import { AddAliasComponent, AliasData } from './AddAliasComponent';
 import './KeyPageActions.css';
@@ -15,20 +15,28 @@ export type KeyPageActionsProps = {
   isInStickyMode?: boolean;
 };
 
+const useSelectedKey = createUseSelectedKey(({ remote, manifest, implementation, isSaving }) => {
+  return {
+    hasChanges:
+      !remote ||
+      !equals(remote.manifest, manifest) ||
+      !equals(remote.implementation, implementation),
+    isSaving,
+    manifest,
+  };
+});
+
 const KeyPageActions = ({
   isReadonly,
   isHistoricRevision,
   isInStickyMode,
 }: KeyPageActionsProps) => {
   const alerter = useAlerter();
-  const historySince = useHistorySince();
-  const { local, remote, isSaving, validation } = useSelectedKey()!;
-  const { saveKey, addAlias, archiveKey, deleteKey } = useSelectedKetActions();
+  const { manifest, hasChanges, isSaving } = useSelectedKey()!;
+  const { saveKey, addAlias, archiveKey, deleteKey } = useKeyActions();
 
-  const isValid = validation.isValid;
-  const hasChanges = !R.equals(local, remote);
   const extraButtons = !isInStickyMode;
-  const archived = local && local.manifest.meta.archived;
+  const archived = manifest?.meta.archived;
 
   const onAddAlias = async () => {
     const okButton = {
@@ -37,7 +45,7 @@ const KeyPageActions = ({
     };
 
     const alertResult = await alerter.showCustomAlert({
-      title: `Add alias for ${local.manifest.key_path}`,
+      title: `Add alias for ${manifest?.key_path}`,
       message: 'Insert a new alias',
       component: AddAliasComponent,
       buttons: [okButton, buttons.CANCEL],
@@ -59,18 +67,18 @@ const KeyPageActions = ({
         {extraButtons && archived && <DeleteButton disabled={isSaving} onClick={deleteKey} />}
         {extraButtons &&
           (archived ? (
-            <UnarchiveButton disabled={isSaving} onClick={() => archiveKey(false, historySince)} />
+            <UnarchiveButton disabled={isSaving} onClick={() => archiveKey(false)} />
           ) : (
-            <ArchiveButton disabled={isSaving} onClick={() => archiveKey(true, historySince)} />
+            <ArchiveButton disabled={isSaving} onClick={() => archiveKey(true)} />
           ))}
         {extraButtons && <AddAliasButton disabled={isSaving} onClick={onAddAlias} />}
         <SaveButton
-          isValid={isValid}
+          // todo isValid={isValid}
           isSaving={isSaving}
           hasChanges={hasChanges}
           tabIndex={-1}
           data-comp="save-changes"
-          onClick={() => saveKey(historySince)}
+          onClick={saveKey}
         />
       </div>
     </div>

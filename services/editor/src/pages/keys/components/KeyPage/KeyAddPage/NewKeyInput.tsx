@@ -1,8 +1,8 @@
 import { uniq } from 'ramda';
 import React from 'react';
-import { connect } from 'react-redux';
 import { KeyManifest } from 'tweek-client';
 import { ComboBox, ValidationIcon } from '../../../../../components/common';
+import { useAllKeys } from '../../../../../contexts/AllKeys';
 import * as SearchService from '../../../../../services/search-service';
 import { Validation } from '../../../../../store/ducks/types';
 import { useShowInternalKeys } from '../../../../../utils';
@@ -21,24 +21,20 @@ function getKeyNameSuggestions(allKeys: Record<string, KeyManifest>, showInterna
   return uniq(suggestions).sort();
 }
 
-type State = { keys: Record<string, KeyManifest> };
-
-const enhance = connect((state: State) => ({ keys: state.keys }));
-
-export type NewKeyInputProps = State & {
+export type NewKeyInputProps = {
   validation?: Validation;
   keyPath: string;
   onChange: (keyPath: string) => void;
 };
 
 const NewKeyInput = ({
-  keys,
   validation: { isValid, hint } = { isValid: true },
   onChange,
   keyPath,
 }: NewKeyInputProps) => {
   const showInternalKeys = useShowInternalKeys();
 
+  const keys = useAllKeys();
   const suggestions = getKeyNameSuggestions(keys, showInternalKeys).map((x) => ({
     label: x,
     value: x,
@@ -62,4 +58,4 @@ const NewKeyInput = ({
   );
 };
 
-export default enhance(NewKeyInput);
+export default NewKeyInput;

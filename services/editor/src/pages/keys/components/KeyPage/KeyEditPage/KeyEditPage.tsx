@@ -1,31 +1,25 @@
 import classNames from 'classnames';
-import { History } from 'history';
 import React, { UIEventHandler, useState } from 'react';
-import { useSelectedKetActions, useSelectedKey } from '../../../../../contexts/SelectedKey';
+import { createUseSelectedKey } from '../../../../../contexts/SelectedKey/useSelectedKey';
+import { useUpdateKey } from '../../../../../contexts/SelectedKey/useUpdateKey';
 import KeyEditor from './KeyEditor';
 import './KeyEditPage.css';
 import KeyFullHeader from './KeyFullHeader';
 import KeyStickyHeader from './KeyStickyHeader';
 
-export type KeyEditPageProps = {
-  revision?: string;
-  history: History;
-};
+const useSelectedKey = createUseSelectedKey((key) => ({
+  manifest: key.manifest!,
+  implementation: key.implementation,
+  revisionHistory: key.revisionHistory,
+  usedBy: key.usedBy,
+  aliases: key.aliases,
+  revision: key.revision,
+}));
 
-const KeyEditPage = ({ revision, history }: KeyEditPageProps) => {
-  const {
-    local: { manifest, implementation },
-    revisionHistory,
-    usedBy,
-    aliases,
-  } = useSelectedKey()!;
+const KeyEditPage = () => {
+  const { manifest, implementation, revisionHistory, usedBy, aliases, revision } = useSelectedKey();
 
-  const {
-    updateKeyManifest,
-    deleteAlias,
-    updateKeyName,
-    updateImplementation,
-  } = useSelectedKetActions();
+  const { updateKeyManifest } = useUpdateKey();
 
   const [isInStickyMode, setIsInStickyMode] = useState(false);
 
@@ -41,15 +35,6 @@ const KeyEditPage = ({ revision, history }: KeyEditPageProps) => {
       meta: {
         ...manifest.meta,
         tags: newTags,
-      },
-    });
-
-  const onDisplayNameChanged = (newDisplayName: string) =>
-    updateKeyManifest({
-      ...manifest,
-      meta: {
-        ...manifest.meta,
-        name: newDisplayName,
       },
     });
 
@@ -74,11 +59,8 @@ const KeyEditPage = ({ revision, history }: KeyEditPageProps) => {
   const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
 
   const commonHeadersProps = {
-    onKeyNameChanged: updateKeyName,
-    onDisplayNameChanged,
     isHistoricRevision,
     isReadonly,
-    keyManifest: manifest,
   };
 
   return (
@@ -95,16 +77,13 @@ const KeyEditPage = ({ revision, history }: KeyEditPageProps) => {
             keyFullPath={manifest.key_path}
             usedBy={usedBy}
             aliases={aliases}
-            deleteAlias={deleteAlias}
-            history={history}
+            keyManifest={manifest}
           />
 
           <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
             <KeyEditor
               manifest={manifest}
-              sourceFile={implementation.source as string}
-              onSourceFileChange={(source) => updateImplementation({ source })}
-              onManifestChange={updateKeyManifest}
+              sourceFile={implementation!}
               onDependencyChanged={onDependencyChanged}
               isReadonly={isReadonly}
             />
