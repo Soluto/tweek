@@ -27,20 +27,9 @@ export const useUpdateKey = () => {
     [key$],
   );
 
-  const resetLocalChanges = useCallback(() => {
-    const { remote, manifest, implementation, ...rest } = key$.value;
-    key$.next({
-      remote,
-      manifest: remote?.manifest,
-      implementation: remote?.implementation,
-      ...rest,
-    });
-  }, [key$]);
-
   return {
     updateKeyManifest,
     updateImplementation,
     createNewKey,
-    resetLocalChanges,
   };
 };

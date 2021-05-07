@@ -16,21 +16,24 @@ const deleteKeyAlert = (key: string, aliases: string[] = []) => ({
   }`,
 });
 
-const confirmArchievAlert = {
+const confirmArchiveAlert = {
   title: 'Archive',
   message: 'Archiving the key will discard all your changes.\nDo you want to continue?',
 };
 
-/* eslint-disable react-hooks/exhaustive-deps */
+const resetKeyAlert = {
+  title: 'Reset',
+  message: 'Are you sure you want to reset your changes?',
+};
 
 export const useDeleteAlias = () => {
   const key$ = useSelectedKeyContext();
   const { deleteKey } = useKeysActions();
-  const alerter = useAlerter();
+  const { showConfirm } = useAlerter();
 
   return useCallback(
     async (alias: string) => {
-      if (!(await alerter.showConfirm(deleteKeyAlert(alias))).result) {
+      if (!(await showConfirm(deleteKeyAlert(alias))).result) {
         return;
       }
 
@@ -49,14 +52,14 @@ export const useDeleteAlias = () => {
       key$.next({ ...key, aliases: aliases?.filter((a) => a !== alias) });
       cogoToast.success('Alias deleted successfully');
     },
-    [key$, deleteKey],
+    [key$, deleteKey, showConfirm],
   );
 };
 
 export const useKeyActions = () => {
   const key$ = useSelectedKeyContext();
   const { deleteKey: deleteRemoteKey, saveKey: saveRemoteKey } = useKeysActions();
-  const alerter = useAlerter();
+  const { showConfirm } = useAlerter();
   const history = useHistory();
   const historySince = useHistorySince();
 
@@ -110,7 +113,7 @@ export const useKeyActions = () => {
       const hasChanges =
         !equals(remote.manifest, manifest) || !equals(remote.implementation, implementation);
 
-      if (hasChanges && !(await alerter.showConfirm(confirmArchievAlert)).result) {
+      if (hasChanges && !(await showConfirm(confirmArchiveAlert)).result) {
         return;
       }
 
@@ -140,7 +143,7 @@ export const useKeyActions = () => {
 
       cogoToast.success(`Key ${archived ? 'archived' : 'restored'} successfully`);
     },
-    [key$, saveRemoteKey],
+    [key$, saveRemoteKey, historySince, showConfirm],
   );
 
   const deleteKey = useCallback(async () => {
@@ -156,7 +159,7 @@ export const useKeyActions = () => {
     }
 
     const key = manifest.key_path;
-    if (!(await alerter.showConfirm(deleteKeyAlert(key, aliases))).result) {
+    if (!(await showConfirm(deleteKeyAlert(key, aliases))).result) {
       return;
     }
 
@@ -171,7 +174,7 @@ export const useKeyActions = () => {
     } finally {
       hide!();
     }
-  }, [key$, deleteRemoteKey]);
+  }, [key$, deleteRemoteKey, history, showConfirm]);
 
   const saveKey = useCallback(async () => {
     const { manifest, implementation, isSaving } = key$.value;
@@ -209,7 +212,21 @@ export const useKeyActions = () => {
     key$.next({ ...key$.value, remote: definition, isSaving: false });
 
     cogoToast.success('Key saved successfully');
-  }, [key$, saveRemoteKey]);
+  }, [key$, saveRemoteKey, historySince]);
 
-  return { addAlias, archiveKey, deleteKey, saveKey };
+  const resetKey = useCallback(async () => {
+    if (!(await showConfirm(resetKeyAlert)).result) {
+      return;
+    }
+
+    const { remote, manifest, implementation, ...rest } = key$.value;
+    key$.next({
+      remote,
+      manifest: remote?.manifest,
+      implementation: remote?.implementation,
+      ...rest,
+    });
+  }, [key$, showConfirm]);
+
+  return { addAlias, archiveKey, deleteKey, saveKey, resetKey };
 };
