@@ -13,11 +13,13 @@ import KeysList from '../KeysList/KeysList';
 import QuickNavigation from '../QuickNavigation/QuickNavigation';
 import './KeysPage.css';
 
-export type KeysPageProps = Pick<RouteComponentProps, 'location' | 'history'>;
+export type KeysPageProps = Pick<RouteComponentProps, 'location' | 'history'> & {
+  isExact: boolean;
+};
 
-const useSelectedKey = createUseSelectedKey((key) => key.manifest?.key_path);
+const useSelectedKey = createUseSelectedKey((key) => key.remote?.manifest?.key_path);
 
-const KeysPage: FunctionComponent<KeysPageProps> = ({ location, history, children }) => {
+const KeysPage: FunctionComponent<KeysPageProps> = ({ location, history, isExact, children }) => {
   useLoadTags();
   useLoadKeys();
 
@@ -38,7 +40,7 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({ location, history, childre
   );
 
   return (
-    <DocumentTitle title={`Tweek - ${selectedKey || 'Keys'}`}>
+    <DocumentTitle title={`Tweek - ${isExact ? 'Keys' : selectedKey || 'New Key'}`}>
       <div className="keys-page-container">
         <div key="KeysList" className="keys-list">
           <div className="keys-list-wrapper">
