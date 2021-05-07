@@ -1,5 +1,5 @@
 import cogoToast from 'cogo-toast';
-import { equals } from 'ramda';
+import { assocPath, equals } from 'ramda';
 import { useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { KeyManifest } from 'tweek-client/src/TweekManagementClient/types';
@@ -102,13 +102,13 @@ export const useKeyActions = () => {
         return;
       }
 
-      if (!manifest) {
+      if (!remote || !manifest) {
         cogoToast.error('Failed to archive key');
         return;
       }
 
       const hasChanges =
-        !equals(remote?.manifest, manifest) || !equals(remote?.implementation, implementation);
+        !equals(remote.manifest, manifest) || !equals(remote.implementation, implementation);
 
       if (hasChanges && !(await alerter.showConfirm(confirmArchievAlert)).result) {
         return;
@@ -119,13 +119,10 @@ export const useKeyActions = () => {
         hideAfter: 0,
       });
 
-      const local = {
-        manifest: { ...manifest, meta: { ...manifest.meta, archived } },
-        implementation,
-      };
+      const keyData = assocPath(['manifest', 'meta', 'archived'], archived, remote);
 
       try {
-        await saveRemoteKey(local);
+        await saveRemoteKey(keyData);
       } catch (err) {
         showError(err, `Failed to ${archived ? 'archive' : 'restore'} key`);
         key$.next({ ...key$.value, isSaving: false });
@@ -134,7 +131,7 @@ export const useKeyActions = () => {
         hide!();
       }
 
-      key$.next({ ...key$.value, remote: local, ...local, isSaving: false });
+      key$.next({ ...key$.value, remote: keyData, ...keyData, isSaving: false });
 
       tweekManagementClient
         .getKeyRevisionHistory(manifest.key_path, historySince)
