@@ -21,8 +21,8 @@ import { BLANK_KEY_NAME } from './store/ducks/ducks-utils/blankKeyDefinition';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
-const renderKeyRoutes = ({ match: { path }, location, history }: RouteComponentProps) => (
-  <KeysPage location={location} history={history}>
+const renderKeyRoutes = ({ match: { path, isExact }, location, history }: RouteComponentProps) => (
+  <KeysPage location={location} history={history} isExact={isExact}>
     <Switch>
       <Route exact path={path} component={SelectKeyMessage} />
       <Route path="/keys/$search/:query" component={SearchResults} />
