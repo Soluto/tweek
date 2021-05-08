@@ -11,9 +11,6 @@ const CONTEXT_SAVED = 'CONTEXT_SAVED';
 
 const UPDATE_CONTEXT = 'UPDATE_CONTEXT';
 
-export const openContext = ({ identityType, identityId }) =>
-  push(`/context/${identityType}/${identityId}`);
-
 export const getContext = ({ identityType, identityId }) =>
   async function (dispatch) {
     dispatch({ type: GET_CONTEXT });

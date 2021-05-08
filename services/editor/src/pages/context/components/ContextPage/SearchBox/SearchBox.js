@@ -1,86 +1,62 @@
 import * as changeCase from 'change-case';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 import { ComboBox, Input } from '../../../../../components/common';
 import { getIdentities } from '../../../../../services/context-service';
-import { openContext } from '../../../../../store/ducks/context';
 import './SearchBox.css';
 
-class SearchBox extends Component {
-  constructor(props) {
-    super(props);
+const SearchBox = ({ identityId: initialIdentityId, identityType: initialIdentityType }) => {
+  const [identityId, setIdentityId] = useState(initialIdentityId);
+  const [identityType, setIdentityType] = useState(initialIdentityType);
 
-    this.state = {
-      identityType: '',
-      identityId: '',
-      inputValue: '',
-      identities: [],
-    };
-  }
+  useEffect(() => {
+    setIdentityId(initialIdentityId);
+  }, [initialIdentityId]);
 
-  componentWillMount() {
-    const identities = getIdentities().map((x) => ({ label: changeCase.pascalCase(x), value: x }));
-    this.setState({ identities });
-  }
+  useEffect(() => {
+    setIdentityType(initialIdentityType);
+  }, [initialIdentityType]);
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(nextProps);
-  }
+  const identities = getIdentities().map((x) => ({ label: changeCase.pascalCase(x), value: x }));
 
-  onIdentityChange = (inputValue, selected) => {
-    const identityType = selected ? selected.value : inputValue;
-    this.setState({ inputValue, identityType });
-  };
+  const history = useHistory();
+  const onGetClick = () => history.push(`/context/${identityType}/${identityId}`);
 
-  onIdentityIdChange = (identityId) => {
-    this.setState({ identityId });
-  };
-
-  onGetClick = () => {
-    this.props.openContext({
-      identityType: this.state.identityType,
-      identityId: this.state.identityId,
-    });
-  };
-
-  render() {
-    const { inputValue, identityType, identities, identityId } = this.state;
-    const identityText = identityType || 'identity';
-
-    return (
-      <div className="context-search-container" data-comp="search-identity">
-        <div className="identity-type-container">
-          <ComboBox
-            data-field="identity-type"
-            className="identity-type"
-            placeholder="Enter Identity Type"
-            value={inputValue}
-            suggestions={identities}
-            onChange={this.onIdentityChange}
-          />
-        </div>
-
-        <div className="identity-id-container">
-          <Input
-            data-field="identity-id"
-            placeholder={`Enter ${changeCase.pascalCase(identityText)} Id`}
-            onEnterKeyPress={this.onGetClick}
-            onChange={this.onIdentityIdChange}
-            value={this.state.identityId}
-          />
-        </div>
-
-        <div className="search-button-container">
-          <button
-            data-comp="search"
-            className="search-button"
-            onClick={this.onGetClick}
-            disabled={!identityType || !identityId}
-          />
-        </div>
+  return (
+    <div className="context-search-container" data-comp="search-identity">
+      <div className="identity-type-container">
+        <ComboBox
+          data-field="identity-type"
+          className="identity-type"
+          placeholder="Enter Identity Type"
+          value={identityType}
+          suggestions={identities}
+          onChange={(inputValue, selected) =>
+            setIdentityType(selected ? selected.value : inputValue)
+          }
+        />
       </div>
-    );
-  }
-}
 
-export default connect(null, { openContext })(SearchBox);
+      <div className="identity-id-container">
+        <Input
+          data-field="identity-id"
+          placeholder={`Enter ${changeCase.pascalCase(identityType || 'identity')} Id`}
+          onEnterKeyPress={onGetClick}
+          onChange={setIdentityId}
+          value={identityId}
+        />
+      </div>
+
+      <div className="search-button-container">
+        <button
+          data-comp="search"
+          className="search-button"
+          onClick={onGetClick}
+          disabled={!identityType || !identityId}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default SearchBox;
