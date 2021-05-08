@@ -23,7 +23,7 @@ export const SYSTEM_PROPERTIES: SchemaProperties[] = [
 
 export const getSchemaProperties = (
   schemas: Record<string, Schema>,
-  addSystem?: boolean,
+  addSystem = false,
 ): SchemaProperties[] => {
   const schemaProperties: SchemaProperties[] = Object.entries(schemas).flatMap(
     ([identity, schema]) => [

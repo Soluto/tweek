@@ -1,16 +1,14 @@
 import cogoToast from 'cogo-toast';
-import React, { useState, useContext, useCallback } from 'react';
 import qs from 'query-string';
+import React, { useCallback, useState } from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
-import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import { ComboBox, SaveButton } from '../../../../components/common';
-import { ReduxContext } from '../../../../store';
-import { hookTypes, hookLabelsByType } from './HookTypes';
+import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import './EditHookPage.css';
+import { hookLabelsByType, hookTypes } from './HookTypes';
 import { webhookFormats, webhookLabelsByFormat } from './WebHookFormats';
 
 const EditHookPage = ({ location, history }) => {
-  const { dispatch } = useContext(ReduxContext);
   const initialHookData = (location.state && location.state.hook) || {};
   const id = initialHookData.id;
   const isEditPage = Boolean(id);
@@ -56,7 +54,6 @@ const EditHookPage = ({ location, history }) => {
           setIsSaving,
           history,
           setSaveError,
-          dispatch,
         })}
       />
     </div>
@@ -146,8 +143,11 @@ const useSaveHookCallback = ({
     try {
       setIsSaving(true);
 
-      if (id) await tweekManagementClient.updateHook({ id, keyPath, type, url, format, tags });
-      else await tweekManagementClient.createHook({ keyPath, type, url, format, tags });
+      if (id) {
+        await tweekManagementClient.updateHook({ id, keyPath, type, url, format, tags });
+      } else {
+        await tweekManagementClient.createHook({ keyPath, type, url, format, tags });
+      }
 
       setIsSaving(false);
       cogoToast.success('Hook Saved');
