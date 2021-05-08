@@ -8,7 +8,7 @@ import { useLoadTags } from '../../../../contexts/Tags';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
 import { refreshTypes } from '../../../../services/types-service';
-import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import { BLANK_KEY_NAME } from '../../../../contexts/SelectedKey/blankKeyDefinition';
 import KeysList from '../KeysList/KeysList';
 import QuickNavigation from '../QuickNavigation/QuickNavigation';
 import './KeysPage.css';

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useKeysContext } from '../../../../../contexts/AllKeys';
-import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import { BLANK_KEY_NAME } from '../../../../../contexts/SelectedKey/blankKeyDefinition';
 
 type ValidationRequest = {
   value: string;

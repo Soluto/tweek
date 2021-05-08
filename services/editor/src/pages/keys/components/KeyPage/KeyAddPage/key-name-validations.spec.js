@@ -1,6 +1,6 @@
 /* global jest, beforeEach, describe, it, expect */
 import { assert, expect } from 'chai';
-import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import { BLANK_KEY_NAME } from '../../../../../contexts/SelectedKey/blankKeyDefinition';
 import keyNameValidations from './key-name-validations';
 
 describe('key-name-validations', () => {
