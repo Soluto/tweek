@@ -1,12 +1,11 @@
-import { ConnectedRouter } from 'connected-react-router';
 import React from 'react';
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 import LoggedInPage from './pages/login/components/LoggedInPage';
 import LoginPage from './pages/login/components/LoginPage';
 import SilentLoggedInPage from './pages/login/components/SilentLoggedInPage';
 import PrivateRoutes from './PrivateRoutes';
 import { signOut } from './services/auth-service';
-import browserHistory from './store/browserHistory';
 import './styles/styles.css';
 
 const AuthResult = ({ match }: RouteComponentProps) => (
@@ -17,7 +16,7 @@ const AuthResult = ({ match }: RouteComponentProps) => (
 );
 
 const Routes = () => (
-  <ConnectedRouter history={browserHistory}>
+  <Router>
     <Switch>
       <Route path="/login" component={LoginPage} />
       <Route path="/auth-result" render={AuthResult} />
@@ -31,7 +30,7 @@ const Routes = () => (
       />
       <Route component={PrivateRoutes} />
     </Switch>
-  </ConnectedRouter>
+  </Router>
 );
 
 export default Routes;
