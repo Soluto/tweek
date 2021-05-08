@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ValueType } from 'tweek-client';
-import * as ContextService from '../../../../services/context-service';
+import { getPropertyTypeDetails, getSchemaProperties } from '../../../../services/context-service';
 import { TypedInput } from '../../../common';
 import { InputValue } from '../RuleValue/RuleValue';
 
@@ -23,7 +23,7 @@ const NewPartitionPropertyValue = ({
     value={value}
     onChange={onUpdate}
     placeholder={`${name} (${identity})`}
-    valueType={ContextService.getPropertyTypeDetails(property)}
+    valueType={getPropertyTypeDetails(property)}
     data-field={`${identity}.${name}`}
   />
 );
@@ -49,7 +49,7 @@ const NewPartition = ({ partitions, valueType, handlePartitionAddition }: NewPar
     setState(EMPTY_STATE);
   };
 
-  const allProperties = ContextService.getSchemaProperties();
+  const allProperties = getSchemaProperties();
   const indexedPartitions = partitions.map(
     (partition) =>
       allProperties.find((property) => property.id === partition) || {

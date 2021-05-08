@@ -1,10 +1,10 @@
 import classnames from 'classnames';
 import React from 'react';
 import keyIcon from '../../../../../resources/key-icon.svg';
-import * as ContextService from '../../../../../services/context-service';
+import { getIdentities } from '../../../../../services/context-service';
 
 function getAvatarText(identity: string) {
-  const identities = ContextService.getIdentities();
+  const identities = getIdentities();
   const index = identities.indexOf(identity);
   if (index >= 0) {
     identities.splice(index, 1);

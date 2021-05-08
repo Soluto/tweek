@@ -1,8 +1,8 @@
 import React from 'react';
 import { Tag, WithContext as ReactTags } from 'react-tag-input';
 import { useAlerter } from '../../../../contexts/Alerts';
-import * as ContextService from '../../../../services/context-service';
 import './PartitionsSelector.css';
+import { getSchemaProperties } from '../../../../services/context-service';
 
 export type PartitionSelectorProps = {
   partitions: string[];
@@ -17,7 +17,7 @@ const PartitionSelector = ({
 }: PartitionSelectorProps) => {
   const alerter = useAlerter();
 
-  const allProperties = ContextService.getSchemaProperties().map((x) => ({
+  const allProperties = getSchemaProperties().map((x) => ({
     id: x.id,
     text: `${x.name} (${x.identity})`,
   }));

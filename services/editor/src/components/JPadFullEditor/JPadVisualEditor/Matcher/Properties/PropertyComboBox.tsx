@@ -1,5 +1,5 @@
 import React from 'react';
-import * as ContextService from '../../../../../services/context-service';
+import { KEYS_IDENTITY } from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
 import { useMaxSearchResults, useShowInternalKeys } from '../../../../../utils';
 import { MultiSourceComboBox, ValidationIcon } from '../../../../common';
@@ -36,7 +36,7 @@ const PropertyComboBox = ({
   const maxSearchResults = useMaxSearchResults();
   const showInternalKeys = useShowInternalKeys();
 
-  property = property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
+  property = property.replace(/^@@key:/, KEYS_IDENTITY);
   const [identity] = property.split('.');
 
   return (
@@ -47,8 +47,8 @@ const PropertyComboBox = ({
         getSuggestions={{
           Context: () => suggestedValues,
           Keys: (query) => {
-            const search = query.startsWith(ContextService.KEYS_IDENTITY)
-              ? query.substring(ContextService.KEYS_IDENTITY.length)
+            const search = query.startsWith(KEYS_IDENTITY)
+              ? query.substring(KEYS_IDENTITY.length)
               : query;
             return SearchService.getSuggestions(search, {
               maxSearchResults,
@@ -56,7 +56,7 @@ const PropertyComboBox = ({
             }).then((suggestions) =>
               suggestions.map((label) => ({
                 label,
-                value: `${ContextService.KEYS_IDENTITY}${label}`,
+                value: `${KEYS_IDENTITY}${label}`,
               })),
             );
           },
