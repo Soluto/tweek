@@ -2,7 +2,7 @@ import * as changeCase from 'change-case';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { ComboBox, Input } from '../../../../../components/common';
-import { getIdentities } from '../../../../../services/context-service';
+import { useIdentities } from '../../../../../contexts/Schema/Schemas';
 import './SearchBox.css';
 
 const SearchBox = ({ identityId: initialIdentityId, identityType: initialIdentityType }) => {
@@ -17,7 +17,7 @@ const SearchBox = ({ identityId: initialIdentityId, identityType: initialIdentit
     setIdentityType(initialIdentityType);
   }, [initialIdentityType]);
 
-  const identities = getIdentities().map((x) => ({ label: changeCase.pascalCase(x), value: x }));
+  const identities = useIdentities().map((x) => ({ label: changeCase.pascalCase(x), value: x }));
 
   const history = useHistory();
   const onGetClick = () => history.push(`/context/${identityType}/${identityId}`);

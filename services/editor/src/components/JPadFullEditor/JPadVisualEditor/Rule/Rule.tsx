@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import React, { memo } from 'react';
 import { ValueType } from 'tweek-client';
-import { getIdentities } from '../../../../services/context-service';
+import { useIdentities } from '../../../../contexts/Schema/Schemas';
 import { AnyMutator } from '../../../../utils/mutator';
 import { Rule as RuleType } from '../../types';
 import Matcher from '../Matcher/Matcher';
@@ -17,7 +17,7 @@ export type RuleProps = {
 
 const Rule = ({ rule, valueType, mutate, autofocus }: RuleProps) => {
   const valueTitle = rule.Type === 'SingleVariant' ? 'Value' : 'Values';
-  const identities = getIdentities();
+  const identities = useIdentities();
 
   return (
     <div className="rule-container">

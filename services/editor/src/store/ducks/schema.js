@@ -2,7 +2,6 @@ import { push } from 'connected-react-router';
 import jsonpatch from 'fast-json-patch';
 import * as R from 'ramda';
 import { handleActions } from 'redux-actions';
-import { getSchema, refreshSchema } from '../../services/context-service';
 import { showError, tweekManagementClient } from '../../utils';
 
 const SCHEMA_LOADED = 'SCHEMA_LOADED';
@@ -25,7 +24,9 @@ function handleError(message, thunkFn) {
 }
 
 export function loadSchema() {
-  return { type: SCHEMA_LOADED };
+  return async (dispatch) => {
+    dispatch({ type: SCHEMA_LOADED, payload: await tweekManagementClient.getAllSchemas() });
+  };
 }
 
 export function saveSchema(identityType) {
@@ -39,7 +40,7 @@ export function saveSchema(identityType) {
       await tweekManagementClient.patchIdentity(identityType, patch);
     }
     dispatch({ type: SCHEMA_SAVED, value: { identity: identityType } });
-    await refreshSchema();
+    //todo await refreshSchema();
   });
 }
 
@@ -71,15 +72,13 @@ function createRemoteAndLocalStates(state) {
   return { local: state, remote: state, isSaving: false };
 }
 
-function createSchemaState() {
-  return R.map(createRemoteAndLocalStates)(getSchema());
-}
+const createSchemaState = R.map(createRemoteAndLocalStates);
 
 export default handleActions(
   {
     [DELETING_IDENTITY]: (state, { value: { identityType } }) =>
       R.dissocPath([identityType])(state),
-    [SCHEMA_LOADED]: (state, action) => createSchemaState(),
+    [SCHEMA_LOADED]: (state, { payload }) => createSchemaState(payload),
     [REMOVE_SCHEMA_PROPERTY]: (state, { value: { identity, prop } }) =>
       R.dissocPath([identity, 'local', prop])(state),
     [UPSERT_SCHEMA_PROPERTY]: (state, { value: { identity, prop, value } }) =>

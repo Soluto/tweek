@@ -1,10 +1,9 @@
 import classnames from 'classnames';
 import React from 'react';
+import { useIdentities } from '../../../../../contexts/Schema/Schemas';
 import keyIcon from '../../../../../resources/key-icon.svg';
-import { getIdentities } from '../../../../../services/context-service';
 
-function getAvatarText(identity: string) {
-  const identities = getIdentities();
+function getAvatarText(identity: string, identities: string[]) {
   const index = identities.indexOf(identity);
   if (index >= 0) {
     identities.splice(index, 1);
@@ -32,10 +31,14 @@ export type AvatarProps = {
   className?: string;
 };
 
-const Avatar = ({ identity, className, ...props }: AvatarProps) => (
-  <div className={classnames('avatar-container', className)} title={identity} {...props}>
-    {identity === 'keys' ? <img src={keyIcon} alt={''} /> : getAvatarText(identity)}
-  </div>
-);
+const Avatar = ({ identity, className, ...props }: AvatarProps) => {
+  const identities = useIdentities();
+
+  return (
+    <div className={classnames('avatar-container', className)} title={identity} {...props}>
+      {identity === 'keys' ? <img src={keyIcon} alt={''} /> : getAvatarText(identity, identities)}
+    </div>
+  );
+};
 
 export default Avatar;

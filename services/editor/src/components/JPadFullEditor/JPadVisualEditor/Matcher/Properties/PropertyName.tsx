@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import {
-  getIdentities,
-  getPropertyTypeDetails,
-  KEYS_IDENTITY,
-} from '../../../../../services/context-service';
+import { useSchemas } from '../../../../../contexts/Schema/Schemas';
+import { getPropertyTypeDetails, KEYS_IDENTITY } from '../../../../../contexts/Schema/utils';
 import { getPropertySupportedOperators } from '../../../../../services/operators-provider';
 import { AnyMutator } from '../../../../../utils/mutator';
 import { Rule } from '../../../types';
@@ -21,9 +18,11 @@ export type PropertyNameProps = {
 const PropertyName = ({ mutate, property, suggestedValues, autofocus }: PropertyNameProps) => {
   const [hasFocus, onFocus] = useState(false);
   property = ensureKeysIdentity(property);
+  const schemas = useSchemas();
+  const identities = Object.keys(schemas);
 
   const selectProperty = ({ value, defaultValue = '' }: Suggestion) => {
-    const propertyTypeDetails = getPropertyTypeDetails(value);
+    const propertyTypeDetails = getPropertyTypeDetails(value, schemas);
     const supportedOperators = getPropertySupportedOperators(propertyTypeDetails);
     const newOperator = supportedOperators[0];
 
@@ -53,7 +52,7 @@ const PropertyName = ({ mutate, property, suggestedValues, autofocus }: Property
         !hasFocus &&
         !property.startsWith(KEYS_IDENTITY) &&
         !property.startsWith('system') &&
-        (!property.includes('.') || !getIdentities().includes(property.split('.')[0]))
+        (!property.includes('.') || !identities.includes(property.split('.')[0]))
       }
     />
   );

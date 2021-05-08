@@ -4,11 +4,12 @@ import React from 'react';
 import DocumentTitle from 'react-document-title';
 import { SaveButton } from '../../../../components/common';
 import Loader from '../../../../components/Loader';
+import { useIdentitySchema } from '../../../../contexts/Schema/Schemas';
 import {
   FIXED_PREFIX,
   getContextProperties,
   getFixedKeys,
-} from '../../../../services/context-service';
+} from '../../../../contexts/Schema/utils';
 import FixedKeys from '../FixedKeys/FixedKeys';
 import IdentityProperties from '../IdentityProperties/IdentityProperties';
 import './IdentityDetails.css';
@@ -26,6 +27,8 @@ const IdentityDetails = ({
     identityType,
     identityId,
   );
+
+  const schema = useIdentitySchema(identityType);
 
   const hasChanges = !equals(remote, local);
 
@@ -54,8 +57,8 @@ const IdentityDetails = ({
             <IdentityProperties
               className="section"
               identityType={identityType}
-              local={getContextProperties(identityType, local, true)}
-              remote={getContextProperties(identityType, remote)}
+              local={getContextProperties(local, schema, true)}
+              remote={getContextProperties(remote, schema)}
               updateContext={(context) =>
                 update({ ...context, ...addFixedKeysPrefix(getFixedKeys(local)) })
               }
@@ -67,7 +70,7 @@ const IdentityDetails = ({
               remote={getFixedKeys(remote)}
               updateContext={(fixedKeys) =>
                 update({
-                  ...getContextProperties(identityType, local, true),
+                  ...getContextProperties(local, schema, true),
                   ...addFixedKeysPrefix(fixedKeys),
                 })
               }

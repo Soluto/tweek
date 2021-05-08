@@ -1,5 +1,5 @@
 import React from 'react';
-import { KEYS_IDENTITY } from '../../../../../services/context-service';
+import { KEYS_IDENTITY } from '../../../../../contexts/Schema/utils';
 import * as SearchService from '../../../../../services/search-service';
 import { useMaxSearchResults, useShowInternalKeys } from '../../../../../utils';
 import { MultiSourceComboBox, ValidationIcon } from '../../../../common';

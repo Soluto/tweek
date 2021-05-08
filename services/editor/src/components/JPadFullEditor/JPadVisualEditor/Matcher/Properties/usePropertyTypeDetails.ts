@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ValueType } from 'tweek-client';
-import { getPropertyTypeDetails, KEYS_IDENTITY } from '../../../../../services/context-service';
+import { useSchemas } from '../../../../../contexts/Schema/Schemas';
+import { getPropertyTypeDetails, KEYS_IDENTITY } from '../../../../../contexts/Schema/utils';
 import * as TypesService from '../../../../../services/types-service';
 
 export const usePropertyTypeDetails = (property: string) => {
   const [details, setDetails] = useState<ValueType>({ name: 'empty' });
+  const schemas = useSchemas();
 
   useEffect(() => {
     if (property.startsWith(KEYS_IDENTITY)) {
@@ -18,9 +20,13 @@ export const usePropertyTypeDetails = (property: string) => {
         cancel = true;
       };
     }
-
-    setDetails(getPropertyTypeDetails(property));
   }, [property]);
+
+  useEffect(() => {
+    if (!property.startsWith(KEYS_IDENTITY)) {
+      setDetails(getPropertyTypeDetails(property, schemas));
+    }
+  }, [property, schemas]);
 
   return details;
 };
