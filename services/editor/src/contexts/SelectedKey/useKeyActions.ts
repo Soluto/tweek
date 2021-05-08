@@ -215,6 +215,10 @@ export const useKeyActions = () => {
   }, [key$, saveRemoteKey, historySince]);
 
   const resetKey = useCallback(async () => {
+    if (key$.value.isSaving) {
+      return;
+    }
+
     if (!(await showConfirm(resetKeyAlert)).result) {
       return;
     }
