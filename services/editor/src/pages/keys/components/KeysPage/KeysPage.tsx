@@ -3,12 +3,12 @@ import DocumentTitle from 'react-document-title';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { RouteComponentProps } from 'react-router';
 import { useLoadKeys } from '../../../../contexts/AllKeys';
+import { useRefreshSchemas } from '../../../../contexts/Schema/Schemas';
 import { createUseSelectedKey } from '../../../../contexts/SelectedKey';
+import { BLANK_KEY_NAME } from '../../../../contexts/SelectedKey/blankKeyDefinition';
 import { useLoadTags } from '../../../../contexts/Tags';
 import withLoading from '../../../../hoc/with-loading';
-import { refreshSchema } from '../../../../services/context-service';
 import { refreshTypes } from '../../../../services/types-service';
-import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import KeysList from '../KeysList/KeysList';
 import QuickNavigation from '../QuickNavigation/QuickNavigation';
 import './KeysPage.css';
@@ -20,6 +20,7 @@ export type KeysPageProps = Pick<RouteComponentProps, 'location' | 'history'> & 
 const useSelectedKey = createUseSelectedKey((key) => key.remote?.manifest?.key_path);
 
 const KeysPage: FunctionComponent<KeysPageProps> = ({ location, history, isExact, children }) => {
+  useRefreshSchemas();
   useLoadTags();
   useLoadKeys();
 
@@ -73,7 +74,6 @@ const KeysPage: FunctionComponent<KeysPageProps> = ({ location, history, isExact
   );
 };
 
-const loadingFactory = () => Promise.all([refreshTypes(), refreshSchema()]);
-const enhance = withLoading(loadingFactory);
+const enhance = withLoading(refreshTypes);
 
 export default enhance(KeysPage);

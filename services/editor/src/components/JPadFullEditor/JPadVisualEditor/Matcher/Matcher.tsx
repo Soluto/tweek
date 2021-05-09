@@ -1,6 +1,6 @@
 import { equals } from 'ramda';
 import React, { memo } from 'react';
-import * as ContextService from '../../../../services/context-service';
+import { useSchemaProperties } from '../../../../contexts/Schema/Schemas';
 import { ComplexValue } from '../../../../services/operators-provider';
 import { AnyMutator } from '../../../../utils/mutator';
 import { Matcher as MatcherType, Rule } from '../../types';
@@ -57,7 +57,7 @@ export type MatcherProps = {
 const Matcher = ({ matcher, mutate, autofocus }: MatcherProps) => {
   const props = Object.entries(matcher).filter(([p]) => !p.startsWith('$'));
 
-  const allSuggestions = ContextService.getAllProperties().map((prop) => ({
+  const allSuggestions = useSchemaProperties(true).map((prop) => ({
     label: prop.name,
     value: prop.id,
   }));

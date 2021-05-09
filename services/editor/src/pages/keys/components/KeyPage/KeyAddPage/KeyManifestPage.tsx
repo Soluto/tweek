@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { KeyManifest } from 'tweek-client';
-import { createBlankKeyManifest } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import { createBlankKeyManifest } from '../../../../../contexts/SelectedKey/blankKeyDefinition';
 import { useKeyPathValidation, Validation } from './key-name-validations';
 import KeyFormatSelector from './KeyFormatSelector';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';

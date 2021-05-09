@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { ValueType } from 'tweek-client';
-import { KEYS_IDENTITY } from '../../services/context-service';
+import { KEYS_IDENTITY } from '../../contexts/Schema/utils';
 import { safeConvertValue } from '../../services/types-service';
 import { SliderItem } from '../common/CustomSlider/CustomSlider';
 import { Jpad, JpadRules, Matcher, Partition, Rule, WeightedDistributionArg } from './types';

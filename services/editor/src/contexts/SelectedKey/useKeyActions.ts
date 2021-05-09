@@ -3,7 +3,7 @@ import { assocPath, equals } from 'ramda';
 import { useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { KeyManifest } from 'tweek-client/src/TweekManagementClient/types';
-import { createBlankKeyManifest } from '../../store/ducks/ducks-utils/blankKeyDefinition';
+import { createBlankKeyManifest } from './blankKeyDefinition';
 import { showError, tweekManagementClient, useHistorySince } from '../../utils';
 import { useAlerter } from '../Alerts';
 import { useKeysActions } from '../AllKeys';
@@ -215,6 +215,10 @@ export const useKeyActions = () => {
   }, [key$, saveRemoteKey, historySince]);
 
   const resetKey = useCallback(async () => {
+    if (key$.value.isSaving) {
+      return;
+    }
+
     if (!(await showConfirm(resetKeyAlert)).result) {
       return;
     }

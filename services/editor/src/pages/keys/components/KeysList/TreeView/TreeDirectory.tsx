@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import ReactTooltip from 'react-tooltip';
 // @ts-ignore
 import { VelocityTransitionGroup } from 'velocity-react';
-import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import { BLANK_KEY_NAME } from '../../../../../contexts/SelectedKey/blankKeyDefinition';
 import closedFolderIconSrc from '../resources/Folder-icon-closed.svg';
 import openedFolderIconSrc from '../resources/Folder-icon-opened.svg';
 

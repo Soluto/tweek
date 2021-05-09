@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { KeyManifest } from 'tweek-client';
-import { createJPadSource } from '../../store/ducks/ducks-utils/blankKeyDefinition';
+import { createJPadSource } from './blankKeyDefinition';
 import { useSelectedKeyContext } from './SelectedKey';
 
 export const useUpdateKey = () => {

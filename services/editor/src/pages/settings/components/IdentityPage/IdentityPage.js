@@ -1,15 +1,14 @@
+import { equals } from 'ramda';
 import React from 'react';
-import { connect } from 'react-redux';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import * as R from 'ramda';
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import { SaveButton } from '../../../../components/common';
-import * as schemaActions from '../../../../store/ducks/schema';
-import { IdentityPropertyItem, NewIdentityProperty } from './IdentityProperty/IdentityProperty';
+import { useLocalSchema } from '../../../../contexts/Schema/LocalSchemas';
 import './IdentityPage.css';
+import { IdentityPropertyItem, NewIdentityProperty } from './IdentityProperty/IdentityProperty';
 
 const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate, onPropertyRemove }) => (
   <div className="property-types-list">
-    {R.toPairs(identityProperties).map(([name, def]) => (
+    {Object.entries(identityProperties).map(([name, def]) => (
       <IdentityPropertyItem
         name={name}
         onUpdate={(newDef) => onPropertyUpdate(name, newDef)}
@@ -22,14 +21,20 @@ const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate, onProp
 );
 
 const IdentityPage = ({
-  identityType,
-  identityProperties = {},
-  upsertIdentityProperty,
-  removeIdentityProperty,
-  deleteIdentity,
-  saveSchema,
+  match: {
+    params: { identityType },
+  },
 }) => {
-  const hasChanges = !R.equals(identityProperties.local, identityProperties.remote);
+  const {
+    remote,
+    local,
+    isSaving,
+    saveIdentity,
+    deleteIdentity,
+    setProperty,
+    removeProperty,
+  } = useLocalSchema(identityType);
+  const hasChanges = !equals(local, remote);
 
   return (
     <div className="identity-page" data-identity-type={identityType}>
@@ -37,11 +42,11 @@ const IdentityPage = ({
         <SaveButton
           data-comp="save-button"
           hasChanges={hasChanges}
-          isSaving={identityProperties.isSaving}
-          onClick={() => saveSchema(identityType)}
+          isSaving={isSaving}
+          onClick={saveIdentity}
         />
-        {identityProperties.remote && (
-          <button data-comp="delete-identity" onClick={() => deleteIdentity(identityType)}>
+        {remote && (
+          <button data-comp="delete-identity" onClick={deleteIdentity}>
             Delete
           </button>
         )}
@@ -54,11 +59,11 @@ const IdentityPage = ({
         <TabPanel>
           <div className="property-section">
             <IdentityPropertiesEditor
-              identityProperties={identityProperties.local}
-              onPropertyUpdate={upsertIdentityProperty.papp(identityType)}
-              onPropertyRemove={removeIdentityProperty.papp(identityType)}
+              identityProperties={local}
+              onPropertyUpdate={setProperty}
+              onPropertyRemove={removeProperty}
             />
-            <NewIdentityProperty onCreate={upsertIdentityProperty.papp(identityType)} />
+            <NewIdentityProperty onCreate={setProperty} />
           </div>
         </TabPanel>
       </Tabs>
@@ -66,24 +71,4 @@ const IdentityPage = ({
   );
 };
 
-const enhance = connect(
-  R.pick(['schema']),
-  schemaActions,
-  (
-    { schema },
-    actions,
-    {
-      match: {
-        params: { identityType },
-      },
-      ...props
-    },
-  ) => ({
-    identityProperties: schema[identityType],
-    identityType,
-    ...props,
-    ...actions,
-  }),
-);
-
-export default enhance(IdentityPage);
+export default IdentityPage;

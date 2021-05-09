@@ -17,7 +17,7 @@ import IdentityPage from './pages/settings/components/IdentityPage/IdentityPage'
 import PoliciesPage from './pages/settings/components/PoliciesPage/PoliciesPage';
 import SettingsPage from './pages/settings/components/SettingsPage/SettingsPage';
 import { getClient } from './services/auth-service';
-import { BLANK_KEY_NAME } from './store/ducks/ducks-utils/blankKeyDefinition';
+import { BLANK_KEY_NAME } from './contexts/SelectedKey/blankKeyDefinition';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 

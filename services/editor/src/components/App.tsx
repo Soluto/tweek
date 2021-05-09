@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import { CurrentUserProvider } from '../contexts/CurrentUser';
+import { useRefreshSchemas } from '../contexts/Schema/Schemas';
 import { TweekProvider } from '../contexts/Tweek';
 import withLoading from '../hoc/with-loading';
-import { refreshSchema } from '../services/context-service';
-import * as TypesService from '../services/types-service';
+import { refreshTypes } from '../services/types-service';
 import '../styles/core/fonts/fonts.css';
 import './App.css';
 import AppHeader from './AppHeader';
@@ -12,6 +12,7 @@ import { useGoogleTagManager } from './GoogleTagManager';
 
 const AppContainer: FunctionComponent = ({ children }) => {
   useGoogleTagManager();
+  useRefreshSchemas();
 
   return (
     <div className="app">
@@ -29,9 +30,7 @@ const AppWithProviders: FunctionComponent = ({ children }) => (
   </CurrentUserProvider>
 );
 
-const preload = () => Promise.all([TypesService.refreshTypes(), refreshSchema()]);
-
-const enhance = withLoading(preload);
+const enhance = withLoading(refreshTypes);
 
 const App = enhance(AppWithProviders);
 

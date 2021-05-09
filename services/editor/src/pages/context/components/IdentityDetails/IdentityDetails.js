@@ -1,42 +1,36 @@
 import * as changeCase from 'change-case';
-import * as R from 'ramda';
-import React, { useEffect } from 'react';
+import { equals } from 'ramda';
+import React from 'react';
 import DocumentTitle from 'react-document-title';
-import { connect } from 'react-redux';
 import { SaveButton } from '../../../../components/common';
+import Loader from '../../../../components/Loader';
+import { useIdentitySchema } from '../../../../contexts/Schema/Schemas';
 import {
   FIXED_PREFIX,
   getContextProperties,
   getFixedKeys,
-} from '../../../../services/context-service';
-import { getContext, saveContext, updateContext } from '../../../../store/ducks/context';
+} from '../../../../contexts/Schema/utils';
 import FixedKeys from '../FixedKeys/FixedKeys';
 import IdentityProperties from '../IdentityProperties/IdentityProperties';
 import './IdentityDetails.css';
+import { useIdentityDetails } from './useIdentityDetails';
 
-const addFixedKeysPrefix = R.pipe(
-  R.toPairs,
-  R.map(([prop, value]) => [FIXED_PREFIX + prop, value]),
-  R.fromPairs,
-);
+const addFixedKeysPrefix = (context) =>
+  Object.fromEntries(Object.entries(context).map(([prop, value]) => [FIXED_PREFIX + prop, value]));
 
 const IdentityDetails = ({
   match: {
     params: { identityId, identityType },
   },
-  isGettingContext,
-  updateContext,
-  saveContext,
-  isSavingContext,
-  local,
-  remote,
-  getContext,
 }) => {
-  useEffect(() => {
-    getContext({ identityType, identityId });
-  }, [identityId, identityType]); //eslint-disable-line react-hooks/exhaustive-deps
+  const { remote, local, isSaving, isLoading, update, save } = useIdentityDetails(
+    identityType,
+    identityId,
+  );
 
-  const hasChanges = !R.equals(remote, local);
+  const schema = useIdentitySchema(identityType);
+
+  const hasChanges = !equals(remote, local);
 
   return (
     <DocumentTitle title={`Tweek - ${identityType} - ${identityId}`}>
@@ -51,22 +45,22 @@ const IdentityDetails = ({
           <div className="identity-type">{changeCase.pascalCase(identityType)}</div>
           <SaveButton
             data-comp="save-changes"
-            onClick={() => saveContext({ identityType, identityId })}
-            isSaving={isSavingContext}
+            onClick={save}
+            isSaving={isSaving}
             hasChanges={hasChanges}
           />
         </div>
-        {isGettingContext ? (
-          'Loading...'
+        {isLoading ? (
+          <Loader />
         ) : (
           <div>
             <IdentityProperties
               className="section"
               identityType={identityType}
-              local={getContextProperties(identityType, local, true)}
-              remote={getContextProperties(identityType, remote)}
+              local={getContextProperties(local, schema, true)}
+              remote={getContextProperties(remote, schema)}
               updateContext={(context) =>
-                updateContext({ ...context, ...addFixedKeysPrefix(getFixedKeys(local)) })
+                update({ ...context, ...addFixedKeysPrefix(getFixedKeys(local)) })
               }
             />
 
@@ -75,8 +69,8 @@ const IdentityDetails = ({
               local={getFixedKeys(local)}
               remote={getFixedKeys(remote)}
               updateContext={(fixedKeys) =>
-                updateContext({
-                  ...getContextProperties(identityType, local, true),
+                update({
+                  ...getContextProperties(local, schema, true),
                   ...addFixedKeysPrefix(fixedKeys),
                 })
               }
@@ -88,6 +82,4 @@ const IdentityDetails = ({
   );
 };
 
-const enhance = connect((state) => state.context, { getContext, saveContext, updateContext });
-
-export default enhance(IdentityDetails);
+export default IdentityDetails;

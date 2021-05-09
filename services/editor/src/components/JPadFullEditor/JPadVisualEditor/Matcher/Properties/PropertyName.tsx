@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import * as ContextService from '../../../../../services/context-service';
+import { useSchemas } from '../../../../../contexts/Schema/Schemas';
+import { getPropertyTypeDetails, KEYS_IDENTITY } from '../../../../../contexts/Schema/utils';
 import { getPropertySupportedOperators } from '../../../../../services/operators-provider';
 import { AnyMutator } from '../../../../../utils/mutator';
 import { Rule } from '../../../types';
 import PropertyComboBox, { Suggestion } from './PropertyComboBox';
 
-const ensureKeysIdentity = (property: string) =>
-  property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
+const ensureKeysIdentity = (property: string) => property.replace(/^@@key:/, KEYS_IDENTITY);
 
 export type PropertyNameProps = {
   property: string;
@@ -18,9 +18,11 @@ export type PropertyNameProps = {
 const PropertyName = ({ mutate, property, suggestedValues, autofocus }: PropertyNameProps) => {
   const [hasFocus, onFocus] = useState(false);
   property = ensureKeysIdentity(property);
+  const schemas = useSchemas();
+  const identities = Object.keys(schemas);
 
   const selectProperty = ({ value, defaultValue = '' }: Suggestion) => {
-    const propertyTypeDetails = ContextService.getPropertyTypeDetails(value);
+    const propertyTypeDetails = getPropertyTypeDetails(value, schemas);
     const supportedOperators = getPropertySupportedOperators(propertyTypeDetails);
     const newOperator = supportedOperators[0];
 
@@ -48,10 +50,9 @@ const PropertyName = ({ mutate, property, suggestedValues, autofocus }: Property
       onChange={onChange}
       warning={
         !hasFocus &&
-        !property.startsWith(ContextService.KEYS_IDENTITY) &&
+        !property.startsWith(KEYS_IDENTITY) &&
         !property.startsWith('system') &&
-        (!property.includes('.') ||
-          !ContextService.getIdentities().includes(property.split('.')[0]))
+        (!property.includes('.') || !identities.includes(property.split('.')[0]))
       }
     />
   );
