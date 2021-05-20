@@ -205,7 +205,7 @@ GEM
       jekyll-seo-tag (~> 2.1)
     minitest (5.11.3)
     multipart-post (2.0.0)
-    nokogiri (1.11.3)
+    nokogiri (1.11.5)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     octokit (4.11.0)
