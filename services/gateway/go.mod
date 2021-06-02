@@ -24,6 +24,6 @@ require (
 	github.com/vulcand/oxy v1.3.0
 	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620
 	google.golang.org/protobuf v1.25.0 // indirect
-	gopkg.in/h2non/gock.v1 v1.0.16
+	gopkg.in/h2non/gock.v1 v1.1.0
 	gopkg.in/ini.v1 v1.60.0 // indirect
 )
