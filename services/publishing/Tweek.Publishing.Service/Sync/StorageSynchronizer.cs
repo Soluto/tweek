@@ -127,9 +127,14 @@ namespace Tweek.Publishing.Service.Sync
         }
 
         private static Func<string, string> GetZipReader(ZipArchive zip) => 
-            fileName => 
+            fileName =>
             {
-                using (var sr = new StreamReader(zip.GetEntry(fileName).Open()))
+                var entry = zip.GetEntry(fileName);
+                if (entry == null)
+                {
+                    throw new NullReferenceException($"unable to find file: {fileName}");
+                }
+                using (var sr = new StreamReader(entry.Open()))
                 {
                     return sr.ReadToEnd();
                 }
