@@ -12,13 +12,12 @@ jobs:
       matrix:
         image: ["authoring", "gateway", "publishing", "api", "editor"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: docker/login-action@v1
       - name: Login Docker DH
         if: ${{ github.repository == 'soluto/tweek' }}
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
-        run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: build
         working-directory: .github/workflows
         run: |
