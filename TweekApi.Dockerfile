@@ -1,5 +1,6 @@
 # ---- *.csproj FILES ----
 FROM debian:stretch-slim as csproj-files
+WORKDIR /src
 COPY ./addons /src/addons
 COPY ./core /src/core
 COPY ./services/api /src/services/api
