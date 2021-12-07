@@ -10,6 +10,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 as source
 ARG target="Release"
 WORKDIR /src
 COPY --from=csproj-files /src .
+RUN echo Copying the solution
 COPY ./Tweek.sln .
 RUN dotnet restore ./Tweek.sln
 
