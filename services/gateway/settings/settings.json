@@ -201,7 +201,7 @@
       "upstreamPath": "/api/hooks$1$2",
       "methods": ["GET"],
       "service": "authoring",
-      "userInfo": false,
+      "userInfo": true,
       "rewriteKeyPath": true
     },
     {
