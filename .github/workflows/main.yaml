@@ -7,7 +7,7 @@ on:
     - README.md
 jobs:
   build-images:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         image: ["authoring", "gateway", "publishing", "api", "editor"]
