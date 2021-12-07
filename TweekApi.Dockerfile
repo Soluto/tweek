@@ -1,5 +1,5 @@
 # ---- *.csproj FILES ----
-FROM debian:stretch-slim as csproj-files
+FROM debian:stretch-slim as csprojfiles
 COPY ./addons /src/addons
 COPY ./core /src/core
 COPY ./services/api /src/services/api
@@ -9,7 +9,7 @@ RUN find /src -type f -not -name "*.csproj" -delete && find /src -type d -empty 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 as source
 ARG target="Release"
 WORKDIR /src
-COPY --from=csproj-files /src .
+COPY --from=csprojfiles /src .
 COPY ./Tweek.sln .
 RUN dotnet restore ./Tweek.sln
 
