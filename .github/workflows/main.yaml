@@ -19,6 +19,9 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
+      - name: build-api
+        run: |
+          docker build -t soluto/tweek-api -f TweekApi.Dockerfile
       - name: build
         working-directory: .github/workflows
         run: |
