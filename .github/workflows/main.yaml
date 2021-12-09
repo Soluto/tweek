@@ -22,8 +22,8 @@ jobs:
       - name: build
         run: |
           yarn docker-compose build ${{ matrix.image }} && \
-          docker save -o ${{ matrix.image }}-${{ github.sha }} soluto/tweek-${{ matrix.image }} && \
-          cp {{ matrix.image }}-${{ github.sha }} .github/workflows
+          docker save -o ${{ matrix.image }}-${{ github.sha }}.tar soluto/tweek-${{ matrix.image }} && \
+          cp ${{ matrix.image }}-${{ github.sha }}.tar .github/workflows/
       # - name: build
       #   working-directory: .github/workflows
       #   run: |
