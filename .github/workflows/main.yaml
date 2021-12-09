@@ -23,7 +23,7 @@ jobs:
         working-directory: .github/workflows
         run: |
           echo $GITHUB_REPOSITORY
-          docker buildx create --use && docker buildx bake ${{ matrix.image }}
+          docker buildx create --use && docker buildx bake --no-cache ${{ matrix.image }}
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
         with:
