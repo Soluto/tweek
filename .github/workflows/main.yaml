@@ -69,8 +69,8 @@ jobs:
           name: build-images
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
-      - name: tag all images
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
+      # - name: tag all images
+      #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run integration tests
         run: yarn && yarn test:docker:integration
   run-net-tests:
@@ -84,8 +84,8 @@ jobs:
           name: build-images
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
-      - name: tag all images
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
+      # - name: tag all images
+      #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run smoke tests
         run: yarn && yarn test:docker:smoke
   push-images:
