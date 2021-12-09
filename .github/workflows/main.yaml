@@ -8,9 +8,9 @@ on:
 jobs:
   build-images:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        image: ["authoring", "gateway", "publishing", "api", "editor"]
+    # strategy:
+    #   matrix:
+    #     image: ["authoring", "gateway", "publishing", "api", "editor"]
     steps:
       - uses: actions/checkout@v2
       - name: Login Docker DH
@@ -21,12 +21,24 @@ jobs:
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: build-api
         run: |
-          docker build -t soluto/tweek-api -f TweekApi.Dockerfile .
-      - name: build
-        working-directory: .github/workflows
+          docker build -t soluto/tweek-api -f TweekApi.Dockerfile . && docker save -o api-${{ github.sha }} soluto/tweek-api && cp api-${{ github.sha }} .github/workflows
+      - name: build-authoring
         run: |
-          echo $GITHUB_REPOSITORY
-          docker buildx create --use && docker buildx bake --no-cache ${{ matrix.image }}
+          docker build -t soluto/tweek-authoring services/authoring && docker save -o authoring-${{ github.sha }} soluto/tweek-authoring && cp authoring-${{ github.sha }} .github/workflows
+      - name: build-gateway
+        run: |
+          docker build -t soluto/tweek-gateway services/gateway && docker save -o gateway-${{ github.sha }} soluto/tweek-gateway && cp gateway-${{ github.sha }} .github/workflows
+      - name: build-editor
+        run: |
+          docker build -t soluto/tweek-editor services/editor && docker save -o editor-${{ github.sha }} soluto/tweek-editor && cp editor-${{ github.sha }} .github/workflows
+      - name: build-publishing
+        run: |
+          docker build -t soluto/tweek-publishing services/publishing && docker save -o publishing-${{ github.sha }} soluto/tweek-publishing && cp publishing-${{ github.sha }} .github/workflows
+      # - name: build
+      #   working-directory: .github/workflows
+      #   run: |
+      #     echo $GITHUB_REPOSITORY
+      #     docker buildx create --use && docker buildx bake --no-cache ${{ matrix.image }}
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
         with:
