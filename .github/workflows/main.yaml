@@ -73,7 +73,7 @@ jobs:
       - name: run integration tests
         working-directory: e2e/integration
         # run: yarn && yarn test:docker:integration
-        run: yarn && yarn start && ./node_modules/.bin/mocha ./spec/authoring-api/write-validation.spec.js  --timeout 30000 --exit
+        run: yarn && yarn start && ./node_modules/.bin/mocha ./spec/authoring-api/write-validation.spec.js  --timeout 30000 --exit; yarn docker-compose logs
   run-net-tests:
     needs: ["build-images"]
     runs-on: ubuntu-latest
