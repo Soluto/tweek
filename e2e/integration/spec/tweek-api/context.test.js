@@ -1,4 +1,4 @@
-const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 const { expect } = require('chai');
 const client = require('../../utils/client');
 
@@ -45,6 +45,27 @@ describe('tweek api - context', () => {
         .send({ AgentVersion: 'not a version' })
         .expect(400);
     });
+
+    it('should succeed appending array/object contexts', async () => {
+      const identityId = 'append-context-test-2';
+      const url = `/api/v2/context/${identityType}/${identityId}`;
+      const expected = {
+        name: 'bohemian rhapsody',
+        lyrics: ['mama', 'just', 'killed', 'a', 'man', { gun: true, alive: false }],
+      };
+
+      await client
+        .post(url)
+        .send({ '@fixed:tests/fixed/some_complex_fixed_configuration': expected })
+        .expect(200);
+
+      const result = await client
+        .get(
+          `/api/v2/values/tests/fixed/some_complex_fixed_configuration?${identityType}=${identityId}`,
+        )
+        .expect(expected);
+      expect(result.body).to.deep.equal(expected);
+    });
   });
 
   describe('delete', () => {
@@ -52,10 +73,7 @@ describe('tweek api - context', () => {
       const identityId = 'delete_context_user';
       const url = `/api/v2/context/${identityType}/${identityId}`;
 
-      await client
-        .post(url)
-        .send({ prop: 'value' })
-        .expect(200);
+      await client.post(url).send({ prop: 'value' }).expect(200);
 
       await client.delete(url).expect(200);
 

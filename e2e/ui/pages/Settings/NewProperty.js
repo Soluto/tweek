@@ -20,7 +20,7 @@ export default class NewProperty {
     } else {
       type = type || 'string';
 
-      await t.click(this.typeSelect).click(this.container.find(dataLabel(type)).find('a'));
+      await t.click(this.typeSelect).click(this.container.find(dataLabel(type)).find('button'));
 
       if (advanced) {
         await t.click(this.advancedButton);

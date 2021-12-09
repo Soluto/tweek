@@ -1,21 +1,20 @@
-import React, { useState, useEffect, useContext } from 'react';
+import cogoToast from 'cogo-toast';
 import qs from 'query-string';
-import { debounce, useErrorNotifier, tweekManagementClient } from '../../../../utils';
-import { ReduxContext } from '../../../../store';
-import { showSuccess, showConfirm } from '../../../../store/ducks';
-import { hookLabelsByType } from './HookTypes';
+import React, { useEffect, useState } from 'react';
+import { useAlerter } from '../../../../contexts/Alerts';
+import { tweekManagementClient, useDebounceValue, useErrorNotifier } from '../../../../utils';
 import './HooksPage.css';
+import { hookLabelsByType } from './HookTypes';
 import { webhookLabelsByFormat } from './WebHookFormats';
 
-export default ({ location, history }) => {
-  const { dispatch } = useContext(ReduxContext);
+const HooksPage = ({ location, history }) => {
   const queryFilter = qs.parse(location.search).keyPathFilter;
 
   const [hooks, setHooks] = useState([]);
   const [deleteError, setDeleteError] = useState(null);
   const [deletingState, setDeletingState] = useState({ isDeleting: false, idBeingDeleted: null });
   const [filter, setFilter] = useState(queryFilter || '');
-  const debouncedFilter = debounce(filter, 500);
+  const debouncedFilter = useDebounceValue(filter, 500);
 
   useEffect(() => {
     (async () => setHooks(await tweekManagementClient.getHooks(debouncedFilter)))();
@@ -36,7 +35,6 @@ export default ({ location, history }) => {
               hook,
               hooks,
               history,
-              dispatch,
               setDeleteError,
               setHooks,
               deletingState,
@@ -48,6 +46,8 @@ export default ({ location, history }) => {
     </div>
   );
 };
+
+export default HooksPage;
 
 const ActionBar = ({ filter, setFilter, history }) => (
   <div className="action-bar">
@@ -76,7 +76,6 @@ const Hook = ({
   hook,
   hooks,
   history,
-  dispatch,
   setDeleteError,
   setHooks,
   deletingState,
@@ -91,14 +90,16 @@ const Hook = ({
         Edit
       </button>
       <DeleteButton
-        {...{ hook, hooks, setHooks, setDeleteError, dispatch, deletingState, setDeletingState }}
+        {...{ hook, hooks, setHooks, setDeleteError, deletingState, setDeletingState }}
       />
     </div>
     <div className="hook-data-wrapper">
       <DataField label="Keypath:" value={hook.keyPath} />
       <DataField label="Tags:" value={(hook.tags || []).join()} />
       <DataField label="Type:" value={hookLabelsByType[hook.type]} />
-      {hook.type === 'notification_webhook' && <DataField label="Format:" value={webhookLabelsByFormat[hook.format]} />}
+      {hook.type === 'notification_webhook' && (
+        <DataField label="Format:" value={webhookLabelsByFormat[hook.format]} />
+      )}
       <DataField label="Url:" value={hook.url} />
     </div>
   </li>
@@ -116,49 +117,39 @@ const DeleteButton = ({
   hooks,
   setHooks,
   setDeleteError,
-  dispatch,
   deletingState,
   setDeletingState,
 }) => {
   const isBeingDeleted = deletingState.isDeleting && deletingState.idBeingDeleted === hook.id;
 
-  return (
-    <button
-      disabled={deletingState.isDeleting}
-      className="delete-hook-button"
-      onClick={() =>
-        deleteHook({ hook, hooks, setHooks, setDeleteError, dispatch, setDeletingState })
+  const { showConfirm } = useAlerter();
+
+  const deleteHook = async () => {
+    try {
+      const alertDetails = {
+        title: 'Delete Hook',
+        message: 'Are you sure you want to delete this hook?',
+      };
+      const deleteConfirmation = await showConfirm(alertDetails);
+      if (!deleteConfirmation.result) {
+        return;
       }
-    >
+
+      setDeletingState({ isDeleting: true, idBeingDeleted: hook.id });
+      await tweekManagementClient.deleteHook(hook);
+      setDeletingState({ isDeleting: false, idBeingDeleted: null });
+
+      setHooks(hooks.filter((h) => h.id !== hook.id));
+      cogoToast.success('Hook Deleted');
+    } catch (err) {
+      setDeletingState({ isDeleting: false, idBeingDeleted: null });
+      setDeleteError(err);
+    }
+  };
+
+  return (
+    <button disabled={deletingState.isDeleting} className="delete-hook-button" onClick={deleteHook}>
       {isBeingDeleted ? 'Deleting...' : 'Delete'}
     </button>
   );
-};
-
-const deleteHook = async ({
-  hook,
-  hooks,
-  setDeleteError,
-  dispatch,
-  setHooks,
-  setDeletingState,
-}) => {
-  try {
-    const alertDetails = {
-      title: 'Delete Hook',
-      message: 'Are you sure you want to delete this hook?',
-    };
-    const deleteConfirmation = await dispatch(showConfirm(alertDetails));
-    if (!deleteConfirmation.result) return;
-
-    setDeletingState({ isDeleting: true, idBeingDeleted: hook.id });
-    await tweekManagementClient.deleteHook(hook);
-    setDeletingState({ isDeleting: false, idBeingDeleted: null });
-
-    setHooks(hooks.filter((h) => h.id !== hook.id));
-    dispatch(showSuccess({ title: 'Hook Deleted' }));
-  } catch (err) {
-    setDeletingState({ isDeleting: false, idBeingDeleted: null });
-    setDeleteError(err);
-  }
 };

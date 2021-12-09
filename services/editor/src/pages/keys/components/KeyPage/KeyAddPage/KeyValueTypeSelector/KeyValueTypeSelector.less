@@ -1,40 +1,38 @@
-  @import (reference) "../../../../../../styles/core/comboBox.less";
-  .key-value-type-selector-container {
-    .key-value-type-label {
-      font-size: 13px;
-      margin: 5px 5px 0 0;
-      color: gray;
+@import (reference) '../../../../../../styles/core/comboBox.less';
+.key-value-type-selector-container {
+  .key-value-type-label {
+    font-size: 13px;
+    margin: 5px 5px 0 0;
+    color: gray;
+  }
+  display: flex;
+  padding-left: 10px;
+  .key-value-type-selector-wrapper {
+    .combo-box-basic(100px, 100px);
+    .override-typeahead(@text-padding) {
+      .bootstrap-typeahead-input {
+        display: flex;
+        flex-grow: 1;
+        padding-left: @text-padding;
+      }
     }
-    display: flex;
-    padding-left: 10px;
-    .key-value-type-selector-wrapper {
-      .combo-box-basic(100px, 100px);
-      .override-typeahead(@text-padding) {
-        .bootstrap-typeahead-input-container {
-          display: flex;
-          flex-grow: 1;
-          .bootstrap-typeahead-input {
-            padding-left: @text-padding;
-          }
-        }
-      }
-      .override-typeahead(0);
-      &[data-with-error="true"] {
-        .override-typeahead(30px);
-      }
-      .validation-icon-wrapper {
-        flex-direction: row;
-        width: 0;
-        margin: 11px 0 0 0;
-        position: absolute;
-        z-index: 7;
-        .transitioned();
-        &[data-is-shown="true"] {
-          width: 16px;
-          height: 16px;
-          margin-top: 5px;
-          padding: 3px 5px;
-        }
+    .override-typeahead(0);
+    &[data-with-error='true'] {
+      .override-typeahead(30px);
+    }
+    .validation-icon-wrapper {
+      flex-direction: row;
+      width: 0;
+      margin: 11px 0 0 0;
+      position: absolute;
+      z-index: 7;
+      .transitioned();
+      &[data-is-shown='true'] {
+        width: 16px;
+        height: 16px;
+        margin-top: 5px;
+        padding: 3px 5px;
       }
     }
   }
+}

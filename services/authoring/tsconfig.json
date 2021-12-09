@@ -18,7 +18,8 @@
     "strictNullChecks": false,
     "esModuleInterop": true,
     "lib": ["es2015"],
-    "target": "es5"
+    "target": "es5",
+    "types": ["mocha"]
   },
   "include": ["src/**/*.ts"]
 }

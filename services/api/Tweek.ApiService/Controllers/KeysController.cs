@@ -56,11 +56,28 @@ namespace Tweek.ApiService.Controllers
         }
 
         [HttpGet("api/v1/keys/{*path}")]
+        [HttpGet("api/v2/values/{*path}")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
         [Produces("application/json")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult> GetAsync([FromRoute] string path)
+        public Task<ActionResult> GetAsync([FromRoute] string path)
+        {
+            return GetKey(path);
+        }
+
+        [HttpGet("api/v1/keys")]
+        [HttpGet("api/v2/values")]
+        [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
+        [Produces("application/json")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public Task<ActionResult> GetFromQueryAsync([FromQuery] string keyPath)
+        {
+            return GetKey(keyPath);
+        }
+
+        private async Task<ActionResult> GetKey(string path)
         {
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
             var modifiers = allParams.Item1;
@@ -85,7 +102,7 @@ namespace Tweek.ApiService.Controllers
 
             var values = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
 
-            var errors = values.Where(x => x.Value.Exception != null).ToDictionary(x => x.Key, x => x.Value.Exception.Message);
+            var errors = values.Where(x => x.Value.Exception != null).ToDictionary(x => x.Key.ToString(), x => x.Value.Exception.Message);
 
             Response.Headers.Add("X-Error-Count", errors.Count.ToString());
 

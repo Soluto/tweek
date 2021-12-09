@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import MonacoEditor from '@monaco-editor/react';
 import PropTypes from 'prop-types';
-import MonacoEditor from 'react-monaco-editor';
+import React, { useState } from 'react';
 import { FetchError } from 'tweek-client';
-import SaveButton from '../../../../components/common/SaveButton/SaveButton';
-import { useRemoteState } from './utils';
-import useErrorNotifier from '../../../../utils/useErrorNotifier';
+import { SaveButton } from '../../../../components/common';
+import { useErrorNotifier, useRemoteState } from '../../../../utils';
 
 const monacoOptions = {
   autoIndent: true,
@@ -30,7 +29,9 @@ export default function RemoteCodeEditor({
 
   useErrorNotifier(remote.loadingState === 'idle' ? remote.error : null, `Error saving ${label}`);
 
-  if (remote.loadingState === 'loading' && !code) return null;
+  if (remote.loadingState === 'loading' && !code) {
+    return null;
+  }
   if (remote.error && remote.loadingState === 'error') {
     const error = remote.error;
     return (

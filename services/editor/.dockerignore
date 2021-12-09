@@ -11,10 +11,8 @@ rulesRepository/
 
 .dockerignore
 .editorconfig
-.eslintrc
 .gitignore
 Dockerfile
-jsconfig.json
 npm-debug.log
 searchIndex.json
 yarn-error.log

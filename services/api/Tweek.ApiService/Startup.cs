@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Serilog;
 using Serilog.Formatting.Json;
 using System;
@@ -28,12 +27,12 @@ using ConfigurationPath = Tweek.Engine.DataTypes.ConfigurationPath;
 using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
+using System.Text.Json;
 using App.Metrics;
-using App.Metrics.Formatters.Prometheus;
-using Tweek.ApiService.Addons;
 using Tweek.ApiService.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Tweek.Utils;
 
 namespace Tweek.ApiService
 {
@@ -105,16 +104,11 @@ namespace Tweek.ApiService
             services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));
             services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<GetRuleParser>()));
 
-            var tweekContactResolver = new TweekContractResolver();
-            var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
-
-            services.AddSingleton(jsonSerializer);
-
             services.AddControllers()
                 .AddMetrics()
-                .AddNewtonsoftJson(options =>
+                .AddJsonOptions(options =>
                 {
-                    options.SerializerSettings.ContractResolver = tweekContactResolver;
+                    options.JsonSerializerOptions.Converters.Add(new NativeJsonValueConverter());
                 });
 
             services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
@@ -214,7 +208,7 @@ namespace Tweek.ApiService
 
                         status["status"] = data.Status.ToString();
 
-                        await System.Text.Json.JsonSerializer.SerializeAsync(http.Response.Body, status);
+                        await JsonSerializer.SerializeAsync(http.Response.Body, status);
                     }
                 });
             });

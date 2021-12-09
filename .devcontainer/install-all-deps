@@ -1,0 +1,13 @@
+#!/usr/bin/env zx
+try
+{
+  console.log(chalk.blue('Pulling Docker images'))
+  await $`docker-compose -f deployments/dev/tilt.yml pull --parallel`
+  console.log(chalk.blue('Installing packages for all projects'))
+  await Promise.all([$`dotnet restore ./Tweek.sln`, $`cd services/editor && yarn`])
+  await Promise.all([$`cd services/publishing && dotnet restore ./Tweek.Publishing.sln`, $`cd services/authoring && yarn`])
+  await Promise.all([$`cd e2e/integration && yarn`, $`cd e2e/ui && yarn`, $`yarn`])
+  console.log(chalk.green('All packages installed'))
+} catch (ex){
+  console.log(chalk.red('Not all packages successfully loaded, try rerunning the script'))
+}

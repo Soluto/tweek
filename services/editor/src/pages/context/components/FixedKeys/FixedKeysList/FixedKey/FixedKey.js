@@ -1,39 +1,37 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { compose, mapPropsStream, pure, withStateHandlers, mapProps } from 'recompose';
-import { Observable } from 'rxjs';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { AutoSuggest, TypedInput } from '../../../../../../components/common';
 import * as SearchService from '../../../../../../services/search-service';
 import * as TypesService from '../../../../../../services/types-service';
-import TypedInput from '../../../../../../components/common/Input/TypedInput';
-import AutoSuggest from '../../../../../../components/common/ComboBox/AutoSuggest';
+import { useDebounceValue } from '../../../../../../utils';
 import './FixedKey.css';
 
-const mapValueTypeToProps = (props$) => {
-  const propsStream = props$.map(({ keyPath, ...props }) => props);
+const OverrideValueInput = ({ keyPath, ...props }) => {
+  const [{ disabled, valueType }, setValueType] = useState({
+    disabled: true,
+    valueType: 'unknown',
+  });
 
-  const valueTypeStream = props$
-    .map((x) => x.keyPath)
-    .debounceTime(500)
-    .distinctUntilChanged()
-    .switchMap((keyPath) =>
-      Observable.fromPromise(TypesService.getValueTypeDefinition(keyPath)).map((x) => x.name),
-    )
-    .map((valueType) => ({ disabled: false, valueType }))
-    .startWith({ disabled: true, valueType: 'unknown' });
+  const debouncedKeyPath = useDebounceValue(keyPath, 500);
 
-  return propsStream.combineLatest(valueTypeStream, (props, valueType) => ({
-    ...props,
-    ...valueType,
-    disabled: props.disabled || valueType.disabled,
-  }));
+  useEffect(() => {
+    let cancel = false;
+
+    TypesService.getValueTypeDefinition(debouncedKeyPath).then((x) => {
+      if (cancel) {
+        return;
+      }
+      setValueType({ disabled: false, valueType: x.name });
+    });
+
+    return () => {
+      cancel = true;
+    };
+  }, [debouncedKeyPath]);
+
+  return <TypedInput {...props} valueType={valueType} disabled={props.disabled || disabled} />;
 };
-
-const OverrideValueInput = compose(
-  mapPropsStream(mapValueTypeToProps),
-  pure,
-)(TypedInput);
-OverrideValueInput.displayName = 'OverrideValueInput';
 
 const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) => {
   const hasLocal = local !== undefined;
@@ -105,35 +103,30 @@ export default FixedKey;
 
 const emptyKey = { keyPath: '', value: '' };
 
-const NewFixedKeyComponent = ({ appendKey, keyPath, local: value, ...props }) => (
-  <div
-    className="new-fixed-key"
-    data-comp="new-fixed-key"
-    onKeyUpCapture={(e) => {
-      if (e.keyCode !== 13) return;
-      appendKey();
-    }}
-  >
-    <EditableKey {...props} keyPath={keyPath} local={value} />
-    <button className="add-key-button" data-field="add" title="Add key" onClick={appendKey} />
-  </div>
-);
+export const NewFixedKey = ({ appendKey, ...props }) => {
+  const [{ keyPath, value }, setState] = useState(emptyKey);
 
-export const NewFixedKey = compose(
-  withStateHandlers(emptyKey, {
-    onChange: () => (newState) => newState,
-    reset: () => () => emptyKey,
-  }),
-  mapProps(({ appendKey, reset, value: local, keyPath, ...props }) => ({
-    appendKey: () => {
-      if (keyPath === '' || local === '') return;
-      appendKey({ keyPath, value: local });
-      reset();
-    },
-    local,
-    keyPath,
-    ...props,
-  })),
-)(NewFixedKeyComponent);
+  const onAppendKey = () => {
+    if (keyPath === '' || value === '') {
+      return;
+    }
+    appendKey({ keyPath, value });
+    setState(emptyKey);
+  };
 
-NewFixedKey.displayName = 'NewFixedKey';
+  return (
+    <div
+      className="new-fixed-key"
+      data-comp="new-fixed-key"
+      onKeyUpCapture={(e) => {
+        if (e.keyCode !== 13) {
+          return;
+        }
+        onAppendKey();
+      }}
+    >
+      <EditableKey {...props} onChange={setState} keyPath={keyPath} local={value} />
+      <button className="add-key-button" data-field="add" title="Add key" onClick={onAppendKey} />
+    </div>
+  );
+};

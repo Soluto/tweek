@@ -30,7 +30,7 @@ build:
     sync:
       manual:
       - src: '**/*.go'
-        dest: /src
+        dest: /app
     docker:
       dockerfile: debug.Dockerfile
   - image: soluto/tweek-editor

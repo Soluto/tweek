@@ -27,9 +27,7 @@ test('should not save circular dependencies', async (t) => {
   await t
     .click(editKey.saveChangesButton)
     .expect(
-      Selector('.notifications-br .notification-error .notification-title').withExactText(
-        'Failed to save key',
-      ).visible,
+      Selector('#ct-container .ct-toast .ct-heading').withExactText('Failed to save key').visible,
     )
     .ok();
 });

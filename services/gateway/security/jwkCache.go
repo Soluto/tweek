@@ -1,6 +1,7 @@
 package security
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 )
 
 type jwkRecord struct {
-	set *jwk.Set
+	set jwk.Set
 	err error
 }
 
@@ -29,21 +30,18 @@ func getJWKByEndpoint(endpoint, keyID string) (rawKey interface{}, err error) {
 		return nil, rec.err
 	}
 
-	k := rec.set.LookupKeyID(keyID)
-	if len(k) == 0 {
+	k, found := rec.set.LookupKeyID(keyID)
+	if !found {
 		rec := loadEndpoint(endpoint)
 		if rec.err != nil {
 			return nil, rec.err
 		}
-		k = rec.set.LookupKeyID(keyID)
-		if len(k) == 0 {
+		k, found = rec.set.LookupKeyID(keyID)
+		if !found {
 			return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
 		}
 	}
-	if len(k) > 1 {
-		return nil, fmt.Errorf("Unexpected error, more than 1 key %s found at %s", keyID, endpoint)
-	}
-	err = k[0].Raw(&rawKey)
+	err = k.Raw(&rawKey)
 	return
 }
 
@@ -73,7 +71,7 @@ func loadEndpoint(endpoint string) *jwkRecord {
 
 func loadEndpointWithRetry(endpoint string, retryCount uint) *jwkRecord {
 	rec := &jwkRecord{}
-	rec.set, rec.err = jwk.FetchHTTP(endpoint)
+	rec.set, rec.err = jwk.Fetch(context.Background(), endpoint)
 	jwkCache[endpoint] = rec
 
 	if rec.err != nil {

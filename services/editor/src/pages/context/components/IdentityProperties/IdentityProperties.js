@@ -1,12 +1,12 @@
-import React from 'react';
 import classnames from 'classnames';
 import * as R from 'ramda';
-import TypedInput from '../../../../components/common/Input/TypedInput';
-import { getPropertyTypeDetails } from '../../../../services/context-service';
+import React from 'react';
+import { TypedInput } from '../../../../components/common';
+import { usePropertyTypeDetails } from '../../../../contexts/Schema/Schemas';
 import './IdentityProperties.css';
 
 const Property = ({ identityType, property, local, remote, onChange }) => {
-  const valueType = getPropertyTypeDetails(`${identityType}.${property}`);
+  const valueType = usePropertyTypeDetails(`${identityType}.${property}`);
   return (
     <div className="property-wrapper" data-comp="identity-property" data-property={property}>
       <label className="property-label">{property}</label>

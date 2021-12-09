@@ -152,17 +152,17 @@
     },
     {
       "routePathPrefix": "/apps",
-      "routeRegexp": "^/api/v2/apps(\\?.*)?$",
-      "upstreamPath": "/api/apps$1",
-      "methods": ["POST"],
+      "routeRegexp": "^/api/v2/apps([^\\?]*)(.*)$",
+      "upstreamPath": "/api/apps$1$2",
+      "methods": ["POST", "PATCH", "DELETE"],
       "service": "authoring",
       "userInfo": true,
       "rewriteKeyPath": false
     },
     {
       "routePathPrefix": "/apps",
-      "routeRegexp": "^/api/v2/apps(\\?.*)?$",
-      "upstreamPath": "/api/apps$1",
+      "routeRegexp": "^/api/v2/apps([^\\?]*)(.*)$",
+      "upstreamPath": "/api/apps$1$2",
       "methods": ["GET"],
       "service": "authoring",
       "userInfo": false,
@@ -201,7 +201,7 @@
       "upstreamPath": "/api/hooks$1$2",
       "methods": ["GET"],
       "service": "authoring",
-      "userInfo": false,
+      "userInfo": true,
       "rewriteKeyPath": true
     },
     {

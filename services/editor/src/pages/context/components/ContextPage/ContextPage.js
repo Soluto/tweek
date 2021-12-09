@@ -1,25 +1,31 @@
 import React from 'react';
-import { compose, mapProps } from 'recompose';
 import DocumentTitle from 'react-document-title';
-import withLoading from '../../../../hoc/with-loading';
-import { refreshSchema } from '../../../../services/context-service';
-import SearchBox from './SearchBox/SearchBox';
+import { Route } from 'react-router';
+import { useRefreshSchemas } from '../../../../contexts/Schema/Schemas';
 import './ContextPage.css';
-import ErrorPage from '../../../../components/ErrorPage';
+import SearchBox from './SearchBox/SearchBox';
 
-const ContextPage = ({ children, isExact, ...props }) => (
-  <DocumentTitle title="Tweek - Context">
-    <div className={'context-page-container'}>
-      <div className={'context-page'}>
-        <SearchBox {...props} />
-        {!isExact ? <div className={'horizontal-separator'} /> : null}
-        {children}
+const ContextPage = ({ children, isExact, path }) => {
+  useRefreshSchemas();
+
+  return (
+    <DocumentTitle title="Tweek - Context">
+      <div className={'context-page-container'}>
+        <div className={'context-page'}>
+          <Route path={`${path}/:identityType/:identityId`}>
+            {({ match }) => (
+              <SearchBox
+                identityId={match?.params.identityId}
+                identityType={match?.params.identityType}
+              />
+            )}
+          </Route>
+          {!isExact ? <div className={'horizontal-separator'} /> : null}
+          {children}
+        </div>
       </div>
-    </div>
-  </DocumentTitle>
-);
+    </DocumentTitle>
+  );
+};
 
-export default compose(
-  withLoading(() => null, (error) => <ErrorPage error={error} />, refreshSchema),
-  mapProps(({ params, ...rest }) => ({ ...params, ...rest })),
-)(ContextPage);
+export default ContextPage;

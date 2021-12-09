@@ -1,210 +1,212 @@
-  @import (reference) "./accents.less";
+@import (reference) './accents.less';
 
-  .user-select(@user-select: none) {
-    -moz-user-select: @user-select;
-    -ms-user-select: @user-select;
-    -webkit-user-select: @user-select;
-    user-select: @user-select;
-  }
+.user-select(@user-select: none) {
+  -moz-user-select: @user-select;
+  -ms-user-select: @user-select;
+  -webkit-user-select: @user-select;
+  user-select: @user-select;
+}
 
-  .panel {
-    background-color: white;
-    border-radius: 5px;
-    border: 1px solid lightgray;
-    padding: 15px;
-    box-sizing: content-box;
-    margin: 20px;
-    display: block;
+.panel {
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  padding: 15px;
+  box-sizing: content-box;
+  margin: 20px;
+  display: block;
+}
+
+.transitioned(@duration :0.2s) {
+  transition: all @duration ease-in-out;
+}
+
+.metro-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: @accent-foreground;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  .user-select(none);
+  .transitioned();
+  &:hover {
+    background-color: #029cd5;
+    cursor: pointer;
   }
-  
-  .transitioned(@duration :.2s) {
-    transition: all @duration ease-in-out;
-  }
-  
-  .metro-button {
-    vertical-align: top;
-    background-color: #00aeef;
-    height: 28px;
-    border: 0;
-    padding: 0 20px;
-    color: @accent-foreground;
-    outline: 0;
-    padding-bottom: 2px;
-    border-radius: 14px;
-    .user-select(none);
-    .transitioned();
-    &:hover {
-      background-color: #029CD5;
-      cursor: pointer;
-    }
-    &:disabled {
+  &:disabled {
+    background-color: gray;
+    &:hover,
+    &:active {
+      cursor: default;
       background-color: gray;
-      &:hover, &:active {
-        cursor: default;
-        background-color: gray;
-      }
     }
   }
-  
-  .transparent-metro-button {
-    .metro-button;
-    text-decoration: underline;
+}
+
+.transparent-metro-button {
+  .metro-button;
+  text-decoration: underline;
+  background-color: transparent;
+  color: gray;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  &:active {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &:disabled {
     background-color: transparent;
-    color: gray;
-    &:hover {
-      background-color: rgba(0, 0, 0, .1);
-    }
+    &:hover,
     &:active {
-      background-color: rgba(0, 0, 0, .2);
-    }
-    &:disabled {
+      cursor: default;
       background-color: transparent;
-      &:hover, &:active {
-        cursor: default;
-        background-color: transparent;
-      }
     }
   }
-  
-  .small-metro-button {
-    .metro-button;
-    font-size: 12px;
-    height: 20px;
-    padding: 0 10px;
-  }
-  
-  @text-box-default-width: 150px;
-  .metro-textbox(@font-size: 13px) {
-    display: inline-block;
-    border: 0 none;
-    border-bottom: 1px solid @accent-color4;
-    min-height: 28px;
-    width: @text-box-default-width;
-    padding: 0 4px;
-    background-color: transparent;
-    font-size: @font-size;
-    font-weight: 500;
-    color: #515C66;
-    outline: none;
-    box-sizing: border-box;
-    align-self: flex-start;
-    .transitioned();
-    &:focus {
-      border-bottom: 2px solid @accent-color2;
-    }
-    &:disabled{
-      border-color: rgb(188, 188, 188);
-    }
-  }
-  
-  .small-metro-textbox {
-    .metro-textbox;
-    height: 16px;
-    font-size: 12px;
-  }
-  
-  .circle-button {
-    .metro-button;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    line-height: 1;
-    padding: 0 0 3px;
-    box-sizing: border-box;
-  }
-  
-  .small-circle-button {
-    .circle-button;
-    width: 13px;
-    height: 13px;
-    font-size: 10px;
-    padding-bottom: 4px;
-  }
-  
-  .gray-button {
-    background-color: rgb(188, 188, 188);
-    &:hover {
-      background-color: rgb(156, 156, 156);
-    }
-    &:active {
-      background-color: rgb(123, 123, 123);
-    }
-  }
-  
-  .gray-circle-button {
-    .circle-button;
-    .gray-button;
-  }
-  
-  .small-gray-circle-button {
-    .small-circle-button;
-    .gray-button;
-  }
-  
-  .add-button {
-    &:after {
-      font-family: 'tweekIcons';
-      content: '\E905';
-    }
-  }
+}
 
-  .search-button {
-    &:after {
-      font-family: 'tweekIcons';
-      content: '\E906';
-    }
-  }
+.small-metro-button {
+  .metro-button;
+  font-size: 12px;
+  height: 20px;
+  padding: 0 10px;
+}
 
-  .close-button {
-    &:after {
-      font-family: 'tweekIcons';
-      content: '\E900';
-    }
+@text-box-default-width: 150px;
+.metro-textbox(@font-size: 13px) {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid @accent-color4;
+  min-height: 28px;
+  width: @text-box-default-width;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: @font-size;
+  font-weight: 500;
+  color: #515c66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  .transitioned();
+  &:focus {
+    border-bottom: 2px solid @accent-color2;
   }
-  
-  .add-circle-button {
-    .circle-button;
-    .add-button;
-    font-size: 16px;
-    padding-top: 2px;
+  &:disabled {
+    border-color: rgb(188, 188, 188);
   }
+}
 
-  .small-add-circle-button {
-    .small-circle-button;
-    .add-button;
-    font-size: 11px;
-    padding-top: 1px;
-  }
+.small-metro-textbox {
+  .metro-textbox;
+  height: 16px;
+  font-size: 12px;
+}
 
-  .search-circle-button {
-    .circle-button;
-    .search-button;
-    font-size: 12px;
-    padding-top: 3px;
-  }
+.circle-button {
+  .metro-button;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+}
 
-  .close-circle-button {
-    .gray-circle-button;
-    .close-button;
-    font-size: 16px;
-    padding-top: 2px;
+.small-circle-button {
+  .circle-button;
+  width: 13px;
+  height: 13px;
+  font-size: 10px;
+  padding-bottom: 4px;
+}
+
+.gray-button {
+  background-color: rgb(188, 188, 188);
+  &:hover {
+    background-color: rgb(156, 156, 156);
   }
-  
-  .small-close-circle-button {
-    .small-gray-circle-button;
-    .close-button;
-    font-size: 12px;
-    padding-top: 1px;
+  &:active {
+    background-color: rgb(123, 123, 123);
   }
-  
-  .centered-message {
-    position: absolute;
-    width: 300px;
-    height: 100px;
-    top: 50%;
-    left: 50%;
-    margin-top: -50px;
-    margin-left: -150px;
-    font-size: 28px;
-    color: @accent-color3;
+}
+
+.gray-circle-button {
+  .circle-button;
+  .gray-button;
+}
+
+.small-gray-circle-button {
+  .small-circle-button;
+  .gray-button;
+}
+
+.add-button {
+  &:after {
+    font-family: 'tweekIcons';
+    content: '\E905';
   }
+}
+
+.search-button {
+  &:after {
+    font-family: 'tweekIcons';
+    content: '\E906';
+  }
+}
+
+.close-button {
+  &:after {
+    font-family: 'tweekIcons';
+    content: '\E900';
+  }
+}
+
+.add-circle-button {
+  .circle-button;
+  .add-button;
+  font-size: 16px;
+  padding-top: 2px;
+}
+
+.small-add-circle-button {
+  .small-circle-button;
+  .add-button;
+  font-size: 11px;
+  padding-top: 1px;
+}
+
+.search-circle-button {
+  .circle-button;
+  .search-button;
+  font-size: 12px;
+  padding-top: 3px;
+}
+
+.close-circle-button {
+  .gray-circle-button;
+  .close-button;
+  font-size: 16px;
+  padding-top: 2px;
+}
+
+.small-close-circle-button {
+  .small-gray-circle-button;
+  .close-button;
+  font-size: 12px;
+  padding-top: 1px;
+}
+
+.centered-message {
+  position: absolute;
+  width: 300px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -150px;
+  font-size: 28px;
+  color: @accent-color3;
+}

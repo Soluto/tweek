@@ -1,10 +1,6 @@
-import React from 'react';
-import { compose, withState, withHandlers } from 'recompose';
 import * as R from 'ramda';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
-import Input from '../../../../../components/common/Input/Input';
-import TypedInput from '../../../../../components/common/Input/TypedInput';
-import Label from '../../../../../components/common/Label/Label';
+import React, { useState } from 'react';
+import { ComboBox, Input, Label, TypedInput } from '../../../../../components/common';
 import * as TypesServices from '../../../../../services/types-service';
 import './IdentityProperty.css';
 
@@ -63,7 +59,7 @@ const ArrayTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => {
         onUpdate={(type) => onUpdate(type)}
       />
       <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
-        <Label text="Generic Type" />
+        <Label>Generic Type</Label>
         <TypeCombobox
           type={type.ofType.base}
           allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), identityPropertyTypes)}
@@ -87,7 +83,7 @@ const AllowedValuesSelector = ({ onUpdate, type, allowedValues }) => (
     data-comp="editable-list"
     style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
   >
-    <Label text="Allowed Values" />
+    <Label>Allowed Values</Label>
     <TypedInput
       data-comp="property-value"
       hideIcon
@@ -99,7 +95,7 @@ const AllowedValuesSelector = ({ onUpdate, type, allowedValues }) => (
 );
 
 const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
-  const identityPropertyTypes = [...Object.keys(TypesServices.types)];
+  const identityPropertyTypes = Object.keys(TypesServices.types);
 
   let TypeSelector = SimpleTypeSelector;
   if (typeof type === 'object') {
@@ -118,7 +114,7 @@ const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
 export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) => (
   <div data-comp="property-item" data-property-name={name}>
     <button data-comp="remove" onClick={onRemove} />
-    <Label text={name} />
+    <Label>{name}</Label>
     <PropertyTypeSelector
       data-field="property-type"
       type={def.type}
@@ -127,27 +123,31 @@ export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) => (
   </div>
 );
 
-const createUpdater = (propName, updateFn) => (x) => updateFn(R.assoc(propName, x));
 const EMPTY_PROPERTY = { propName: '', def: { type: 'string' } };
-export const NewIdentityProperty = compose(
-  withState('state', 'setState', EMPTY_PROPERTY),
-  withHandlers({
-    updatePropName: ({ setState }) => createUpdater('propName', setState),
-    updateDef: ({ setState }) => createUpdater('def', setState),
-    clear: ({ setState }) => () => setState(() => EMPTY_PROPERTY),
-  }),
-)(({ state, updateDef, updatePropName, onCreate, clear }) => {
-  let applyChange = () => {
+
+export const NewIdentityProperty = ({ onCreate }) => {
+  const [state, setState] = useState(EMPTY_PROPERTY);
+
+  const updatePropName = (propName) => setState((s) => ({ ...s, propName }));
+  const updateDef = (def) => setState((s) => ({ ...s, def }));
+  const applyChange = () => {
     onCreate(state.propName, state.def);
-    clear();
+    setState(EMPTY_PROPERTY);
   };
+
   return (
     <div
       data-comp="new-property-item"
       onKeyUpCapture={(e) => {
-        if (e.keyCode !== 13) return;
-        if (state.propName === '') return;
-        if (typeof state.def.type === 'object') return;
+        if (e.keyCode !== 13) {
+          return;
+        }
+        if (state.propName === '') {
+          return;
+        }
+        if (typeof state.def.type === 'object') {
+          return;
+        }
         applyChange();
       }}
     >
@@ -165,4 +165,4 @@ export const NewIdentityProperty = compose(
       <button data-comp="add" onClick={applyChange} />
     </div>
   );
-});
+};

@@ -14,7 +14,7 @@ export default class Property {
   async selectType(type) {
     await t
       .click(this.baseType.find(dataComp('type-select')))
-      .click(this.baseType.find(dataLabel(type)).find('a'));
+      .click(this.baseType.find(dataLabel(type)).find('button'));
   }
 
   async addAllowedValues(allowedValues) {

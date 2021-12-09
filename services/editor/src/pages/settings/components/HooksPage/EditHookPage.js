@@ -1,16 +1,14 @@
-import React, { useState, useMemo, useContext, useCallback } from 'react';
+import cogoToast from 'cogo-toast';
 import qs from 'query-string';
+import React, { useCallback, useState } from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
-import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import { ComboBox, SaveButton } from '../../../../components/common';
-import { ReduxContext } from '../../../../store';
-import { showSuccess } from '../../../../store/ducks';
-import { hookTypes, hookLabelsByType } from './HookTypes';
+import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import './EditHookPage.css';
+import { hookLabelsByType, hookTypes } from './HookTypes';
 import { webhookFormats, webhookLabelsByFormat } from './WebHookFormats';
 
-export default ({ location, history }) => {
-  const { dispatch } = useContext(ReduxContext);
+const EditHookPage = ({ location, history }) => {
   const initialHookData = (location.state && location.state.hook) || {};
   const id = initialHookData.id;
   const isEditPage = Boolean(id);
@@ -24,14 +22,8 @@ export default ({ location, history }) => {
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const isValid = useMemo(() => validateInput({ keyPath, type, url, format }), [keyPath, type, url, format]);
-  const hasChanges = useMemo(() => checkForChanges({ initialHookData, keyPath, type, url, format, tags }), [
-    keyPath,
-    type,
-    url,
-    format,
-    tags
-  ]);
+  const isValid = validateInput({ keyPath, type, url, format });
+  const hasChanges = checkForChanges({ initialHookData, keyPath, type, url, format, tags });
 
   useErrorNotifier(saveError, 'Failed to save hook');
 
@@ -62,12 +54,13 @@ export default ({ location, history }) => {
           setIsSaving,
           history,
           setSaveError,
-          dispatch,
         })}
       />
     </div>
   );
 };
+
+export default EditHookPage;
 
 const TextField = ({ label, value, setter, placeholder }) => (
   <div className="field-input-wrapper">
@@ -92,7 +85,7 @@ const HookTypeSelector = ({ setType, type }) => (
 );
 
 const HookFormatSelector = ({ setFormat, format, type }) => {
-  if(type !== 'notification_webhook') {
+  if (type !== 'notification_webhook') {
     return null;
   }
 
@@ -112,29 +105,28 @@ const HookFormatSelector = ({ setFormat, format, type }) => {
   );
 };
 
-const TagsPicker = ({ tags, setTags }) =>
-  (
-    <div className="tags-picker">
-      <label className="field-label">Tags:</label>
-      <ReactTags
-        tags={tags.map(tag => ({ id: tag, text: tag }))}
-        handleDelete={index => setTags(tags.filter((t, i) => i !== index))}
-        handleAddition={tag => setTags([...tags, tag.text])}
-        placeholder="New tag"
-        autofocus={false}
-        allowDeleteFromEmptyInput
-        allowDragDrop={false}
-        minQueryLength={1}
-        classNames={{
-          tags: 'tags-container',
-          tagInput: 'tag-input',
-          tag: 'tag',
-          remove: 'tag-delete-button',
-          suggestions: 'tags-suggestion',
-        }}
-      />
-    </div>
-  );
+const TagsPicker = ({ tags, setTags }) => (
+  <div className="tags-picker">
+    <label className="field-label">Tags:</label>
+    <ReactTags
+      tags={tags.map((tag) => ({ id: tag, text: tag }))}
+      handleDelete={(index) => setTags(tags.filter((t, i) => i !== index))}
+      handleAddition={(tag) => setTags([...tags, tag.text])}
+      placeholder="New tag"
+      autofocus={false}
+      allowDeleteFromEmptyInput
+      allowDragDrop={false}
+      minQueryLength={1}
+      classNames={{
+        tags: 'tags-container',
+        tagInput: 'tag-input',
+        tag: 'tag',
+        remove: 'tag-delete-button',
+        suggestions: 'tags-suggestion',
+      }}
+    />
+  </div>
+);
 
 const useSaveHookCallback = ({
   id,
@@ -146,31 +138,32 @@ const useSaveHookCallback = ({
   setIsSaving,
   history,
   setSaveError,
-  dispatch,
 }) =>
   useCallback(async () => {
     try {
       setIsSaving(true);
 
-      if (id) await tweekManagementClient.updateHook({ id, keyPath, type, url, format, tags });
-      else await tweekManagementClient.createHook({ keyPath, type, url, format, tags });
+      if (id) {
+        await tweekManagementClient.updateHook({ id, keyPath, type, url, format, tags });
+      } else {
+        await tweekManagementClient.createHook({ keyPath, type, url, format, tags });
+      }
 
       setIsSaving(false);
-      dispatch(showSuccess({ title: 'Hook Saved' }));
+      cogoToast.success('Hook Saved');
       history.goBack();
     } catch (err) {
       setIsSaving(false);
       setSaveError(err);
     }
-  }, [id, keyPath, type, url, format, tags]);
+  }, [id, keyPath, type, url, format, tags]); //eslint-disable-line react-hooks/exhaustive-deps
 
-const validateInput = ({ keyPath, type, url, format }) => Boolean(keyPath && type && url && (type === 'notification_webhook' ? format : true));
+const validateInput = ({ keyPath, type, url, format }) =>
+  Boolean(keyPath && type && url && (type === 'notification_webhook' ? format : true));
 
 const checkForChanges = ({ initialHookData, keyPath, type, url, format, tags }) =>
-  (
-    keyPath !== initialHookData.keyPath ||
-    type !== initialHookData.type ||
-    url !== initialHookData.url ||
-    format !== initialHookData.format ||
-    tags !== initialHookData.tags
-  );
+  keyPath !== initialHookData.keyPath ||
+  type !== initialHookData.type ||
+  url !== initialHookData.url ||
+  format !== initialHookData.format ||
+  tags !== initialHookData.tags;

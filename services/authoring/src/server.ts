@@ -53,7 +53,7 @@ const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreatio
 
 const gitTransactionManager = new Transactor<GitRepository>(
   gitRepoCreationPromise,
-  async (gitRepo) => {
+  async gitRepo => {
     await gitRepo.reset();
     await gitRepo.fetch();
     await gitRepo.mergeMaster();
@@ -77,18 +77,14 @@ const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
 const policyRepository = new PolicyRepository(gitTransactionManager);
 const hooksRepositoryFactory = new HooksRepositoryFactory(gitTransactionManager);
-const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(
-  gitTransactionManager,
-);
+const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(gitTransactionManager);
 
 const auth = passport.authenticate(['tweek-internal', 'apps-credentials'], { session: false });
 
 async function startServer() {
   await appsRepository.refresh();
   const app = express();
-  const publicKey = sshpk
-    .parseKey(await fs.readFile(gitRepositoryConfig.publicKey), 'auto')
-    .toBuffer('pem');
+  const publicKey = sshpk.parseKey(await fs.readFile(gitRepositoryConfig.publicKey), 'auto').toBuffer('pem');
   app.use(requestLogger);
   app.use(configurePassport(publicKey, appsRepository));
   app.use(express.json()); // for parsing application/json
@@ -131,7 +127,7 @@ const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).pipe(shar
 onUpdate$
   .pipe(
     switchMapTo(defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath))),
-    tap({ error: (err) => logger.error({ err }, 'Error refreshing search index') }),
+    tap({ error: err => logger.error({ err }, 'Error refreshing search index') }),
     retry(),
   )
   .subscribe();
@@ -139,7 +135,7 @@ onUpdate$
 onUpdate$
   .pipe(
     switchMapTo(defer(() => appsRepository.refresh())),
-    tap({ error: (err) => logger.error({ err }, 'Error refreshing apps index') }),
+    tap({ error: err => logger.error({ err }, 'Error refreshing apps index') }),
     retry(),
   )
   .subscribe();

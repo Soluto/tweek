@@ -5,18 +5,24 @@ const client = require('../../utils/client');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
 
+const okJsonResponse = (expected) => (res) => {
+  if (!(res.statusCode === 200 && res.body === expected)) {
+    throw new Error('Mismatched json body=' + res.body + ' type=' + typeof res.body);
+  }
+};
+
 describe('Gateway v2 API', () => {
   const key = 'integration_tests/some_key';
 
   it('should get key using v2 (proxy to api service)', async () =>
-    await client.get(`/api/v2/values/${key}`).expect(200, '1.0'));
+    await client.get(`/api/v2/values/${key}`).expect(okJsonResponse(1)));
 
   it('should get key using v2 with keyPath query', async () =>
-    await client.get(`/api/v2/values?keyPath=${encodeURI(key)}`).expect(200, '1.0'));
+    await client.get(`/api/v2/values?keyPath=${encodeURI(key)}`).expect(okJsonResponse(1)));
 
   it('should get key using v2 without authentication', async () => {
     const apiClient = await client.with((client) => client.unset('Authorization'));
-    await apiClient.get(`/api/v2/values/${key}`).expect(200, '1.0');
+    await apiClient.get(`/api/v2/values/${key}`).expect(okJsonResponse(1));
   });
 
   it('should set and get context', async () => {
@@ -26,10 +32,7 @@ describe('Gateway v2 API', () => {
       IsInGroup: true,
     };
 
-    await client
-      .post(`/api/v2/context/user/v2user`)
-      .send(context)
-      .expect(200);
+    await client.post(`/api/v2/context/user/v2user`).send(context).expect(200);
 
     await client
       .get(`/api/v2/context/user/v2user`)
@@ -60,10 +63,7 @@ describe('Gateway v2 API', () => {
       });
 
     const schema = { test: { type: 'string' } };
-    await client
-      .post(`/api/v2/schemas/test_schema`)
-      .send(schema)
-      .expect(200);
+    await client.post(`/api/v2/schemas/test_schema`).send(schema).expect(200);
 
     await client.delete(`/api/v2/schemas/test_schema`).expect(200);
   });
@@ -192,7 +192,9 @@ describe('Gateway v2 API', () => {
 
     const appsRes = await client.get('/api/v2/apps').expect(200);
 
-    expect(appsRes.body).to.include({ [app.appId]: 'test app' });
+    const createdApp = appsRes.body.find((a) => a.id === app.appId);
+    expect(createdApp).to.exist;
+    expect(createdApp).to.have.property('name', 'test app');
 
     const policyRes = await client.get('/api/v2/policies').expect(200);
 

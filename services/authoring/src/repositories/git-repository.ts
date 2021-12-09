@@ -81,8 +81,8 @@ export default class GitRepository {
 
   async listFiles(directoryPath = '') {
     const normalizedDirPath = `${path.normalize(`${directoryPath}/.`)}/`.replace(/\\/g, '/');
-    return (await listFiles(this._repo, (filePath) => filePath.startsWith(normalizedDirPath))).map(
-      (x) => x.substring(normalizedDirPath.length),
+    return (await listFiles(this._repo, (filePath) => filePath.startsWith(normalizedDirPath))).map((x) =>
+      x.substring(normalizedDirPath.length),
     );
   }
 
@@ -122,12 +122,7 @@ export default class GitRepository {
       message,
     });
 
-    const uniqSort = R.pipe(
-      R.flatten,
-      R.map(mapEntry),
-      R.uniqBy(R.prop('sha')),
-      R.sort(R.descend(R.prop('date'))),
-    );
+    const uniqSort = R.pipe(R.flatten, R.map(mapEntry), R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
 
     return uniqSort(historyEntries);
   }
@@ -187,13 +182,7 @@ export default class GitRepository {
   }
 
   async mergeMaster(): Promise<any> {
-    let commitId = await this._repo.mergeBranches(
-      'master',
-      'origin/master',
-      undefined,
-      undefined,
-      undefined,
-    );
+    let commitId = await this._repo.mergeBranches('master', 'origin/master', undefined, undefined, undefined);
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
@@ -223,7 +212,7 @@ export default class GitRepository {
 
   async _pushRepositoryChanges(actionName) {
     try {
-      await new Promise((resolve, reject) =>
+      await new Promise<void>((resolve, reject) =>
         this._simpleRepo.push('origin', 'master', (err) => {
           if (err) {
             return reject(err);
@@ -236,9 +225,7 @@ export default class GitRepository {
         throw new ValidationError('failed validation:' + ex);
       }
       if (
-        ex.message.includes(
-          'Updates were rejected because the tip of your current branch is behind',
-        ) ||
+        ex.message.includes('Updates were rejected because the tip of your current branch is behind') ||
         ex.message.includes("(e.g., 'git pull ...') before pushing again.")
       ) {
         throw new RepoOutOfDateError(ex);

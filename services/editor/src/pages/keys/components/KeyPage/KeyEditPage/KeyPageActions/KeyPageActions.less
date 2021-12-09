@@ -1,8 +1,8 @@
-@import (reference) "../../../../../../styles/core/core.less";
+@import (reference) '../../../../../../styles/core/core.less';
 .readonly-key-message {
   float: left;
   font-size: 22px;
-  color: #888
+  color: #888;
 }
 
 .key-action-buttons-wrapper {
@@ -16,12 +16,14 @@
   .save-button {
     margin-left: @button-margin;
     width: @key-action-button-width;
-    &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
+    &[data-state-is-saving='true'],
+    &[data-state-is-saving='true']:disabled {
       background-color: green;
     }
   }
   .icon-button {
     .gray-button;
+    color: #515151;
     margin-left: @button-margin;
     width: @icon-size;
     height: @icon-size;

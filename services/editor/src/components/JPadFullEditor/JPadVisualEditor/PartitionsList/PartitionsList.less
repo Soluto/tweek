@@ -1,4 +1,4 @@
-@import (reference) "../../../../styles/core/core.less";
+@import (reference) '../../../../styles/core/core.less';
 
 .partitions-list-container {
   padding: 20px 25px;
@@ -15,7 +15,6 @@
   }
 
   .partition-container {
-
   }
 }
 
@@ -30,7 +29,7 @@
   border-top: 1px solid #ccc;
   color: #333;
   padding: 20px;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -40,7 +39,6 @@
   }
 
   h3 {
-
   }
 
   .partitions-accordion-container-item-title-details {
@@ -80,13 +78,19 @@
   border-top: none;
 }
 
+.partitions-accordion-container-item {
+  .ReactCollapse--collapse {
+    transition: all 0.3s;
+  }
+}
+
 .partitions-accordion-container-item-expanded {
   .partitions-accordion-container-item-title {
     background-color: #03a9f4;
     color: #fff;
 
     &:hover {
-      background-color: #03B2FF;
+      background-color: #03b2ff;
     }
   }
 
@@ -123,7 +127,7 @@
   border-bottom: 0;
   color: #333;
   padding: 20px;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
   display: flex;
   align-items: center;
 
