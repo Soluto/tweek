@@ -52,12 +52,11 @@ jobs:
       # - name: tag all images
       #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: setup e2e
-        working-directory: e2e/ui
-        run: yarn && yarn docker-compose up -d editor
-      - name: run tests
-        uses: DevExpress/testcafe-action@latest
-        with:
-          args: "-q -c 4 -S -s screenshots chrome:headless e2e/ui/spec"
+        run: yarn && yarn test:docker:ui
+      # - name: run tests
+      #   uses: DevExpress/testcafe-action@latest
+      #   with:
+      #     args: "-q -c 4 -S -s screenshots chrome:headless e2e/ui/spec"
   run-e2e-integration:
     needs: ["build-images"]
     runs-on: ubuntu-latest
