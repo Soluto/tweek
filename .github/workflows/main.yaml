@@ -21,6 +21,7 @@ jobs:
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: build
         run: |
+          echo $GITHUB_REPOSITORY
           yarn docker-compose build ${{ matrix.image }} && \
           docker save -o ${{ matrix.image }}-${{ github.sha }}.tar soluto/tweek-${{ matrix.image }} && \
           echo cp -a ${{ matrix.image }}-${{ github.sha }}.tar .github/workflows/
@@ -48,8 +49,8 @@ jobs:
           name: build-images
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
-      - name: tag all images
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
+      # - name: tag all images
+      #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: setup e2e
         working-directory: e2e/ui
         run: yarn && yarn docker-compose up -d editor
