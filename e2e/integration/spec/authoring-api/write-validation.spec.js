@@ -2,9 +2,25 @@ const { expect } = require('chai');
 const client = require('../../utils/client');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
+const exec = require('child_process').exec;
+//import 'mocha';
 
 describe('authoring api write validation', () => {
   describe('/PUT /key', () => {
+    afterEach('logs', async () => {
+      exec('yarn docker-compose logs', (error, out, err) => {
+        if (error) {
+          console.error(error.message);
+          console.error(error.stack);
+        }
+        if (out) {
+          console.log(out);
+        }
+        if (err) {
+          console.error(err);
+        }
+      });
+    });
     it('should accept a valid key', async () => {
       const key = '@tests/integration/new_valid_key';
       await client
