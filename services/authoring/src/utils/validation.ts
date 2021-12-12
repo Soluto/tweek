@@ -1,9 +1,28 @@
 import express from 'express';
 import { Errors } from 'typescript-rest';
 import Ajv, { Schema } from 'ajv';
+import addFormats from 'ajv-formats';
 import { Type } from '@sinclair/typebox';
 
-const ajv = new Ajv();
+//const ajv = new Ajv();
+const ajv = addFormats(new Ajv({}), [
+  'date-time',
+  'time',
+  'date',
+  'email',
+  'hostname',
+  'ipv4',
+  'ipv6',
+  'uri',
+  'uri-reference',
+  'uuid',
+  'uri-template',
+  'json-pointer',
+  'relative-json-pointer',
+  'regex',
+])
+  .addKeyword('kind')
+  .addKeyword('modifier');
 
 export default (schema: Schema) => (req: express.Request): express.Request => {
   const ok = ajv.validate(schema, req.body);
