@@ -2,7 +2,7 @@ import express from 'express';
 import { Errors } from 'typescript-rest';
 import Ajv, { Schema } from 'ajv';
 import addFormats from 'ajv-formats';
-import { Type } from '@sinclair/typebox';
+import { TLiteral, TUnion, Type } from '@sinclair/typebox';
 
 //const ajv = new Ajv();
 const ajv = addFormats(new Ajv({}), [
@@ -25,43 +25,38 @@ const ajv = addFormats(new Ajv({}), [
   .addKeyword('modifier');
 
 export default (schema: Schema) => (req: express.Request): express.Request => {
-  const ok = ajv.validate(schema, req.body);
-  if (ok) {
-    throw new Errors.BadRequestError('Bad format');
+  const validate = ajv.compile(schema);
+  const ok = validate(req.body);
+  if (!ok) {
+    throw new Errors.BadRequestError('Bad key format:\n' + validate.errors);
   }
   return req;
 };
 
-enum KeyTypeEnum {
-  string,
-  number,
-  boolean,
-  date,
-  object,
-  array,
+type IntoStringUnion<T> = { [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never };
+
+function StringUnion<T extends string[]>(values: [...T]): TUnion<IntoStringUnion<T>> {
+  return { enum: values } as any;
 }
 
-enum KeyRuleTypeEnum {
-  SingleVariant,
-}
+const RuleTypes = ['SingleVariant', 'MultiVariant'];
 
 const KeyRuleMatcherType = Type.Object({});
 
 export const KeyRuleType = Type.Object({
   Matcher: KeyRuleMatcherType,
   Value: Type.Any(), // TODO: Add generics
-  Type: Type.Enum(KeyRuleTypeEnum),
+  Type: StringUnion(RuleTypes),
 });
 
-export const KeyImplementationType = Type.Object({
-  partitions: Type.Array(Type.Any()), // TODO: Complete
-  valueType: Type.Enum(KeyTypeEnum), // TODO: Set values
-  rules: Type.Array(KeyRuleType),
-  defaultValue: Type.Optional(Type.Any()), // TODO: Add generics/ref
-});
+export const KeyImplementationType = Type.String();
+
+export const ValueTypes = ['string', 'number', 'boolean', 'date', 'object', 'array'];
+
+const KeyNameRegEx = /(^(@?)[a-z0-9_]+)(\/(@?)([a-z0-9_])+)*$/;
 
 export const KeyManifestType = Type.Object({
-  key_path: Type.String(), // TODO: Regex url
+  key_path: Type.RegEx(KeyNameRegEx),
   meta: Type.Object({
     archived: Type.Boolean(),
     name: Type.String(), // TODO: regex
@@ -72,7 +67,7 @@ export const KeyManifestType = Type.Object({
     type: Type.Literal('file'),
     format: Type.Literal('jpad'),
   }),
-  valueType: Type.Enum(KeyTypeEnum),
+  valueType: StringUnion(ValueTypes),
   dependencies: Type.Array(Type.String()), // TODO: Regex
 });
 

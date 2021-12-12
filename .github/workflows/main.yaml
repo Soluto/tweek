@@ -26,11 +26,6 @@ jobs:
           docker save -o ${{ matrix.image }}-${{ github.sha }}.tar soluto/tweek-${{ matrix.image }} && \
           echo cp -a ${{ matrix.image }}-${{ github.sha }}.tar .github/workflows/
           cp -a ${{ matrix.image }}-${{ github.sha }}.tar .github/workflows/
-      # - name: build
-      #   working-directory: .github/workflows
-      #   run: |
-      #     echo $GITHUB_REPOSITORY
-      #     docker buildx create --use && docker buildx bake --no-cache ${{ matrix.image }}
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
         with:
@@ -49,14 +44,8 @@ jobs:
           name: build-images
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
-      # - name: tag all images
-      #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run tests
         run: yarn && yarn test:docker:ui
-      # - name: run tests
-      #   uses: DevExpress/testcafe-action@latest
-      #   with:
-      #     args: "-q -c 4 -S -s screenshots chrome:headless e2e/ui/spec"
   run-e2e-integration:
     needs: ["build-images"]
     runs-on: ubuntu-latest
@@ -68,11 +57,8 @@ jobs:
           name: build-images
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
-      # - name: tag all images
-      #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run integration tests
         working-directory: e2e/integration
-        # run: yarn && yarn test:docker:integration
         run: |
           yarn && yarn start gateway && yarn test:docker
   run-net-tests:
@@ -86,8 +72,6 @@ jobs:
           name: build-images
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
-      # - name: tag all images
-      #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run smoke tests
         run: yarn && yarn test:docker:smoke
   push-images:
@@ -110,8 +94,6 @@ jobs:
           name: build-images
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
-      # - name: tag all images
-      #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: push branch
         if: ${{ github.ref != 'refs/heads/master' }}
         run: |

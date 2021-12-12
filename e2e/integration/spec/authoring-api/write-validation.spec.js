@@ -2,8 +2,6 @@ const { expect } = require('chai');
 const client = require('../../utils/client');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
-const exec = require('child_process').exec;
-//import 'mocha';
 
 describe('authoring api write validation', () => {
   describe('/PUT /key', () => {
@@ -40,6 +38,67 @@ describe('authoring api write validation', () => {
           manifest: createManifestForJPadKey(key),
           implementation: JSON.stringify({
             partitins: [],
+            defaultalue: 'test',
+            valuType: 'string',
+            ruls: [],
+          }),
+        })
+        .expect(400);
+    });
+
+    it('should reject a key having invalid implementation format with error 400', async () => {
+      const key = '@tests/integration/new_invalid_key';
+      const manifest = createManifestForJPadKey(key);
+      manifest.implementation.type = 'file';
+      manifest.implementation.format = '../../../../../etc/passwd';
+      await client
+        .put(
+          '/api/v2/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest,
+          implementation: JSON.stringify({
+            partitions: [],
+            defaultalue: 'test',
+            valuType: 'string',
+            ruls: [],
+          }),
+        })
+        .expect(400);
+    });
+
+    it('should reject a key having invalid key path error 400', async () => {
+      const key = '@tests/integration/new_invalid_key';
+      const manifest = createManifestForJPadKey(key);
+      manifest.key_path = '../../../../../etc/passwd';
+      await client
+        .put(
+          '/api/v2/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest,
+          implementation: JSON.stringify({
+            partitions: [],
+            defaultalue: 'test',
+            valuType: 'string',
+            ruls: [],
+          }),
+        })
+        .expect(400);
+    });
+
+    it('should reject a key starting with / error 400', async () => {
+      const key = '@tests/integration/new_invalid_key';
+      const manifest = createManifestForJPadKey(key);
+      manifest.key_path = '/etc/passwd';
+      await client
+        .put(
+          '/api/v2/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest,
+          implementation: JSON.stringify({
+            partitions: [],
             defaultalue: 'test',
             valuType: 'string',
             ruls: [],
