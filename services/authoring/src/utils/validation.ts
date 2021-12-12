@@ -6,7 +6,7 @@ import { Type } from '@sinclair/typebox';
 const ajv = new Ajv();
 
 export default (schema: Schema) => (req: express.Request): express.Request => {
-  const ok = ajv.validate(schema, JSON.parse(req.body));
+  const ok = ajv.validate(schema, req.body);
   if (ok) {
     throw new Errors.BadRequestError('Bad format');
   }
