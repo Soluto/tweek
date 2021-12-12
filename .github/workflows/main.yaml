@@ -110,8 +110,8 @@ jobs:
           name: build-images
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
-      - name: tag all images
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
+      # - name: tag all images
+      #   run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: push branch
         if: ${{ github.ref != 'refs/heads/master' }}
         run: |
