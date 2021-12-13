@@ -28,6 +28,50 @@ describe('authoring api write validation', () => {
       );
     });
 
+    it('should accept a const key', async () => {
+      const key = '@tests/integration/new_valid_key';
+      await client
+        .put(
+          '/api/v2/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest: {
+            key_path: key,
+            valueType: 'number',
+            meta: {
+              name: key,
+              tags: [],
+              description: '',
+            },
+            implementation: { type: 'const', value: 5 },
+            dependencies: [],
+          },
+        })
+        .expect(200);
+
+      await pollUntil(
+        () => client.get('/api/v2/values/@tests/integration/new_valid_key'),
+        (res) => expect(res.body).to.eql(5),
+      );
+    });
+
+    it('should accept a minimal key', async () => {
+      const key = '@tests/integration/new_valid_key';
+      const aliasedKey = '@tests/integration/new_invalid_key';
+      await client
+        .put(
+          '/api/v2/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest: {
+            key_path: key,
+            meta: { archived: false },
+            implementation: { type: 'alias', aliasedKey },
+          },
+        })
+        .expect(200);
+    });
+
     it('should reject an invalid key with 400 error', async () => {
       const key = '@tests/integration/new_invalid_key';
       await client
@@ -38,6 +82,67 @@ describe('authoring api write validation', () => {
           manifest: createManifestForJPadKey(key),
           implementation: JSON.stringify({
             partitins: [],
+            defaultalue: 'test',
+            valuType: 'string',
+            ruls: [],
+          }),
+        })
+        .expect(400);
+    });
+
+    it('should reject a key having invalid implementation format with error 400', async () => {
+      const key = '@tests/integration/new_invalid_key';
+      const manifest = createManifestForJPadKey(key);
+      manifest.implementation.type = 'file';
+      manifest.implementation.format = '../../../../../etc/passwd';
+      await client
+        .put(
+          '/api/v2/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest,
+          implementation: JSON.stringify({
+            partitions: [],
+            defaultalue: 'test',
+            valuType: 'string',
+            ruls: [],
+          }),
+        })
+        .expect(400);
+    });
+
+    it('should reject a key having invalid key path error 400', async () => {
+      const key = '@tests/integration/new_invalid_key';
+      const manifest = createManifestForJPadKey(key);
+      manifest.key_path = '../../../../../etc/passwd';
+      await client
+        .put(
+          '/api/v2/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest,
+          implementation: JSON.stringify({
+            partitions: [],
+            defaultalue: 'test',
+            valuType: 'string',
+            ruls: [],
+          }),
+        })
+        .expect(400);
+    });
+
+    it('should reject a key starting with / error 400', async () => {
+      const key = '@tests/integration/new_invalid_key';
+      const manifest = createManifestForJPadKey(key);
+      manifest.key_path = '/etc/passwd';
+      await client
+        .put(
+          '/api/v2/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest,
+          implementation: JSON.stringify({
+            partitions: [],
             defaultalue: 'test',
             valuType: 'string',
             ruls: [],

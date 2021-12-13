@@ -93,10 +93,11 @@ services:
       - "4006:6379"
 
   minio:
-    image: minio/minio
+    image: minio/minio:RELEASE.2021-11-24T23-19-33Z
     ports:
       - "4007:9000"
-    command: server /data
+      - "4077:1337"
+    command: server --console-address ":1337" /data
     secrets:
       - source: minio_access_key
         target: access_key

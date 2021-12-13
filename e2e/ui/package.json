@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "start": "yarn docker-compose up -d editor",
     "build": "yarn docker-compose build",
     "test": "testcafe -q -S -s screenshots chrome spec",
     "test:full-env": "yarn docker-compose up --build -d editor && yarn test",
-    "test:docker": "yarn build && yarn docker-compose run --rm e2e-ui",
+    "test:docker": "yarn build && yarn start && yarn docker-compose run --rm e2e-ui",
     "logs": "yarn docker-compose logs",
     "teardown": "yarn docker-compose down --remove-orphans",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
