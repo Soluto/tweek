@@ -38,7 +38,7 @@ describe('authoring api - /PUT /bulk-keys-upload', () => {
       .expect(204);
 
     await pollUntil(
-      () => client.get('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0'),
+      () => client.get('/api/v2/values/test_key1?user.Country=country&user.ClientVersion=1.0.0'),
       (res) => expect(JSON.parse(res.body)).to.eql(true),
     );
   });

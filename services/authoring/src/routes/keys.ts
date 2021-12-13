@@ -1,14 +1,5 @@
 import * as R from 'ramda';
-import {
-  GET,
-  Path,
-  DELETE,
-  ServiceContext,
-  Context,
-  PUT,
-  QueryParam,
-  Errors,
-} from 'typescript-rest';
+import { GET, Path, DELETE, ServiceContext, Context, PUT, QueryParam, Errors, PreProcessor } from 'typescript-rest';
 import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import searchIndex from '../search-index';
@@ -17,6 +8,7 @@ import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
 import { addOid } from '../utils/response-utils';
 import logger from '../utils/logger';
+import validate, { KeyUpdateModelType } from '../utils/validation';
 
 export type KeyUpdateModel = {
   implementation: any;
@@ -44,10 +36,7 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
   @Path('/key')
-  async getKey(
-    @QueryParam('keyPath') keyPath: string,
-    @QueryParam('revision') revision?: string,
-  ): Promise<any> {
+  async getKey(@QueryParam('keyPath') keyPath: string, @QueryParam('revision') revision?: string): Promise<any> {
     try {
       return await this.keysRepository.getKeyDetails(keyPath, { revision });
     } catch (err) {
@@ -59,6 +48,7 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @PUT
   @Path('/key')
+  @PreProcessor(validate(KeyUpdateModelType))
   async updateKey(
     @QueryParam('keyPath') keyPath: string,
     @QueryParam('author.name') name: string,
@@ -116,10 +106,7 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
   @Path('/manifest')
-  async getManifest(
-    @QueryParam('keyPath') keyPath: string,
-    @QueryParam('revision') revision?: string,
-  ): Promise<any> {
+  async getManifest(@QueryParam('keyPath') keyPath: string, @QueryParam('revision') revision?: string): Promise<any> {
     try {
       return await this.keysRepository.getKeyManifest(keyPath, { revision });
     } catch (exp) {

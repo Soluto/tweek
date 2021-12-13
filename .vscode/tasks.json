@@ -1,12 +1,12 @@
 {
   // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
-  "version": "0.1.0",
+  "version": "2.0.0",
   "tasks": [
     {
-      "taskName": "dev-env",
+      "label": "dev-env",
+      "type": "shell",
       "command": "docker-compose",
-      "isShellCommand": true,
       "args": [
         "-f",
         "./deployments/dev/docker-compose.yml",
@@ -14,12 +14,13 @@
         "./deployments/dev/docker-compose.override.yml",
         "up",
         "-d"
-      ]
+      ],
+      "problemMatcher": []
     },
     {
-      "taskName": "e2e-env",
+      "label": "e2e-env",
+      "type": "shell",
       "command": "docker-compose",
-      "isShellCommand": true,
       "args": [
         "-f",
         "./deployments/dev/docker-compose.yml",
@@ -29,34 +30,40 @@
         "./deployments/dev/docker-compose.e2e.yml",
         "up",
         "-d"
-      ]
+      ],
+      "problemMatcher": []
     },
     {
-      "taskName": "teardown-env",
+      "label": "teardown-env",
+      "type": "shell",
       "command": "docker-compose",
-      "isShellCommand": true,
-      "args": ["-f", "./deployments/dev/docker-compose.yml", "down", "--remove-orphans"]
+      "args": ["-f", "./deployments/dev/docker-compose.yml", "down", "--remove-orphans"],
+      "problemMatcher": []
     },
     {
-      "taskName": "api-build",
+      "label": "api-build",
+      "type": "shell",
       "command": "dotnet",
-      "isShellCommand": true,
       "args": ["build", "services/api/Tweek.ApiService/Tweek.ApiService.csproj"],
-      "isBuildCommand": true,
-      "showOutput": "always",
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "group": {
+        "_id": "build",
+        "isDefault": false
+      }
     },
     {
-      "taskName": "publishing-verifier-build",
+      "label": "publishing-verifier-build",
+      "type": "shell",
       "command": "dotnet",
-      "isShellCommand": true,
       "args": [
         "build",
         "services/publishing/Tweek.Publishing.Verifier/Tweek.Publishing.Verifier.csproj"
       ],
-      "isBuildCommand": true,
-      "showOutput": "always",
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "group": {
+        "_id": "build",
+        "isDefault": false
+      }
     }
   ]
 }
