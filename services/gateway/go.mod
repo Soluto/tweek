@@ -10,7 +10,7 @@ require (
 	github.com/jinzhu/configor v1.2.1
 	github.com/jonboulle/clockwork v0.2.0 // indirect
 	github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806
-	github.com/lestrrat-go/jwx v1.2.0
+	github.com/lestrrat-go/jwx v1.2.15
 	github.com/minio/minio-go v6.0.14+incompatible
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/nats-io/jwt v1.0.1 // indirect
