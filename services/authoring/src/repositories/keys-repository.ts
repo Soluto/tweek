@@ -1,4 +1,5 @@
 import path = require('path');
+import hash from 'object-hash';
 import Transactor from '../utils/transactor';
 import GitRepository from './git-repository';
 
@@ -40,8 +41,9 @@ function getPathForManifest(keyName) {
 }
 
 function getPathForSourceFile(manifest) {
-  return `implementations/${manifest.implementation.format}/${manifest.key_path}.${manifest.implementation.extension ||
-    manifest.implementation.format}`;
+  return `implementations/${manifest.implementation.format}/${manifest.key_path}.${
+    manifest.implementation.extension || manifest.implementation.format
+  }`;
 }
 
 function getKeyFromPath(keyPath) {
@@ -89,7 +91,7 @@ export default class KeysRepository {
   constructor(private _gitTransactionManager: Transactor<GitRepository>) {}
 
   getAllKeys() {
-    return this._gitTransactionManager.with(async gitRepo => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const keyFiles = await gitRepo.listFiles('manifests');
 
       return keyFiles.map(getKeyFromPath);
@@ -97,17 +99,17 @@ export default class KeysRepository {
   }
 
   getAllManifests(prefix = '') {
-    return this._gitTransactionManager.with(async gitRepo => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const normalizedPrefix = `${path.normalize(`manifests/${prefix}/.`)}`.replace(/\\/g, '/');
       const files = await gitRepo.listFiles(normalizedPrefix);
-      const manifestFiles = files.map(keyPath => `${normalizedPrefix}/${keyPath}`);
-      const manifests = await Promise.all(manifestFiles.map(pathForManifest => gitRepo.readFile(pathForManifest)));
+      const manifestFiles = files.map((keyPath) => `${normalizedPrefix}/${keyPath}`);
+      const manifests = await Promise.all(manifestFiles.map((pathForManifest) => gitRepo.readFile(pathForManifest)));
       return manifests.map(<any>JSON.parse);
     });
   }
 
   getKeyDetails(keyPath, { revision }: any = {}) {
-    return this._gitTransactionManager.with(async gitRepo => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo, revision);
       return {
         manifest,
@@ -120,28 +122,28 @@ export default class KeysRepository {
   }
 
   getKeyManifest(keyPath, { revision }: any = {}) {
-    return this._gitTransactionManager.with(async gitRepo => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const pathForManifest = getPathForManifest(keyPath);
       return JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
     });
   }
 
   getKeyRevisionHistory(keyPath, config) {
-    return this._gitTransactionManager.with(async gitRepo => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo);
       return getRevisionHistory(manifest, gitRepo, config);
     });
   }
 
   updateKey(keyPath, manifest, fileImplementation, author) {
-    return this._gitTransactionManager.write(async gitRepo => {
+    return this._gitTransactionManager.write(async (gitRepo) => {
       await updateKey(gitRepo, keyPath, manifest, fileImplementation);
       return await gitRepo.commitAndPush(`Editor - updating ${keyPath}`, author);
     });
   }
 
   updateBulkKeys(files, author, commitMessage = 'Bulk update through API') {
-    return this._gitTransactionManager.write(async gitRepo => {
+    return this._gitTransactionManager.write(async (gitRepo) => {
       for (const file of files) {
         const content = await file.read();
         await gitRepo.updateFile(file.name, content);
@@ -151,7 +153,7 @@ export default class KeysRepository {
   }
 
   deleteKeys(keys: string[], author) {
-    return this._gitTransactionManager.write(async gitRepo => {
+    return this._gitTransactionManager.write(async (gitRepo) => {
       for (const keyPath of keys) {
         const manifest = await getManifestFile(keyPath, gitRepo);
         await gitRepo.deleteFile(getPathForManifest(keyPath));
@@ -164,6 +166,16 @@ export default class KeysRepository {
   }
 
   getRevision() {
-    return this._gitTransactionManager.with(gitRepo => gitRepo.getLastCommit());
+    return this._gitTransactionManager.with((gitRepo) => gitRepo.getLastCommit());
+  }
+
+  async getKeyETag(keyPath: string): Promise<string> {
+    const keyDetails = await this.getKeyDetails(keyPath);
+    return hash(keyDetails);
+  }
+
+  async validateKeyETag(keyPath: string, etag: string): Promise<boolean> {
+    const currentETag = await this.getKeyETag(keyPath);
+    return etag === currentETag;
   }
 }
