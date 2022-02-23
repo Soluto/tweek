@@ -31,7 +31,7 @@
     "bunyan": "^1.8.14",
     "express": "^4.17.1",
     "fast-json-patch": "^3.0.0-1",
-    "fs-extra": "^9.0.1",
+    "fs-extra": "^10.0.1",
     "glob": "^7.1.6",
     "highland": "^2.13.5",
     "jszip": "^3.5.0",
