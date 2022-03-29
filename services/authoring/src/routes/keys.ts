@@ -67,6 +67,7 @@ export class KeysController {
       email,
     });
     addOid(this.context.response, oid);
+    await this._setKeyETagHeader(keyPath);
 
     return 'OK';
   }
