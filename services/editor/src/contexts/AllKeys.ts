@@ -40,15 +40,16 @@ export const useKeysActions = () => {
   const saveKey = useCallback(
     async (definition: KeyDefinition) => {
       const keyPath = definition.manifest.key_path;
-      await tweekManagementClient.saveKeyDefinition(keyPath, definition);
+      const newEtag = await tweekManagementClient.saveKeyDefinition(keyPath, definition);
       keys$.next({ ...keys$.value, [keyPath]: definition.manifest });
+      return newEtag;
     },
     [keys$],
   );
 
   const deleteKey = useCallback(
-    async (keyPath: string, aliases?: string[]) => {
-      await tweekManagementClient.deleteKey(keyPath, aliases);
+    async (keyPath: string, aliases?: string[], etag?: string) => {
+      await tweekManagementClient.deleteKey(keyPath, aliases, etag);
 
       keys$.next(
         Object.fromEntries(
