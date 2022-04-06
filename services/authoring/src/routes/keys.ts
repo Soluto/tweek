@@ -56,7 +56,7 @@ export class KeysController {
     @QueryParam('author.email') email: string,
     newKeyModel: KeyUpdateModel,
   ): Promise<string> {
-    if (!(await this._handleKeyETagValidation(keyPath))) return 'Conflict';
+    if (!(await this._handleKeyETagValidation(keyPath, newKeyModel))) return 'Conflict';
 
     const { implementation } = newKeyModel;
     let { manifest } = newKeyModel;
@@ -133,11 +133,14 @@ export class KeysController {
     this.context.response.setHeader('ETag', etag);
   }
 
-  private async _handleKeyETagValidation(keyPath: string): Promise<boolean> {
+  private async _handleKeyETagValidation(keyPath: string, newKeyModel?: KeyUpdateModel): Promise<boolean> {
     const etag = this.context.request.header('If-Match');
     if (!etag) return true;
 
-    if (!(await this.keysRepository.validateKeyETag(keyPath, etag))) {
+    const validationKeypath =
+      newKeyModel.manifest?.implementation?.type === 'alias' ? newKeyModel.manifest.implementation.key : keyPath;
+
+    if (!(await this.keysRepository.validateKeyETag(validationKeypath, etag))) {
       this.context.response.sendStatus(412);
       return false;
     }
