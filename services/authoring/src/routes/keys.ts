@@ -138,7 +138,7 @@ export class KeysController {
     if (!etag) return true;
 
     const validationKeypath =
-      newKeyModel.manifest?.implementation?.type === 'alias' ? newKeyModel.manifest.implementation.key : keyPath;
+      newKeyModel?.manifest?.implementation?.type === 'alias' ? newKeyModel.manifest.implementation.key : keyPath;
 
     if (!(await this.keysRepository.validateKeyETag(validationKeypath, etag))) {
       this.context.response.sendStatus(412);
