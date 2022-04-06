@@ -40,7 +40,7 @@ export const useDeleteAlias = () => {
       const { hide } = cogoToast.loading('Deleting alias...', { hideAfter: 0 });
 
       try {
-        await deleteKey(alias, undefined, key$.value.remote?.etag);
+        await deleteKey(alias);
       } catch (err) {
         showError(err, 'Failed to delete alias');
         return;
