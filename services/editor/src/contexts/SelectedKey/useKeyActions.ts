@@ -125,7 +125,7 @@ export const useKeyActions = () => {
       const keyData = assocPath(['manifest', 'meta', 'archived'], archived, remote);
 
       try {
-        await saveRemoteKey(keyData);
+        keyData.etag = await saveRemoteKey(keyData);
       } catch (err) {
         showError(err, `Failed to ${archived ? 'archive' : 'restore'} key`);
         key$.next({ ...key$.value, isSaving: false });
