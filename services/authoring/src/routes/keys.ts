@@ -38,6 +38,7 @@ export class KeysController {
   @Path('/key')
   async getKey(@QueryParam('keyPath') keyPath: string, @QueryParam('revision') revision?: string): Promise<any> {
     try {
+      await this._setKeyETagHeader(keyPath);
       return await this.keysRepository.getKeyDetails(keyPath, { revision });
     } catch (err) {
       logger.error({ err, keyPath }, 'Error retrieving key');
@@ -55,14 +56,18 @@ export class KeysController {
     @QueryParam('author.email') email: string,
     newKeyModel: KeyUpdateModel,
   ): Promise<string> {
+    if (!(await this._handleKeyETagValidation(keyPath, newKeyModel))) return 'Conflict';
+
     const { implementation } = newKeyModel;
     let { manifest } = newKeyModel;
+
     manifest = Object.assign({ key_path: keyPath }, manifest);
     const oid = await this.keysRepository.updateKey(keyPath, manifest, implementation, {
       name,
       email,
     });
     addOid(this.context.response, oid);
+    await this._setKeyETagHeader(keyPath);
 
     return 'OK';
   }
@@ -76,6 +81,8 @@ export class KeysController {
     @QueryParam('author.email') email: string,
     additionalKeys?: string[],
   ): Promise<string> {
+    if (!(await this._handleKeyETagValidation(keyPath))) return 'Conflict';
+
     let keysToDelete = [keyPath];
     if (additionalKeys && Array.isArray(additionalKeys)) {
       keysToDelete = keysToDelete.concat(additionalKeys);
@@ -119,5 +126,25 @@ export class KeysController {
   @Path('/dependent')
   async getDependents(@QueryParam('keyPath') keyPath: string): Promise<any> {
     return await searchIndex.dependents(keyPath);
+  }
+
+  private async _setKeyETagHeader(keyPath: string): Promise<void> {
+    const etag = await this.keysRepository.getKeyETag(keyPath);
+    this.context.response.setHeader('ETag', etag);
+  }
+
+  private async _handleKeyETagValidation(keyPath: string, newKeyModel?: KeyUpdateModel): Promise<boolean> {
+    const etag = this.context.request.header('If-Match');
+    if (!etag) return true;
+
+    const validationKeypath =
+      newKeyModel?.manifest?.implementation?.type === 'alias' ? newKeyModel.manifest.implementation.key : keyPath;
+
+    if (!(await this.keysRepository.validateKeyETag(validationKeypath, etag))) {
+      this.context.response.sendStatus(412);
+      return false;
+    }
+
+    return true;
   }
 }
