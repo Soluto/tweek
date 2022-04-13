@@ -82,7 +82,7 @@ export const useKeyActions = () => {
       } as any) as KeyManifest;
 
       try {
-        await saveRemoteKey({ manifest });
+        await saveRemoteKey({ manifest, etag: key$.value.remote?.etag });
       } catch (error) {
         showError(error, 'Failed to add alias');
         return;
@@ -125,7 +125,7 @@ export const useKeyActions = () => {
       const keyData = assocPath(['manifest', 'meta', 'archived'], archived, remote);
 
       try {
-        await saveRemoteKey(keyData);
+        keyData.etag = await saveRemoteKey(keyData);
       } catch (err) {
         showError(err, `Failed to ${archived ? 'archive' : 'restore'} key`);
         key$.next({ ...key$.value, isSaving: false });
@@ -147,7 +147,7 @@ export const useKeyActions = () => {
   );
 
   const deleteKey = useCallback(async () => {
-    const { aliases, manifest, isSaving } = key$.value;
+    const { aliases, manifest, isSaving, remote } = key$.value;
 
     if (isSaving) {
       return;
@@ -167,7 +167,7 @@ export const useKeyActions = () => {
     history.push('/keys');
 
     try {
-      await deleteRemoteKey(key, aliases);
+      await deleteRemoteKey(key, aliases, remote?.etag);
       cogoToast.success('Key deleted successfully');
     } catch (err) {
       showError(err, 'Failed to delete key');
@@ -177,7 +177,7 @@ export const useKeyActions = () => {
   }, [key$, deleteRemoteKey, history, showConfirm]);
 
   const saveKey = useCallback(async () => {
-    const { manifest, implementation, isSaving } = key$.value;
+    const { manifest, implementation, isSaving, remote } = key$.value;
 
     if (isSaving) {
       return;
@@ -191,10 +191,10 @@ export const useKeyActions = () => {
     const { hide } = cogoToast.loading('Saving key...', { hideAfter: 0 });
     key$.next({ ...key$.value, isSaving: true });
 
-    const definition = { manifest, implementation };
+    const definition = { manifest, implementation, etag: remote?.etag };
 
     try {
-      await saveRemoteKey(definition);
+      definition.etag = await saveRemoteKey(definition);
     } catch (err) {
       showError(err, 'Failed to save key');
       key$.next({ ...key$.value, isSaving: false });
