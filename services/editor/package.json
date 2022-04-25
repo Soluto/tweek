@@ -83,7 +83,7 @@
     "@types/md5": "^2.3.0",
     "@types/node": "^15.0.1",
     "@types/ramda": "0.27.40",
-    "@types/react": "^17.0.4",
+    "@types/react": "^18.0.7",
     "@types/react-calendar": "^3.1.4",
     "@types/react-collapse": "^5.0.0",
     "@types/react-document-title": "^2.0.4",
