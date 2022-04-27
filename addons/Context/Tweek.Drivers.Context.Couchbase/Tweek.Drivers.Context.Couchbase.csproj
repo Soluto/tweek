@@ -11,7 +11,7 @@
     <NuspecFile>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),$(MSBuildProjectName))).nuspec</NuspecFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CouchbaseNetClient" Version="2.7.15" />
+    <PackageReference Include="CouchbaseNetClient" Version="3.3.0" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
