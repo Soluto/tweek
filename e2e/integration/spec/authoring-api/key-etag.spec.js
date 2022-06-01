@@ -7,7 +7,7 @@ const keyPath = '@tests/integration/new_key_with_etag';
 const author = { name: 'ellie', email: 'ellie@lou.com' };
 const authorQuery = { 'author.name': author.name, 'author.email': author.email };
 
-describe.only('Key etag', () => {
+describe('Key etag', () => {
   let etag;
   it('Create new key', async () => {
     await client
