@@ -8,13 +8,13 @@ tweek@soluto.com
 
 Tweek is an open source feature management solution for customizing applications and system behavior without deploying new code.
 
-Tweek aims to be a complete open-source alternative to other industry feature/configuration/experiment management solutions such as Facebook's Gatekeeper, LinkedIn's XLNT, Dropbox's Stormcrow and other commercial SaaS solutions...
+Tweek aims to be a complete open-source alternative to other industry feature/configuration/experiment management solutions such as Facebook's Gatekeeper, LinkedIn's XLNT, Dropbox's Stormcrow and other commercial SaaS solutions.
 
 #### Features
 
 - Feature toggles, gradual release
 - Multi-variant experiments, A/B testing
-- Built-in Editor with user friendly UI
+- Built-in editor with user friendly UI
 - Hierarchical configurations
 - Advanced targeting of users/groups
 - Dependencies between features
@@ -27,24 +27,24 @@ Tweek aims to be a complete open-source alternative to other industry feature/co
 - Simple RESTful api for fetching configurations
 - Scalable
 
-### Getting Started
+### Getting started
 
-The easiest way to start evaluating Tweek is to run it locally on docker, make sure you have the latest [docker (for windows/mac/etc..)](https://www.docker.com/get-docker) version installed (17-06+).
+The easiest way to start evaluating Tweek is to run it locally on Docker. Make sure you have the latest [docker (for windows/mac/etc..)](https://www.docker.com/get-docker) version installed (17-06+).
 
 #### Running Tweek
 
-- Clone the repo (`git clone https://github.com/Soluto/tweek.git`)
-- [optional] Pull images, run `yarn docker-compose pull --parallel` (optional for getting started fast with Tweek as it's skip build)
-- [optional] newer versions of docker-compose support parallel build, so you can use `yarn docker-compose build --parallel` for faster build.
+- Clone the repo (`git clone https://github.com/Soluto/tweek.git`).
+- [optional] Pull images, run `yarn docker-compose pull --parallel` (optional for getting started fast with Tweek as it's skip build).
+- [optional] Newer versions of docker-compose support parallel build, so you can use `yarn docker-compose build --parallel` for faster build.
 
 ### Using Docker Compose
 
-- Run (`yarn start`) - this might take a few minutes for the first time
+- Run (`yarn start`) - this might take a few minutes on the first time.
 
 ### Using Tilt
 
-Tilt is a CLI tool that can be used to create optimal development environment for multi-container apps such as Tweek, it support automatic rebuilding of images and re-running of containers on files' changes.
-Additionally, it support more complex live reloading scenarios such as Tweek Editor (React app).
+Tilt is a CLI tool that can be used to create an optimal development environment for multi-container apps such as Tweek. It support automatic rebuilding of images and re-running of containers on files' changes.
+Additionally, it support more complex live reloading scenarios, like Tweek Editor (React app).
 Tweek uses Tilt on top of docker-compose for easier and (usually) faster developer experience (compared to Tilt with k8s).
 
 - Install Tilt (https://docs.tilt.dev/install.html)
@@ -54,7 +54,7 @@ Tweek uses Tilt on top of docker-compose for easier and (usually) faster develop
 
 - Install Skaffold (https://github.com/GoogleContainerTools/skaffold)
 - Run `skaffold dev --port-forward=false`
-- Wait for environment to be stable (will take about 10m first time due to building all images, afterward it can take about 2m for environment to stabilize)
+- Wait for the environment to be stable (this will take about 10 mins on the first time due to building all images, afterward it can take about 2 mins for environment to stabilize)
 
 ### Troubleshooting
 
@@ -63,8 +63,8 @@ Tweek uses Tilt on top of docker-compose for easier and (usually) faster develop
 #### Edit your first key
 
 After setting up our environment, we're going to create our first key.
-Keys in tweek are the most basic building blocks and they represent a container for dynamic value that affect feature behaviors.
-Our first key, will be a key that is responsible for the color of a "sign up" button.
+Keys in Tweek are the most basic building blocks, and they represent a container for dynamic value that affect feature behaviors.
+Our first key will be a key that is responsible for the color of a "sign up" button.
 
 - Open http://localhost:8081/login in browser.
 - Login
@@ -120,11 +120,11 @@ You can also use the api for updating Tweek context:
 
 More on [Context.](https://tweek.soluto.io/concepts/context/intro-to-context)
 
-#### Gradual Feature Release
+#### Gradual feature release
 
-Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
-Add new rule, remove all conditions, set the the rule value to gradual release with 50%.
-Try querying configuration with different users and You'll have different results.
+Create a new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
+Add a new rule, remove all conditions, set the the rule value to gradual release with 50%.
+Try querying configuration with different users and you'll have different results.
 
 - http://localhost:8081/api/v2/values/my_app/sign_button/is_enabled?user=barny
 - http://localhost:8081/api/v2/values/my_app/sign_button/is_enabled?user=robin
@@ -139,7 +139,7 @@ More on how multi-variant keys work in Tweek. (link)
 ### FAQ
 
 - Who's using Tweek?  
-  Tweek is been used in large scale production deployment at Soluto.
+  Tweek is used in large-scale production deployment at Soluto.
 - How do I generate ssh keys and a pfx file for use in production?  
   There's a script for this purpose in `utils/generate_keys.sh`
 - I found a security vulnerability, should I open an issue about it?  
