@@ -6,9 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-ini/ini v1.57.0 // indirect
 	github.com/gorilla/mux v1.8.0
-	github.com/gravitational/trace v1.1.11 // indirect
 	github.com/jinzhu/configor v1.2.1
-	github.com/jonboulle/clockwork v0.2.0 // indirect
 	github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806
 	github.com/lestrrat-go/jwx v1.2.0
 	github.com/minio/minio-go v6.0.14+incompatible
@@ -21,8 +19,8 @@ require (
 	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/urfave/negroni v1.0.0
-	github.com/vulcand/oxy v1.3.0
-	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620
+	github.com/vulcand/oxy v1.4.1
+	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/h2non/gock.v1 v1.0.16
 	gopkg.in/ini.v1 v1.60.0 // indirect
