@@ -10533,10 +10533,10 @@ react-transition-group@^2.0.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react-tweek@^0.7.0:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/react-tweek/-/react-tweek-0.7.1.tgz#c516960f37789526260b49a271c3348194db9887"
-  integrity sha512-0jYlz3/eQ9sqaucS0jKZSBWu3gj1VYGSjBt/btW5MqGWEF3tk0J9RtFrWlV7rNPen9DzDAcnBecDWYyIE6RBsg==
+react-tweek@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/react-tweek/-/react-tweek-0.7.2.tgz#4f947f45f78453a7decbc35d9e829a601d274368"
+  integrity sha512-HKJ1owbvcaVjJ0h3U46uTdC2RvVZcfbE7kRyyyseB4ICdJXjBQLdw1iV8PoWsOYsSxeGWJ6zivUscd3dnKlniQ==
   dependencies:
     lodash.isequal "^4.5.0"
 
