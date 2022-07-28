@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="4.2.0" />
-    <PackageReference Include="App.Metrics.Extensions.HealthChecks" Version="4.2.0" />
+    <PackageReference Include="App.Metrics.Extensions.HealthChecks" Version="4.3.0" />
     <PackageReference Include="App.Metrics.Formatters.Json" Version="4.2.0" />
     <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.2.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="5.0.1" />
