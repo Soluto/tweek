@@ -17,13 +17,12 @@ require (
 	github.com/nats-io/nats.go v1.10.0
 	github.com/nats-io/nkeys v0.2.0 // indirect
 	github.com/open-policy-agent/opa v0.28.0
-	github.com/prometheus/client_golang v1.10.0
+	github.com/prometheus/client_golang v1.13.0
 	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/urfave/negroni v1.0.0
 	github.com/vulcand/oxy v1.3.0
 	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620
-	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/h2non/gock.v1 v1.0.16
 	gopkg.in/ini.v1 v1.60.0 // indirect
 )
