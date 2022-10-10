@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const client = require('../../utils/client');
 const { pollUntil } = require('../../utils/utils');
-const { createManifestForJPadKey } = require('../../utils/manifest');
+const { createManifestForJPadKey, createManifestForJPadKeyTemp } = require('../../utils/manifest');
 
 const keyPath = '@tests/integration/new_key_with_etag';
 const author = { name: 'ellie', email: 'ellie@lou.com' };
@@ -23,6 +23,48 @@ describe('Key etag', () => {
         }),
       })
       .expect(200);
+
+    await pollUntil(
+      () => client.get(`/api/v2/values/${keyPath}`),
+      (res) => expect(res.body).to.eql('test'),
+    );
+  });
+
+  it('Create new key with invalid characters, expect fail', async () => {
+    await client
+      .put(`/api/v2/keys/${keyPath}`)
+      .query(authorQuery)
+      .send({
+        manifest: { ...createManifestForJPadKey(keyPath), ...{ dependencies: ['@/Invalid*234@#$'] } },
+        implementation: JSON.stringify({
+          partitions: [],
+          defaultValue: 'test',
+          valueType: 'string',
+          rules: [],
+        }),
+      })
+      .expect(400);
+
+    await pollUntil(
+      () => client.get(`/api/v2/values/${keyPath}`),
+      (res) => expect(res.body).to.eql('test'),
+    );
+  });
+
+  it('Create new key with invalid name, expect fail', async () => {
+    await client
+      .put(`/api/v2/keys/${keyPath}`)
+      .query(authorQuery)
+      .send({
+        manifest: createManifestForJPadKeyTemp(keyPath),
+        implementation: JSON.stringify({
+          partitions: [],
+          defaultValue: 'test',
+          valueType: 'string',
+          rules: [],
+        }),
+      })
+      .expect(400);
 
     await pollUntil(
       () => client.get(`/api/v2/values/${keyPath}`),

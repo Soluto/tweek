@@ -2,6 +2,7 @@ import express from 'express';
 import { Errors } from 'typescript-rest';
 import Ajv, { Schema } from 'ajv';
 import addFormats from 'ajv-formats';
+import logger from '../utils/logger';
 import { TLiteral, TUnion, Type } from '@sinclair/typebox';
 
 //const ajv = new Ajv();
@@ -25,6 +26,8 @@ const ajv = addFormats(new Ajv({}), [
   .addKeyword('modifier');
 
 export default (schema: Schema) => (req: express.Request): express.Request => {
+  logger.info({ body: req.body }, 'VALIDATE BODY')
+
   const validate = ajv.compile(schema);
   const ok = validate(req.body);
   if (!ok) {
@@ -69,7 +72,7 @@ export const KeyManifestType = Type.Object({
   key_path: Type.RegEx(KeyNameRegEx),
   meta: Type.Object({
     archived: Type.Optional(Type.Boolean()),
-    name: Type.Optional(Type.String()), // TODO: regex
+    name: Type.Optional(Type.RegEx(KeyNameRegEx)),
     description: Type.Optional(Type.String()),
     tags: Type.Optional(Type.Array(Type.String())),
   }),
@@ -80,7 +83,7 @@ export const KeyManifestType = Type.Object({
     }),
   ),
   valueType: Type.Optional(StringUnion(ValueTypeStrings)),
-  dependencies: Type.Optional(Type.Array(Type.String())), // TODO: Regex
+  dependencies: Type.Optional(Type.Array(Type.RegEx(KeyNameRegEx))),
 });
 
 export const KeyUpdateModelType = Type.Object({

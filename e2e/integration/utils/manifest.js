@@ -1,7 +1,25 @@
-const createManifestForJPadKey = (key_path) => ({
+const createManifestForJPadKey = (key_path, name = 'aaaaaa') => ({
   key_path: `${key_path}`,
   meta: {
-    name: 'aaaaaaa',
+    name: name,
+    tags: [],
+    description: '',
+    archived: false,
+  },
+  implementation: {
+    type: 'file',
+    format: 'jpad',
+  },
+  valueType: 'number',
+  dependencies: [],
+  enabled: true,
+});
+
+
+const createManifestForJPadKeyTemp = (key_path) => ({
+  key_path: `${key_path}`,
+  meta: {
+    name: '@/Invalid*234@#$',
     tags: [],
     description: '',
     archived: false,
@@ -16,3 +34,4 @@ const createManifestForJPadKey = (key_path) => ({
 });
 
 module.exports.createManifestForJPadKey = createManifestForJPadKey;
+module.exports.createManifestForJPadKeyTemp = createManifestForJPadKeyTemp;
