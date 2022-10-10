@@ -2,7 +2,6 @@ import express from 'express';
 import { Errors } from 'typescript-rest';
 import Ajv, { Schema } from 'ajv';
 import addFormats from 'ajv-formats';
-import logger from '../utils/logger';
 import { TLiteral, TUnion, Type } from '@sinclair/typebox';
 
 //const ajv = new Ajv();
@@ -26,8 +25,6 @@ const ajv = addFormats(new Ajv({}), [
   .addKeyword('modifier');
 
 export default (schema: Schema) => (req: express.Request): express.Request => {
-  logger.info({ body: req.body }, 'VALIDATE BODY')
-
   const validate = ajv.compile(schema);
   const ok = validate(req.body);
   if (!ok) {

@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const client = require('../../utils/client');
 const { pollUntil } = require('../../utils/utils');
-const { createManifestForJPadKey, createManifestForJPadKeyTemp } = require('../../utils/manifest');
+const { createManifestForJPadKey } = require('../../utils/manifest');
 
 const keyPath = '@tests/integration/new_key_with_etag';
 const author = { name: 'ellie', email: 'ellie@lou.com' };
@@ -56,7 +56,7 @@ describe('Key etag', () => {
       .put(`/api/v2/keys/${keyPath}`)
       .query(authorQuery)
       .send({
-        manifest: createManifestForJPadKeyTemp(keyPath),
+        manifest: createManifestForJPadKey(keyPath, '@/Invalid*234@#$'),
         implementation: JSON.stringify({
           partitions: [],
           defaultValue: 'test',
