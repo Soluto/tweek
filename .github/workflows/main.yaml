@@ -97,7 +97,7 @@ jobs:
       - name: push branch
         if: ${{ github.ref != 'refs/heads/master' }}
         run: |
-          export GITHUB_BRANCH=$(echo $GITHUB_REF | sed -e "s/refs\/heads\///")
+          export GITHUB_BRANCH=$(echo $GITHUB_REF | sed -e "s/refs\/heads\///" -e "s/\//-/")
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:$GITHUB_BRANCH
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:$GITHUB_BRANCH
       - name: push master
