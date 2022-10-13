@@ -53,12 +53,12 @@ const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreatio
 
 const gitTransactionManager = new Transactor<GitRepository>(
   gitRepoCreationPromise,
-  async gitRepo => {
+  async (gitRepo) => {
     await gitRepo.reset();
     await gitRepo.fetch();
     await gitRepo.mergeMaster();
   },
-  (function() {
+  (function () {
     let retries = 2;
     return async (error, context) => {
       if (retries-- === 0) {
@@ -112,7 +112,8 @@ async function startServer() {
 
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     if (!res.headersSent) {
-      res.status(getErrorStatusCode(err)).send(err.message);
+      res.header({ 'content-type': 'application/json' });
+      res.status(getErrorStatusCode(err)).send(JSON.stringify(err.message));
     }
 
     logger.error({ Method: req.method, Url: req.originalUrl, err }, err.message);
@@ -127,7 +128,7 @@ const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).pipe(shar
 onUpdate$
   .pipe(
     switchMapTo(defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath))),
-    tap({ error: err => logger.error({ err }, 'Error refreshing search index') }),
+    tap({ error: (err) => logger.error({ err }, 'Error refreshing search index') }),
     retry(),
   )
   .subscribe();
@@ -135,7 +136,7 @@ onUpdate$
 onUpdate$
   .pipe(
     switchMapTo(defer(() => appsRepository.refresh())),
-    tap({ error: err => logger.error({ err }, 'Error refreshing apps index') }),
+    tap({ error: (err) => logger.error({ err }, 'Error refreshing apps index') }),
     retry(),
   )
   .subscribe();
