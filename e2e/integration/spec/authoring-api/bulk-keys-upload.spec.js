@@ -4,14 +4,14 @@ const { pollUntil } = require('../../utils/utils');
 
 describe('authoring api - /PUT /bulk-keys-upload', () => {
   it('should not accept an input without a zip file named bulk', async () => {
-    await client.put('/api/v2/bulk-keys-upload').expect(400, 'Required file is missing: bulk');
+    await client.put('/api/v2/bulk-keys-upload').expect(400, '"Required file is missing: bulk"');
   });
 
   it('should not accept a corrupted zip file', async () => {
     await client
       .put('/api/v2/bulk-keys-upload')
       .attach('bulk', './spec/authoring-api/test-data/notZip.zip')
-      .expect(400, /^Zip is corrupted:/);
+      .expect(400, /^\"Zip is corrupted:/);
   });
 
   it('should not accept a zip file with invalid structure', async () => {
@@ -19,6 +19,14 @@ describe('authoring api - /PUT /bulk-keys-upload', () => {
       .put('/api/v2/bulk-keys-upload')
       .attach('bulk', './spec/authoring-api/test-data/invalidStructure.zip')
       .expect(400);
+  });
+
+  it('should have response type as application/json when throwing error', async () => {
+    await client
+      .put('/api/v2/bulk-keys-upload')
+      .attach('bulk', './spec/authoring-api/test-data/invalidStructure.zip')
+      .expect(400)
+      .expect('content-type', /^application\/json/);
   });
 
   it('should not accept a zip file with invalid rules', async () => {
