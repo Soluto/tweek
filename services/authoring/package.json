@@ -1,6 +1,6 @@
 {
   "name": "tweek-authoring",
-  "version": "1.0.0-rc13",
+  "version": "1.0.0-rc14",
   "main": "src/server.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
@@ -24,7 +24,7 @@
     "format": "prettier --write **/*.ts"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.20.5",
+    "@sinclair/typebox": "^0.24.44",
     "ajv": "^8.6.3",
     "ajv-formats": "^2.1.1",
     "bluebird": "^3.7.2",

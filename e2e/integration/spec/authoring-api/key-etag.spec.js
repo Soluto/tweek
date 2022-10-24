@@ -30,6 +30,48 @@ describe('Key etag', () => {
     );
   });
 
+  it('Create new key with invalid characters, expect fail', async () => {
+    await client
+      .put(`/api/v2/keys/${keyPath}`)
+      .query(authorQuery)
+      .send({
+        manifest: { ...createManifestForJPadKey(keyPath), ...{ dependencies: ['@/Invalid*234@#$'] } },
+        implementation: JSON.stringify({
+          partitions: [],
+          defaultValue: 'test',
+          valueType: 'string',
+          rules: [],
+        }),
+      })
+      .expect(400);
+
+    await pollUntil(
+      () => client.get(`/api/v2/values/${keyPath}`),
+      (res) => expect(res.body).to.eql('test'),
+    );
+  });
+
+  it('Create new key with invalid name, expect fail', async () => {
+    await client
+      .put(`/api/v2/keys/${keyPath}`)
+      .query(authorQuery)
+      .send({
+        manifest: createManifestForJPadKey(keyPath, '@/Invalid*234@#$'),
+        implementation: JSON.stringify({
+          partitions: [],
+          defaultValue: 'test',
+          valueType: 'string',
+          rules: [],
+        }),
+      })
+      .expect(400);
+
+    await pollUntil(
+      () => client.get(`/api/v2/values/${keyPath}`),
+      (res) => expect(res.body).to.eql('test'),
+    );
+  });
+
   it('GET key with Etag', async () => {
     await client.get(`/api/v2/keys/${keyPath}`).then((res) => {
       etag = res.headers.etag;

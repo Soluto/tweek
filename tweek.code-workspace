@@ -21,7 +21,6 @@
 		}
 	],
 	"settings": {
-		"workbench.editor.enablePreview": false,
 		"workbench.editor.enablePreviewFromQuickOpen": false,
 		"csharp.testsCodeLens.enabled": true,
 		"FSharp.fsacRuntime": "netcore"

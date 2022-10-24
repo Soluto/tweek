@@ -69,7 +69,7 @@ export const KeyManifestType = Type.Object({
   key_path: Type.RegEx(KeyNameRegEx),
   meta: Type.Object({
     archived: Type.Optional(Type.Boolean()),
-    name: Type.Optional(Type.String()), // TODO: regex
+    name: Type.Optional(Type.RegEx(KeyNameRegEx)),
     description: Type.Optional(Type.String()),
     tags: Type.Optional(Type.Array(Type.String())),
   }),
@@ -80,7 +80,7 @@ export const KeyManifestType = Type.Object({
     }),
   ),
   valueType: Type.Optional(StringUnion(ValueTypeStrings)),
-  dependencies: Type.Optional(Type.Array(Type.String())), // TODO: Regex
+  dependencies: Type.Optional(Type.Array(Type.RegEx(KeyNameRegEx))),
 });
 
 export const KeyUpdateModelType = Type.Object({
