@@ -222,7 +222,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/hooks", userInfo),
 			},
-			wantObj: PolicyResource{Item: "repo", Contexts: map[string]string{}},
+			wantObj: PolicyResource{Item: "repo/hooks", Contexts: map[string]string{}},
 			wantSub: &Subject{User: "A b sub", Group: "default"},
 			wantAct: "read",
 			wantErr: nil,
