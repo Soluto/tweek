@@ -16,7 +16,7 @@
           "login_info": {
             "login_type": "oidc",
             "scope": "openid profile email",
-            "response_type": "id_token"
+            "response_type": "code"
           }
         }
       }

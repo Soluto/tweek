@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: oidc-mock
-        image: soluto/oidc-server-mock
+        image: soluto/oidc-server-mock:0.1.0
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Development

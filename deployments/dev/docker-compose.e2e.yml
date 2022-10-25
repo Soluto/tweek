@@ -46,7 +46,7 @@ services:
             "ClientId": "tweek-openid-mock-client",
             "Description": "Client for implicit flow",
             "AllowedGrantTypes": [
-                "implicit"
+                "authorization_code"
             ],
             "AllowAccessTokensViaBrowser": true,
             "RedirectUris": [
@@ -59,7 +59,9 @@ services:
                 "email"
             ],
             "IdentityTokenLifetime": 3600,
-            "AccessTokenLifetime": 3600
+            "AccessTokenLifetime": 3600,
+            "RequireClientSecret": false,
+            "RequirePkce": true
           }
         ]
 

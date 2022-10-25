@@ -3,8 +3,8 @@ import { AuthProvider } from 'tweek-client';
 import { BaseAuthClient, isTokenValid, RedirectState } from './base-auth-client';
 import storage from './storage';
 
-const basicOidcConfig = {
-  response_type: 'token id_token',
+const basicOidcConfig: Oidc.UserManagerSettings = {
+  response_type: 'code',
   filterProtocolClaims: true,
   loadUserInfo: true,
   automaticSilentRenew: true,
