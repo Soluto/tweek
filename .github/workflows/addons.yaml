@@ -3,17 +3,17 @@ name: Addons Tests
 on:
   push:
     paths:
-    - 'addons/**'
-    - '.github/workflows/addons.yaml'
+      - 'addons/**'
+      - '.github/workflows/addons.yaml'
 jobs:
   run-context-tests:
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/dotnet/sdk:5.0
     env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: "true"
-      REDIS_TEST_CONNECTION: "redis:6379"
-      MONGODB_TEST_CONNECTION: "mongodb://mongo:27017"
-      COUCHBASE_TEST_URL: "http://couchbase:8091"
+      DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+      REDIS_TEST_CONNECTION: 'redis:6379'
+      MONGODB_TEST_CONNECTION: 'mongodb://mongo:27017'
+      COUCHBASE_TEST_URL: 'http://couchbase:8091'
 
     services:
       redis:
@@ -23,17 +23,20 @@ jobs:
       mongo:
         image: mongo:3.6-jessie
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Test redis driver
         working-directory: addons/Context/Tweek.Drivers.Context.Redis.IntegrationTests
         run: |
-           dotnet test
+          dotnet test
+
       - name: Test Couchbase driver
         working-directory: addons/Context/Tweek.Drivers.Context.Couchbase.IntegrationTests
         run: |
           curl --retry 3 --retry-max-time 10 -v http://couchbase:8091/settings/web -d port=8091 -d username=Administrator -d password=password
           curl --retry 3 --retry-max-time 10 -v -u Administrator:password -X POST http://couchbase:8091/pools/default/buckets -d authType=sasl -d name=testbucket -d ramQuotaMB=100 -d saslPassword=password
           dotnet test
+
       - name: Test Mongo driver
         working-directory: addons/Context/Tweek.Drivers.Context.MongoDb.IntegrationTests
         run: |

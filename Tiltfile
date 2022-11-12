@@ -1,5 +1,5 @@
 docker_compose("./deployments/dev/tilt.yml" )
-docker_build("soluto/tweek-gateway", "services/gateway",dockerfile="services/gateway/debug.Dockerfile")
+docker_build("soluto/tweek-gateway", "services/gateway",dockerfile="services/gateway/Dockerfile")
 
 docker_build("soluto/tweek-authoring", "services/authoring")
 docker_build("soluto/tweek-api",  ".", dockerfile="TweekApi.Dockerfile")
@@ -10,6 +10,7 @@ docker_build("soluto/tweek-editor", "services/editor",dockerfile="services/edito
         sync('services/editor/src', '/app/src'),
     ]
 )
+docker_build("soluto/tweek-bare-repo", "services/git-service/BareRepository")
 
 dc_resource('minio')
 dc_resource('redis')

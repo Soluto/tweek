@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: oidc-mock
-        image: soluto/oidc-server-mock:0.1.0
+        image: ghcr.io/soluto/oidc-server-mock:0.5.2
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
@@ -34,5 +34,5 @@ spec:
     app: oidc-server-mock
   ports:
     - port: 8082
-      targetPort: 80
+      targetPort: 443
 ---

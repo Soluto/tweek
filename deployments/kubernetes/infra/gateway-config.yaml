@@ -16,9 +16,9 @@ data:
                 "providers": {
                     "mock": {
                         "name": "Mock OpenId Connect server",
-                        "issuer": "http://localhost:8082",
-                        "authority": "http://localhost:8082",
-                        "jwks_uri": "http://oidc-server-mock:8082/.well-known/openid-configuration/jwks",
+                        "issuer": "https://localhost:8082",
+                        "authority": "https://localhost:8082",
+                        "jwks_uri": "https://oidc-server-mock:8082/.well-known/openid-configuration/jwks",
                         "client_id": "tweek-openid-mock-client",
                         "login_info": {
                             "login_type": "oidc",

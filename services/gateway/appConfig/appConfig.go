@@ -159,3 +159,7 @@ func HandleEnvInlineOrPath(envValue *EnvInlineOrPath) ([]byte, error) {
 	}
 	return value, nil
 }
+
+func IsProduction() bool {
+	return configor.ENV() == "production"
+}

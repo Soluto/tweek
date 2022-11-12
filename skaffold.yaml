@@ -32,7 +32,7 @@ build:
       - src: '**/*.go'
         dest: /app
     docker:
-      dockerfile: debug.Dockerfile
+      dockerfile: Dockerfile
   - image: soluto/tweek-editor
     context: services/editor
     sync:

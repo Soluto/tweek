@@ -76,6 +76,7 @@ services:
       - editor
 
     environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
       - GATEWAY_URL=http://gateway
       - EDITOR_URL=http://gateway
       - AUTH_DIGEST_CREDENTIALS=user:pwd
@@ -90,6 +91,7 @@ services:
     depends_on: 
       - gateway
     environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
       - GATEWAY_URL=http://gateway
       - MINIO_HOST=minio
       - MINIO_PORT=9000

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"tweek-gateway/utils"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/sirupsen/logrus"
@@ -70,8 +71,9 @@ func loadEndpoint(endpoint string) *jwkRecord {
 }
 
 func loadEndpointWithRetry(endpoint string, retryCount uint) *jwkRecord {
+
 	rec := &jwkRecord{}
-	rec.set, rec.err = jwk.Fetch(context.Background(), endpoint)
+	rec.set, rec.err = jwk.Fetch(context.Background(), endpoint, jwk.WithHTTPClient(utils.GetHttpClient()))
 	jwkCache[endpoint] = rec
 
 	if rec.err != nil {

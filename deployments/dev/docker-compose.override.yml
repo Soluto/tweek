@@ -72,6 +72,7 @@ services:
       - "5859:5858"
       - "4005:3000"
     environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
       - GIT_USER=git
       - GIT_URL=ssh://git@publishing/tweek/repo
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
@@ -112,11 +113,16 @@ services:
 
   oidc-server-mock:
     container_name: oidc-server-mock
-    image: soluto/oidc-server-mock:0.1.0
+    image: ghcr.io/soluto/oidc-server-mock:0.5.2
     ports:
-      - "8082:80"
+      - "8082:443"
+    volumes:
+      - ./https:/https:ro
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443
+      ASPNETCORE_Kestrel__Certificates__Default__Password: oidc-server-mock-pwd
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
       CLIENTS_CONFIGURATION_INLINE: |
         [
           {
