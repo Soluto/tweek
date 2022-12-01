@@ -113,6 +113,14 @@
       "object": "*",
       "action": "*",
       "effect": "allow"
+    },
+    {
+      "group": "*",
+      "user": "*",
+      "contexts": {},
+      "object": "repo/hooks",
+      "action": "read",
+      "effect": "allow"
     }
   ]
 }
