@@ -1,5 +1,6 @@
 const client = require('../../utils/client');
 const { delay } = require('../../utils/utils');
+const jsonpatch = require('fast-json-patch');
 
 const policies = [
   {
@@ -12,7 +13,7 @@ const policies = [
   },
 ];
 
-describe('Gateway v2 - App Policies', () => {
+describe.only('Gateway v2 - App Policies', () => {
   const cases = [
     {
       name: 'read_specific_key',
@@ -108,6 +109,23 @@ describe('Gateway v2 - App Policies', () => {
     },
   ];
 
+  let originalPolicies;
+  let currentPolicies;
+
+  before(async () => {
+    const policiesRes = await client.get('/api/v2/policies').expect(200);
+    originalPolicies = policiesRes.body;
+    currentPolicies = originalPolicies;
+  });
+
+  after(async () => {
+    const policiesRes = await client.get('/api/v2/policies').expect(200);
+    newCurrentPolicies = policiesRes.body;
+
+    const patch = jsonpatch.compare(newCurrentPolicies, originalPolicies);
+    await client.patch('/api/v2/policies').send(patch).expect(200);
+  });
+
   for (let policy of policies) {
     it(`testing permission ${policy.object} - ${policy.action}`, async () => {
       const relevantCases = cases.filter(
@@ -127,23 +145,24 @@ describe('Gateway v2 - App Policies', () => {
         .expect(200);
 
       const { appId, appSecret } = response.body;
-
-      await client
-        .patch('/api/v2/policies')
-        .send([
+      const newPolicies = {
+        policies: [
+          ...currentPolicies.policies,
           {
-            op: 'add',
-            path: '/policies/1',
-            value: {
-              ...policy,
-              group: 'externalapps',
-              user: appId,
-              contexts: {},
-              effect: 'allow',
-            },
+            group: '*',
+            user: '*',
+            object: 'repo',
+            action: 'read',
+            group: 'externalapps',
+            user: appId,
+            contexts: {},
+            effect: 'allow',
           },
-        ])
-        .expect(200);
+        ],
+      };
+      const patch = jsonpatch.compare(currentPolicies, newPolicies);
+      await client.patch('/api/v2/policies').send(patch).expect(200);
+      currentPolicies = newPolicies;
 
       const appClient = await client.with((client) =>
         client.set({ 'x-client-id': appId, 'x-client-secret': appSecret }).unset('Authorization'),
