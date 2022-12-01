@@ -147,8 +147,11 @@ func extractResourceFromRepoRequest(r *http.Request, u UserInfo, kind string) (c
 	ctxs = PolicyResource{Contexts: map[string]string{}}
 	switch {
 	case r.Method == "GET":
-		ctxs.Item = "repo"
-		break
+		if kind != "hooks" {
+			ctxs.Item = "repo"
+			break
+		}
+		fallthrough
 	case r.Method == "POST":
 		fallthrough
 	case r.Method == "PUT":
@@ -157,10 +160,10 @@ func extractResourceFromRepoRequest(r *http.Request, u UserInfo, kind string) (c
 		fallthrough
 	case r.Method == "DELETE":
 		ctxs.Item = "repo/" + kind
-		break
 	default:
 		err = fmt.Errorf("Invalid method %s for %s", r.Method, kind)
 	}
+
 	return
 }
 
