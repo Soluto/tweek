@@ -9,7 +9,7 @@ describe('Gateway v2 CORS tests', () => {
       .set('Origin', 'tweek.test.origin')
       .set('Access-Control-Request-Method', 'GET')
       .set('Access-Control-Request-Headers', 'Origin,Accept,Content-Type')
-      .expect(200)
+      .expect(204)
       .expect('access-control-allow-credentials', 'true')
       .expect('access-control-allow-headers', 'Origin, Accept, Content-Type')
       .expect('access-control-allow-methods', 'GET')

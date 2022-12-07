@@ -28,7 +28,7 @@ import (
 )
 
 func main() {
-	logrus.SetFormatter(&joonix.FluentdFormatter{})
+	logrus.SetFormatter(joonix.NewFormatter())
 	configuration := appConfig.InitConfig()
 
 	app := newApp(configuration)
