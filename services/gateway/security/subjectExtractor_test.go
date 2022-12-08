@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 func TestDefaultSubjectExtractor_ExtractSubject(t *testing.T) {

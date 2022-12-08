@@ -11,8 +11,8 @@ import (
 	"tweek-gateway/audit"
 	"tweek-gateway/externalApps"
 
-	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/dgrijalva/jwt-go/request"
+	jwt "github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v5/request"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
@@ -37,7 +37,7 @@ type userInfo struct {
 	email  string
 	name   string
 	issuer string
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // UserInfo struct hold the information regarding the user
@@ -46,14 +46,14 @@ type UserInfo interface {
 	Email() string
 	Name() string
 	Issuer() string
-	Claims() jwt.StandardClaims
+	Claims() jwt.RegisteredClaims
 }
 
-func (u *userInfo) Sub() *Subject              { return u.sub }
-func (u *userInfo) Email() string              { return u.email }
-func (u *userInfo) Name() string               { return u.name }
-func (u *userInfo) Issuer() string             { return u.issuer }
-func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
+func (u *userInfo) Sub() *Subject                { return u.sub }
+func (u *userInfo) Email() string                { return u.email }
+func (u *userInfo) Name() string                 { return u.name }
+func (u *userInfo) Issuer() string               { return u.issuer }
+func (u *userInfo) Claims() jwt.RegisteredClaims { return u.RegisteredClaims }
 
 var tweekPrivateKey *rsa.PrivateKey
 
