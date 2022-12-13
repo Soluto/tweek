@@ -20,11 +20,11 @@ RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-19.
 RUN sed -i "/plugins=/c\plugins=(docker git golang dotnet)" /home/vscode/.zshrc
 RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-### Installing dotnet 5.0
+### Installing dotnet 7.0
 RUN apt update; \
     apt install -y apt-transport-https && \
     apt update && \
-    apt install -y dotnet-sdk-5.0
+    apt install -y dotnet-sdk-7.0
 
 ### Installing golang 1.14
 RUN curl -L https://golang.org/dl/go1.14.linux-amd64.tar.gz | sudo tar -xz -C /usr/local

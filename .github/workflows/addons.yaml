@@ -8,7 +8,7 @@ on:
 jobs:
   run-context-tests:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/dotnet/sdk:5.0
+    container: mcr.microsoft.com/dotnet/sdk:7.0
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: "true"
       REDIS_TEST_CONNECTION: "redis:6379"
@@ -23,7 +23,7 @@ jobs:
       mongo:
         image: mongo:3.6-jessie
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Test redis driver
         working-directory: addons/Context/Tweek.Drivers.Context.Redis.IntegrationTests
         run: |
