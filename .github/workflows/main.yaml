@@ -12,7 +12,7 @@ jobs:
       matrix:
         image: ["authoring", "gateway", "publishing", "api", "editor"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login Docker DH
         if: ${{ github.repository == 'soluto/tweek' }}
         env:
@@ -27,7 +27,7 @@ jobs:
           echo cp -a ${{ matrix.image }}-${{ github.sha }}.tar .github/workflows/
           cp -a ${{ matrix.image }}-${{ github.sha }}.tar .github/workflows/
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-images
           path: |
@@ -37,9 +37,9 @@ jobs:
     needs: ["build-images"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Download build images
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-images
       - name: load images into docker
@@ -50,9 +50,9 @@ jobs:
     needs: ["build-images"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Download build images
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-images
       - name: load images into docker
@@ -65,9 +65,9 @@ jobs:
     needs: ["build-images"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Download build images
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-images
       - name: load images into docker
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.repository == 'soluto/tweek' && !startsWith(github.ref, 'refs/heads/dependabot') }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Login Docker DH
@@ -89,7 +89,7 @@ jobs:
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: Download build images
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-images
       - name: load images into docker
