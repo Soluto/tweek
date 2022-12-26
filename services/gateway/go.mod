@@ -9,7 +9,7 @@ require (
 	github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806
 	github.com/lestrrat-go/jwx v1.2.0
 	github.com/minio/minio-go v6.0.14+incompatible
-	github.com/nats-io/nats.go v1.10.0
+	github.com/nats-io/nats.go v1.22.1
 	github.com/open-policy-agent/opa v0.28.0
 	github.com/prometheus/client_golang v1.10.0
 	github.com/rs/cors v1.7.0
@@ -46,7 +46,7 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/nats-io/jwt v1.0.1 // indirect
-	github.com/nats-io/nkeys v0.2.0 // indirect
+	github.com/nats-io/nkeys v0.3.0 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
