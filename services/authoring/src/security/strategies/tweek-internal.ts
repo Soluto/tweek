@@ -4,7 +4,7 @@ const tweekApp = {
   version: '1',
   name: 'tweek',
   isTweekService: true,
-  permissions: '*',
+  permissions: ['*'],
 };
 
 export default class TweekInternalStrategy extends JwtStrategy {

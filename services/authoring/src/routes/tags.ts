@@ -6,6 +6,7 @@ import { Authorize } from '../security/authorize';
 import TagsRepository from '../repositories/tags-repository';
 import { JsonValue } from '../utils/jsonValue';
 import { addOid } from '../utils/response-utils';
+import { Response } from 'express';
 
 @OnlyInstantiableByContainer
 @Tags('tags')
@@ -31,6 +32,6 @@ export class TagsController {
     tagsToSave: JsonValue,
   ): Promise<void> {
     const oid = await this.tagsRepository.mergeTags(tagsToSave, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
   }
 }

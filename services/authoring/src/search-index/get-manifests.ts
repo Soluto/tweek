@@ -1,11 +1,11 @@
-import path = require('path');
-import { promisify } from 'util';
-import _ = require('highland');
-const glob = promisify(require('glob'));
+import {join } from 'path';
+import _ from 'highland';
+import glob from 'glob';
+import { KeyManifest } from '../types';
 const readFile = _.wrapCallback(require('fs').readFile);
 
-export async function getManifests(repoDir: string): Promise<any> {
-  const fileNames = await glob(path.join(repoDir, 'manifests/**/*.json'));
+export async function getManifests(repoDir: string): Promise<KeyManifest[]> {
+  const fileNames = await glob(join(repoDir, 'manifests/**/*.json'));
 
   return new Promise((resolve, reject) => {
     const manifests = [];

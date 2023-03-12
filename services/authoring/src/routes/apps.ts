@@ -19,10 +19,11 @@ import { Authorize } from '../security/authorize';
 import AppsRepository, { AppSecretKey, AppManifest } from '../repositories/apps-repository';
 import { addOid } from '../utils/response-utils';
 import { createNewAppManifest, createSecretKey } from '../utils/app-utils';
+import { Response } from 'express';
 
 const allowedPermissions = R.without(<any>PERMISSIONS.ADMIN, R.values(PERMISSIONS));
 
-const hasValidPermissions = R.all(<any>R.contains((<any>R).__, allowedPermissions));
+const hasValidPermissions = R.all(<any>R.includes((<any>R).__, allowedPermissions));
 
 const getPublicProps = (s: AppSecretKey) => ({ id: s.id, creationDate: s.creationDate });
 
@@ -94,7 +95,7 @@ export class AppsController {
     const { secret: appSecret, key } = await createSecretKey();
     newApp.secretKeys.push(key);
     const oid = await this.appsRepository.createApp(appId, newApp, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
 
     return {
       appId,
@@ -112,7 +113,7 @@ export class AppsController {
     patchAppModel: Partial<Pick<AppManifest, 'name' | 'permissions'>>,
   ): Promise<void> {
     const oid = await this.appsRepository.updateApp(appId, patchAppModel, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
   }
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
@@ -124,7 +125,7 @@ export class AppsController {
     @QueryParam('author.email') email: string,
   ): Promise<void> {
     const oid = await this.appsRepository.deleteApp(appId, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
   }
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
@@ -151,7 +152,7 @@ export class AppsController {
   ): Promise<AppSecretKeyCreationResponseModel> {
     const { secret, key } = await createSecretKey();
     const oid = await this.appsRepository.createSecretKey(appId, key, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
     return { appId, keyId: key.id, secret };
   }
 
@@ -165,6 +166,6 @@ export class AppsController {
     @QueryParam('author.email') email: string,
   ): Promise<void> {
     const oid = await this.appsRepository.deleteSecretKey(appId, keyId, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
   }
 }

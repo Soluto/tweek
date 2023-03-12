@@ -68,14 +68,14 @@ export default class GitRepository {
     };
 
     logger.info('clonning rules repository');
-    const clonningOp = 'clonning end in';
+    const cloningOp = 'clonning end in';
     // FIXME: needs json logging
-    console.time(clonningOp);
-    const repo = await git.Clone.clone(settings.url, settings.localPath, {
+    console.time(cloningOp);
+    const repo = await git.Clone(settings.url, settings.localPath, {
       fetchOpts: operationSettings,
     });
     // FIXME: needs json logging
-    console.timeEnd(clonningOp);
+    console.timeEnd(cloningOp);
     return new GitRepository(repo, operationSettings);
   }
 

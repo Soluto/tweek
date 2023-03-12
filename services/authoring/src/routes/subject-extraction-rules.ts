@@ -4,6 +4,7 @@ import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import SubjectExtractionRulesRepository from '../repositories/extraction-rules-repository';
 import { addOid } from '../utils/response-utils';
+import { Response } from 'express';
 
 @OnlyInstantiableByContainer
 @Path('/subject-extraction-rules')
@@ -25,7 +26,7 @@ export class SubjectExtractionRulesController {
       content.data,
       { name, email },
     );
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
 
     return 'OK';
   }
