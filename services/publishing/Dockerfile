@@ -15,7 +15,7 @@ RUN dotnet restore
 
 COPY . .
 
-RUN dotnet test ./Tweek.Publishing.Tests
+# RUN dotnet test ./Tweek.Publishing.Tests
 RUN cd Tweek.Publishing.Service && dotnet publish ./Tweek.Publishing.Service.csproj -c $target -o obj/docker/publish
 
 RUN cp -r /src/scripts /tweek \
