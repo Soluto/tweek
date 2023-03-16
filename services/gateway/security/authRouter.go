@@ -11,7 +11,7 @@ import (
 	"tweek-gateway/externalApps"
 	"tweek-gateway/utils"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
@@ -76,7 +76,7 @@ func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath, basicAuthConfig 
 }
 
 func createBasicAuthJWT(subject string, emailOptional string, key interface{}) string {
-	numericTime := time.Now().Add(expirationPeriod * time.Hour).Unix()
+	numericTime := jwt.NewNumericDate(time.Now().Add(expirationPeriod * time.Hour))
 	var email string
 	if emailOptional != "" {
 		email = emailOptional
@@ -86,7 +86,7 @@ func createBasicAuthJWT(subject string, emailOptional string, key interface{}) s
 	claims := TweekClaims{
 		subject,
 		email,
-		jwt.StandardClaims{
+		jwt.RegisteredClaims{
 			Issuer:    "tweek-basic-auth",
 			Subject:   subject,
 			ExpiresAt: numericTime,
