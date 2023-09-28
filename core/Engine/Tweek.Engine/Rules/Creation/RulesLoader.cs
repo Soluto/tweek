@@ -1,5 +1,4 @@
 ﻿using LanguageExt;
-using Soluto.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using Tweek.Engine.Core.Rules;
 using Tweek.Engine.Core.Utils;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Rules;
+using Tweek.Engine.Collections;
 
 namespace Tweek.Engine.Rules.Creation
 {
