@@ -10,14 +10,14 @@ import (
 
 	"tweek-gateway/appConfig"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/sirupsen/logrus"
 )
 
 type TweekClaims struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // JWTTokenData struct that contains one field - signed jwt
@@ -63,11 +63,11 @@ func InitJWT(keyEnv *appConfig.EnvInlineOrPath) JWTToken {
 }
 
 func createNewJWT(key interface{}) string {
-	numericTime := time.Now().Add(expirationPeriod * time.Hour).Unix()
+	numericTime := jwt.NewNumericDate(time.Now().Add(expirationPeriod * time.Hour))
 	claims := TweekClaims{
 		"tweek",
 		"tweek@soluto.com",
-		jwt.StandardClaims{
+		jwt.RegisteredClaims{
 			Issuer:    "tweek",
 			ExpiresAt: numericTime,
 		},

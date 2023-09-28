@@ -1,5 +1,4 @@
 Dockerfile*
-debug.Dockerfile
 docker-compose*
 .dockerignore
 .git

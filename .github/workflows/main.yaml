@@ -3,22 +3,24 @@ name: Main
 on:
   push:
     paths-ignore:
-    - 'docs/**'
-    - README.md
+      - 'docs/**'
+      - README.md
 jobs:
   build-images:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: ["authoring", "gateway", "publishing", "api", "editor"]
+        image: ['authoring', 'gateway', 'publishing', 'api', 'editor']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Login Docker DH
         if: ${{ github.repository == 'soluto/tweek' }}
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
+
       - name: build
         run: |
           echo $GITHUB_REPOSITORY
@@ -26,80 +28,98 @@ jobs:
           docker save -o ${{ matrix.image }}-${{ github.sha }}.tar soluto/tweek-${{ matrix.image }} && \
           echo cp -a ${{ matrix.image }}-${{ github.sha }}.tar .github/workflows/
           cp -a ${{ matrix.image }}-${{ github.sha }}.tar .github/workflows/
+
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-images
           path: |
             .github/workflows/${{ matrix.image }}-${{ github.sha }}.tar
 
   run-e2e-ui:
-    needs: ["build-images"]
+    needs: ['build-images']
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Download build images
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-images
+
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
+
       - name: run tests
         run: yarn && yarn test:docker:ui
+
   run-e2e-integration:
-    needs: ["build-images"]
+    needs: ['build-images']
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Download build images
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-images
+
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
+
       - name: run integration tests
         working-directory: e2e/integration
         run: |
           yarn && yarn start gateway && yarn test:docker
+
   run-net-tests:
-    needs: ["build-images"]
+    needs: ['build-images']
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Download build images
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-images
+
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
+
       - name: run smoke tests
         run: yarn && yarn test:docker:smoke
+
   push-images:
-    needs: ["run-net-tests", "run-e2e-integration", "run-e2e-ui"]
+    needs: ['run-net-tests', 'run-e2e-integration', 'run-e2e-ui']
     runs-on: ubuntu-latest
     if: ${{ github.repository == 'soluto/tweek' && !startsWith(github.ref, 'refs/heads/dependabot') }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - name: Login Docker DH
         if: ${{ github.repository == 'soluto/tweek' }}
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
+
       - name: Download build images
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build-images
+
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
+
       - name: push branch
         if: ${{ github.ref != 'refs/heads/master' }}
         run: |
           export GITHUB_BRANCH=$(echo $GITHUB_REF | sed -e "s/refs\/heads\///" -e "s/\//-/")
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:$GITHUB_BRANCH
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:$GITHUB_BRANCH
+
       - name: push master
         if: ${{ github.ref == 'refs/heads/master' }}
         run: |
@@ -107,42 +127,48 @@ jobs:
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:latest
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:$GITHUB_SHA
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:$GITHUB_SHA
+
       - name: check versions
         if: ${{ github.ref == 'refs/heads/master' }}
-        working-directory: ".github/workflows"
+        working-directory: '.github/workflows'
         run: |
           ./versions_to_deploy.sh
+
       - name: Push new api version
         if: ${{ github.ref == 'refs/heads/master' && env.TWEEK_API_VERSION != ''  }}
-        working-directory: ".github/workflows"
+        working-directory: '.github/workflows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./push-tag.sh api $TWEEK_API_VERSION
+
       - name: Push new editor version
         if: ${{ github.ref == 'refs/heads/master' && env.TWEEK_EDITOR_VERSION != ''  }}
-        working-directory: ".github/workflows"
+        working-directory: '.github/workflows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./push-tag.sh editor $TWEEK_EDITOR_VERSION
+
       - name: Push new authoring version
         if: ${{ github.ref == 'refs/heads/master' && env.TWEEK_AUTHORING_VERSION != ''  }}
-        working-directory: ".github/workflows"
+        working-directory: '.github/workflows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./push-tag.sh authoring $TWEEK_AUTHORING_VERSION
+
       - name: Push new publishing version
         if: ${{ github.ref == 'refs/heads/master' && env.TWEEK_PUBLISHING_VERSION != ''  }}
-        working-directory: ".github/workflows"
+        working-directory: '.github/workflows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./push-tag.sh publishing $TWEEK_PUBLISHING_VERSION
+
       - name: Push new gateway version
         if: ${{ github.ref == 'refs/heads/master' && env.TWEEK_GATEWAY_VERSION != ''  }}
-        working-directory: ".github/workflows"
+        working-directory: '.github/workflows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

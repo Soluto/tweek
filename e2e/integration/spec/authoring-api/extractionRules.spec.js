@@ -12,7 +12,7 @@ describe('authoring api extraction rules', () => {
 
     const originalRules = buf.toString();
     const newRules = originalRules + '\n'; // only adding new line in order not to break the original rules
-
+    
     await pollUntil(
       () => getObjectContentFromMinio('security/subject_extraction_rules.rego'),
       (res) => expect(res).to.contain(originalRules),

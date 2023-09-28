@@ -1,5 +1,16 @@
 # -------- DEPENDENCIES -------- #
-FROM golang:1.18.3-stretch as build
+FROM golang:1.20.2-bullseye as build
+
+RUN apt-get update && apt-get install -y ca-certificates openssl
+
+ARG cert_location=/usr/local/share/ca-certificates
+
+# Get certificate from "github.com"
+RUN openssl s_client -showcerts -connect github.com:443 </dev/null 2>/dev/null|openssl x509 -outform PEM > ${cert_location}/github.crt
+# Get certificate from "proxy.golang.org"
+RUN openssl s_client -showcerts -connect proxy.golang.org:443 </dev/null 2>/dev/null|openssl x509 -outform PEM >  ${cert_location}/proxy.golang.crt
+# Update certificates
+RUN update-ca-certificates
 
 ADD go.mod /src/go.mod
 ADD go.sum /src/go.sum
@@ -16,7 +27,7 @@ RUN go build -o entry \
 RUN go build -o hcheck "tweek-gateway/healthcheck"
 
 # ------ REGO TESTS ------ #
-FROM golang:1.18.3-stretch as regotests
+FROM golang:1.20.2-bullseye as regotests
 
 RUN curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/v0.8.2/opa_linux_amd64
 RUN chmod u+x opa

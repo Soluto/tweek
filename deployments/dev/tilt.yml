@@ -48,6 +48,8 @@ services:
     depends_on:
     - publishing
     environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: '0'
+      NODE_OPTIONS: "--max-old-space-size=8192"
       GIT_PRIVATE_KEY_PATH: /run/secrets/tweek_ssh_private_key
       GIT_PUBLIC_KEY_PATH: /run/secrets/tweek_ssh_public_key
       GIT_URL: ssh://git@publishing/tweek/repo
@@ -82,6 +84,7 @@ services:
     - nats
     - oidc-server-mock
     environment:
+      CONFIGOR_ENV: development
       TWEEKGATEWAY_CONFIGFILEPATH: /config/gateway.json
       TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS: '[''http://localhost:8081'',
         ''http://localhost:3000'']'
@@ -117,11 +120,13 @@ services:
     secrets:
     - source: tweek_ssh_public_key
   minio:
-    command: server /data
-    image: minio/minio
+    command: server /data --console-address ":9001"
+    image: minio/minio:RELEASE.2022-05-19T18-20-59Z.hotfix.30a60091e
     ports:
     - published: 4007
       target: 9000
+    - published: 4012
+      target: 9001
     secrets:
     - source: minio_access_key
       target: access_key
@@ -136,10 +141,12 @@ services:
       target: 8222
   oidc-server-mock:
     container_name: oidc-server-mock
+    image: ghcr.io/soluto/oidc-server-mock:0.5.2
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      OIDC_CLIENT_ID: tweek-openid-mock-client
-      REDIRECT_URIS: http://localhost:8081/auth-result/oidc
+      ASPNETCORE_URLS: https://+:443
+      ASPNETCORE_Kestrel__Certificates__Default__Password: oidc-server-mock-pwd
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
       CLIENTS_CONFIGURATION_INLINE: |
         [
           {
@@ -177,10 +184,10 @@ services:
             "Password":"pwd"
           }
         ]
-    image: soluto/oidc-server-mock:0.1.0
     ports:
-    - published: 8082
-      target: 80
+      - 8082:443
+    volumes:
+      - ./https:/https:ro
   publishing:
     build:
       args:

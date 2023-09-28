@@ -20,10 +20,10 @@ module.exports.getObjectContentFromMinio = async (objectName) => {
       if (!stream) {
         return reject('stream is null.');
       }
-      const contentChuncks = [];
-      stream.on('data', (chunk) => contentChuncks.push(chunk));
+      const contentChunks = [];
+      stream.on('data', (chunk) => contentChunks.push(chunk));
       stream.on('end', () => {
-        return resolve(contentChuncks.join(''));
+        return resolve(contentChunks.join(''));
       });
       stream.on('error', (err) => {
         return reject(err);

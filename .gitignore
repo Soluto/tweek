@@ -245,3 +245,6 @@ _Pvt_Extensions
 #publish profiles
 PublishProfiles/
 .history/
+
+
+.yarn/

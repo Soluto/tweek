@@ -29,7 +29,7 @@ If using Minikube/Microk8s create port forwarding:
 
 ```bash
 kubectl port-forward deployment/gateway 8081:80
-kubectl port-forward deployment/oidc-server-mock 8082:80
+kubectl port-forward deployment/oidc-server-mock 8082:443
 ```
 
 Finally, open in browser [http://localhost:8081](http://localhost:8081).
