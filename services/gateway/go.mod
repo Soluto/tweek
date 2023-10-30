@@ -18,7 +18,7 @@ require (
 	github.com/vulcand/oxy v1.3.0
 	golang.org/x/crypto v0.3.0
 	google.golang.org/protobuf v1.25.0 // indirect
-	gopkg.in/h2non/gock.v1 v1.0.16
+	gopkg.in/h2non/gock.v1 v1.1.2
 )
 
 require (
