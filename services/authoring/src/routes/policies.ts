@@ -6,6 +6,7 @@ import PolicyRepository from '../repositories/policy-repository';
 import { addOid } from '../utils/response-utils';
 import { JsonValue } from '../utils/jsonValue';
 import jsonpatch = require('fast-json-patch');
+import { Response } from 'express';
 
 @OnlyInstantiableByContainer
 @Path('/policies')
@@ -31,7 +32,7 @@ export class PolicyController {
     content: JsonValue,
   ): Promise<string> {
     const oid = await this.policyRepository.replacePolicy(content, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
 
     return 'OK';
   }
@@ -44,7 +45,7 @@ export class PolicyController {
     content: jsonpatch.Operation[],
   ): Promise<string> {
     const oid = await this.policyRepository.updatePolicy(content, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
 
     return 'OK';
   }

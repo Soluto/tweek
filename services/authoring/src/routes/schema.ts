@@ -19,6 +19,7 @@ import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
 import { JsonValue } from '../utils/jsonValue';
 import { addOid } from '../utils/response-utils';
+import { Response } from 'express';
 
 const schemaPrefix = '@tweek/schema/';
 const indexSchema = R.pipe(
@@ -55,7 +56,7 @@ export class SchemaController {
   ): Promise<string> {
     const keyPath = schemaPrefix + identityType;
     const oid = await this.keysRepository.deleteKeys([keyPath], { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
     return 'OK';
   }
 
@@ -87,7 +88,7 @@ export class SchemaController {
       dependencies: [],
     };
     const oid = await this.keysRepository.updateKey(key, manifest, null, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
     return 'OK';
   }
 
@@ -107,7 +108,7 @@ export class SchemaController {
       jsonpatch.applyPatch(R.clone(manifest.implementation.value), <any>patch).newDocument,
     )(manifest);
     const oid = await this.keysRepository.updateKey(key, newManifest, null, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
     return 'OK';
   }
 }

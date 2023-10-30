@@ -23,11 +23,10 @@ function addTerm(query, term, field) {
   });
 }
 
-function trimResults(maxResults, results) {
-  return R.pipe(
-    R.slice(0, maxResults || 25),
-    R.map<{}, string>(R.prop<string>('ref')),
-  )(results);
+function trimResults(maxResults: number, results: lunr.Index.Result[]) {
+  const slicedResults = R.slice(0, maxResults || 25, results);
+  const refResults = R.map(R.prop<string>('ref'))(slicedResults);
+  return refResults;
 }
 
 function performSearch(
@@ -77,11 +76,12 @@ export class SearchController {
     if (type === 'free') {
       return trimResults(count, (await getIndex()).search(q));
     } else {
+      const index = await getIndex();
       return trimResults(
         count,
-        await performSearch(q, {
+        performSearch(q, {
           field,
-          index: await getIndex(),
+          index,
         }),
       );
     }
@@ -90,15 +90,13 @@ export class SearchController {
   @Authorize({ permission: PERMISSIONS.SEARCH })
   @GET
   @Path('/suggestions')
-  async suggestions(
-    @QueryParam('q') q: string,
-    @QueryParam('count') count?: number,
-  ): Promise<string[]> {
+  async suggestions(@QueryParam('q') q: string, @QueryParam('count') count?: number): Promise<string[]> {
+    const index = await getIndex();
     return trimResults(
       count,
-      await performSearch(q, {
+      performSearch(q, {
         field: 'id',
-        index: await getIndex(),
+        index,
       }),
     );
   }

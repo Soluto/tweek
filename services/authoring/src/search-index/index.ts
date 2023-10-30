@@ -5,13 +5,14 @@ import * as R from 'ramda';
 import lunr from 'lunr';
 import { getManifests } from './get-manifests';
 import logger from '../utils/logger';
+import { KeyManifest } from '../types';
 
-let manifestPromise;
-let indexPromise;
+let manifestPromise: Promise<KeyManifest[]>;
+let indexPromise: Promise<lunr.Index>;
 let dependentsPromise;
-let index;
+let index: lunr.Index;
 
-async function refreshIndex(repoDir) {
+async function refreshIndex(repoDir: string) {
   const indexFile = './searchIndex.json';
 
   await new Promise<void>((resolve, reject) => {
@@ -34,30 +35,37 @@ async function refreshIndex(repoDir) {
   return index;
 }
 
-function createDependencyIndexes(manifests) {
+function createDependencyIndexes(manifests: KeyManifest[]) {
   const aliases = manifests
-    .filter((manifest: any) => manifest.implementation.type === 'alias')
-    .reduce((acc, manifest) => ({ ...acc, [manifest.key_path]: manifest.implementation.key }), {});
+    .filter((manifest) => manifest.implementation.type === 'alias')
+    .reduce(
+      (acc, manifest) => ({ ...acc, [manifest.key_path]: manifest.implementation.key }),
+      {} as Record<string, string>,
+    );
 
-  const getKey = (key) => (key in aliases ? getKey(aliases[key]) : key);
+  const getKey = (key: string): string => (key in aliases ? getKey(aliases[key]) : key);
 
-  const createAliasIndex = R.pipe(R.map(getKey), R.invert);
+  const aliasIndex = R.pipe(R.map<Record<string, string>, Record<string, string>>(getKey), R.invert)(aliases);
 
-  const aliasIndex = createAliasIndex(aliases);
-
-  const indexDependencies = R.pipe(
-    R.filter((manifest: any) => !!manifest.dependencies && manifest.implementation.type !== 'alias'),
-    R.chain(
-      R.pipe(R.props(['key_path', 'dependencies']), ([keyPath, dependencies]: any[]) =>
-        dependencies.map((dependency) => ({ dependency: getKey(dependency), keyPath })),
-      ),
+  const filteredManifests = R.filter(
+    (manifest: KeyManifest) => !!manifest.dependencies && manifest.implementation.type !== 'alias',
+  )(manifests);
+  const dependencies = R.chain(
+    R.pipe(R.props(['key_path', 'dependencies']), ([keyPath, dependencies]: [string, string[]]) =>
+      dependencies.map((dependency) => ({ dependency: getKey(dependency), keyPath })),
     ),
-    R.groupBy(R.prop('dependency')),
-    <any>R.map(R.map(R.prop('keyPath'))),
-    R.map(R.uniq),
-  );
+  )(filteredManifests);
+  const dependencyGroups = R.groupBy(R.prop<string>('dependency'))(dependencies) as Record<
+    string,
+    {
+      dependency: string;
+      keyPath: string;
+    }[]
+  >;
 
-  const dependencyIndex = indexDependencies(manifests);
+  const keyPathArr = R.map<Record<string, { dependency: string; keyPath: string; }[]>, any>(R.map(R.prop<string>('keyPath')))(dependencyGroups);
+
+  const dependencyIndex = R.map(R.uniq)(keyPathArr);
 
   return { aliasIndex, dependencyIndex };
 }
@@ -72,13 +80,13 @@ export default {
   get index(): lunr.Index {
     return index;
   },
-  dependents(key) {
+  dependents(key: string) {
     return dependentsPromise.then(({ aliasIndex, dependencyIndex }) => ({
       usedBy: dependencyIndex[key] || [],
       aliases: aliasIndex[key] || [],
     }));
   },
-  refreshIndex: (repoDir) => {
+  refreshIndex: (repoDir: string) => {
     const makeRef = (x) => () => x;
     indexPromise = refreshIndex(repoDir).catch(makeRef(indexPromise));
     manifestPromise = getManifests(repoDir).catch(makeRef(manifestPromise));

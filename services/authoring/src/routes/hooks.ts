@@ -18,6 +18,7 @@ import { HooksRepositoryFactory, HooksRepository } from '../repositories/hooks-r
 import { addOid } from '../utils/response-utils';
 import Hook from '../utils/hook';
 import logger from '../utils/logger';
+import { Response } from 'express';
 
 @OnlyInstantiableByContainer
 @Tags('hooks')
@@ -52,7 +53,7 @@ export class HooksController {
     if (!(await this._handleETagValidation(hooksRepository))) return null;
 
     const oid = await hooksRepository.createHook(hook, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
 
     this.context.response.status(201);
     return hook;
@@ -73,7 +74,7 @@ export class HooksController {
       if (!(await this._handleETagValidation(hooksRepository))) return;
 
       const oid = await hooksRepository.updateHook(hook, { name, email });
-      addOid(this.context.response, oid);
+      addOid(this.context.response as Response, oid);
     } catch (err) {
       logger.error({ err, hook }, err.message);
       throw new Errors.NotFoundError();
@@ -93,7 +94,7 @@ export class HooksController {
       if (!(await this._handleETagValidation(hooksRepository))) return;
 
       const oid = await hooksRepository.deleteHook(id, { name, email });
-      addOid(this.context.response, oid);
+      addOid(this.context.response as Response, oid);
     } catch (err) {
       logger.error({ err, hookId: id }, err.message);
       throw new Errors.NotFoundError();

@@ -9,6 +9,7 @@ import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
 import { addOid } from '../utils/response-utils';
+import { Response } from 'express';
 
 const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
 const isValidPath = (x) => R.any(<any>R.test((<any>R).__, x))(supportedPaths);
@@ -57,6 +58,6 @@ export class BulkKeysUpload {
     }
 
     const oid = await this.keysRepository.updateBulkKeys(fileEntries, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
   }
 }

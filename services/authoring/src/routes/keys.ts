@@ -9,6 +9,7 @@ import KeysRepository from '../repositories/keys-repository';
 import { addOid } from '../utils/response-utils';
 import logger from '../utils/logger';
 import validate, { KeyUpdateModelType } from '../utils/validation';
+import { Response } from 'express';
 
 export type KeyUpdateModel = {
   implementation: any;
@@ -66,7 +67,7 @@ export class KeysController {
       name,
       email,
     });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
     await this._setKeyETagHeader(keyPath);
 
     return 'OK';
@@ -88,7 +89,7 @@ export class KeysController {
       keysToDelete = keysToDelete.concat(additionalKeys);
     }
     const oid = await this.keysRepository.deleteKeys(keysToDelete, { name, email });
-    addOid(this.context.response, oid);
+    addOid(this.context.response as Response, oid);
 
     return 'OK';
   }
