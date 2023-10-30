@@ -6,7 +6,7 @@
     <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="App.Metrics" Version="4.2.0" />
+    <PackageReference Include="App.Metrics" Version="4.3.0" />
     <PackageReference Include="App.Metrics.AspNetCore" Version="4.2.0" />
     <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.2.0" />
     <PackageReference Include="LanguageExt.Core" Version="3.4.15" />
