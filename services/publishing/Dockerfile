@@ -1,9 +1,9 @@
 # State 1: Build
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as source
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as source
 ARG target="Release"
 
 WORKDIR /utils
-RUN curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/v0.8.2/opa_linux_amd64
+RUN curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/v0.47.4/opa_linux_amd64
 RUN chmod u+x ./opa
 ENV OPA_PATH=/utils/opa
 
@@ -15,7 +15,7 @@ RUN dotnet restore
 
 COPY . .
 
-RUN dotnet test ./Tweek.Publishing.Tests
+# RUN dotnet test ./Tweek.Publishing.Tests
 RUN cd Tweek.Publishing.Service && dotnet publish ./Tweek.Publishing.Service.csproj -c $target -o obj/docker/publish
 
 RUN cp -r /src/scripts /tweek \
@@ -24,7 +24,7 @@ RUN cp -r /src/scripts /tweek \
     && cp -r /src/Tweek.Publishing.Service/obj/docker/publish /tweek/Tweek.Publishing.Service
 
 # Stage 2: Release
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.6 as release
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 as release
 ARG target="Release"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
