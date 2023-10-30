@@ -39,7 +39,7 @@
     "lunr": "^2.3.9",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
-    "nconf": "^0.11.2",
+    "nconf": "^0.12.0",
     "node-getopt": "^0.3.2",
     "nodegit": "^0.27.0",
     "object-hash": "^2.0.3",
